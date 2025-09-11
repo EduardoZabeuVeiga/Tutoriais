@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Atalhos Git</title>
+    <style>
+        .tooltip {
+            position: absolute;
+            background: #222;
+            color: #fff;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 0.97em;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            max-width: 260px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+        .tooltip.visible {
+            opacity: 1;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin: 24px 0 12px 0;
+            color: #222;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 20px 16px 20px;
+            min-width: 220px;
+            max-width: 270px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .card-title {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #1a237e;
+        }
+        .card-desc {
+            font-size: 0.97em;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .cmd-btn {
+            background: #e3eafc;
+            border: 1px solid #90caf9;
+            color: #0d47a1;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin: 2px 0;
+            font-size: 0.98em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cmd-btn:hover {
+            background: #bbdefb;
+        }
+        .copied {
+            background: #c8e6c9 !important;
+            color: #256029 !important;
+            border-color: #388e3c !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestor de Atalhos Git</h1>
+    <section class="baloes-section">
+        <div class="container">
+            <div id="tooltip" class="tooltip"></div>
+            <!-- Commit -->
+            <div class="card">
+                <div class="card-title">Commit</div>
+                <div class="card-desc">Salve alterações no repositório local.</div>
+                <button class="cmd-btn" data-tooltip="Adiciona todas as alterações ao stage para o próximo commit." onclick='copiarComando("git add .", this)'>git add .</button>
+                <button class="cmd-btn" data-tooltip="Cria um commit com a mensagem informada. Salva as alterações no histórico do repositório." onclick='copiarComando("git commit -m \"mensagem\"", this)'>git commit -m "mensagem"</button>
+                <button class="cmd-btn" data-tooltip="Altera o último commit (mensagem ou arquivos). Use com cuidado!" onclick='copiarComando("git commit --amend", this)'>git commit --amend</button>
+            </div>
+            <!-- Branch -->
+            <div class="card">
+                <div class="card-title">Branch</div>
+                <div class="card-desc">Gerencie ramificações do projeto.</div>
+                <button class="cmd-btn" data-tooltip="Lista todas as branches locais." onclick="copiarComando('git branch', this)">git branch</button>
+                <button class="cmd-btn" data-tooltip="Troca para a branch informada." onclick="copiarComando('git checkout nome-da-branch', this)">git checkout nome-da-branch</button>
+                <button class="cmd-btn" data-tooltip="Cria e já troca para uma nova branch." onclick="copiarComando('git checkout -b nova-branch', this)">git checkout -b nova-branch</button>
+                <button class="cmd-btn" data-tooltip="Remove a branch localmente (apenas se já foi mesclada)." onclick="copiarComando('git branch -d nome-da-branch', this)">git branch -d nome-da-branch</button>
+            </div>
+            <!-- Push/Pull -->
+            <div class="card">
+                <div class="card-title">Push & Pull</div>
+                <div class="card-desc">Envie ou receba alterações do repositório remoto.</div>
+                <button class="cmd-btn" data-tooltip="Envia os commits locais para o repositório remoto." onclick="copiarComando('git push', this)">git push</button>
+                <button class="cmd-btn" data-tooltip="Baixa e integra as alterações do repositório remoto." onclick="copiarComando('git pull', this)">git pull</button>
+                <button class="cmd-btn" data-tooltip="Envia a branch atual para o remoto e define como padrão para futuros pushes." onclick="copiarComando('git push -u origin nome-da-branch', this)">git push -u origin nome-da-branch</button>
+            </div>
+            <!-- Clone -->
+            <div class="card">
+                <div class="card-title">Clone</div>
+                <div class="card-desc">Clone um repositório remoto para sua máquina.</div>
+                <button class="cmd-btn" data-tooltip="Clona um repositório remoto para sua máquina." onclick="copiarComando('git clone https://github.com/usuario/repositorio.git', this)">git clone ...</button>
+            </div>
+            <!-- Stash -->
+            <div class="card">
+                <div class="card-title">Stash</div>
+                <div class="card-desc">Guarde alterações temporariamente.</div>
+                <button class="cmd-btn" data-tooltip="Guarda temporariamente alterações não commitadas." onclick="copiarComando('git stash', this)">git stash</button>
+                <button class="cmd-btn" data-tooltip="Restaura as alterações guardadas pelo último stash." onclick="copiarComando('git stash pop', this)">git stash pop</button>
+            </div>
+            <!-- Log -->
+            <div class="card">
+                <div class="card-title">Log</div>
+                <div class="card-desc">Veja o histórico de commits.</div>
+                <button class="cmd-btn" data-tooltip="Mostra o histórico completo de commits." onclick="copiarComando('git log', this)">git log</button>
+                <button class="cmd-btn" data-tooltip="Mostra o histórico de commits em uma linha por commit." onclick="copiarComando('git log --oneline', this)">git log --oneline</button>
+            </div>
+            <!-- Reset/Revert -->
+            <div class="card">
+                <div class="card-title">Reset & Revert</div>
+                <div class="card-desc">Desfaça alterações locais ou remotas.</div>
+                <button class="cmd-btn" data-tooltip="Desfaz todas as alterações locais e volta ao último commit." onclick="copiarComando('git reset --hard HEAD', this)">git reset --hard HEAD</button>
+                <button class="cmd-btn" data-tooltip="Cria um novo commit que desfaz as alterações do commit informado." onclick="copiarComando('git revert hash-do-commit', this)">git revert hash-do-commit</button>
+            </div>
+            <!-- Merge/Rebase -->
+            <div class="card">
+                <div class="card-title">Merge & Rebase</div>
+                <div class="card-desc">Integre alterações de branches.</div>
+                <button class="cmd-btn" data-tooltip="Mescla a branch informada na branch atual." onclick="copiarComando('git merge nome-da-branch', this)">git merge nome-da-branch</button>
+                <button class="cmd-btn" data-tooltip="Reaplica os commits da branch atual sobre a branch informada." onclick="copiarComando('git rebase nome-da-branch', this)">git rebase nome-da-branch</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="roteiro-section" style="background:#f0f4ff; border-radius:12px; max-width: 900px; margin: 0 auto; padding: 24px 12px 32px 12px;">
+        <h2 style="color:#1a237e; font-size:1.18em; margin-bottom:10px;">Roteiros de Uso Rápido</h2>
+        <div style="margin-bottom: 32px;">
+            <strong>Fazer um convite para colaborar em um repositório:</strong>
+            <ol style="margin: 8px 0 0 20px;">
+                <li>Acesse o repositório no GitHub.</li>
+                <li>Clique em <b>Settings</b> &rarr; <b>Collaborators</b> &rarr; <b>Add people</b>.</li>
+                <li>Digite o nome de usuário do convidado e envie o convite.</li>
+                <li>O convidado deve aceitar o convite no e-mail ou no GitHub.</li>
+            </ol>
+        </div>
+        <div style="margin-bottom: 32px;">
+            <strong>Clonar, editar e fazer commit em um repositório:</strong>
+            <ol style="margin: 8px 0 0 20px;">
+                <li>
+                    <span>Clonar o repositório:</span><br>
+                    <button class="cmd-btn" data-tooltip="Clona um repositório remoto para sua máquina." onclick="copiarComando('git clone https://github.com/usuario/repositorio.git', this)">git clone ...</button>
+                </li>
+                <li>Faça as alterações desejadas nos arquivos.</li>
+                <li>
+                    <span>Adicionar as mudanças:</span><br>
+                    <button class="cmd-btn" data-tooltip="Adiciona todas as alterações ao stage para o próximo commit." onclick='copiarComando("git add .", this)'>git add .</button>
+                </li>
+                <li>
+                    <span>Salvar o commit:</span><br>
+                    <button class="cmd-btn" data-tooltip="Cria um commit com a mensagem informada. Salva as alterações no histórico do repositório." onclick='copiarComando("git commit -m \"mensagem\"", this)'>git commit -m "mensagem"</button>
+                </li>
+                <li>
+                    <span>Enviar ao GitHub:</span><br>
+                    <button class="cmd-btn" data-tooltip="Envia os commits locais para o repositório remoto." onclick="copiarComando('git push', this)">git push</button>
+                </li>
+            </ol>
+        </div>
+        <div style="margin-bottom: 32px;">
+            <strong>Criar uma nova branch e trabalhar nela:</strong>
+            <ol style="margin: 8px 0 0 20px;">
+                <li>
+                    <span>Criar e trocar para a nova branch:</span><br>
+                    <button class="cmd-btn" data-tooltip="Cria e já troca para uma nova branch." onclick="copiarComando('git checkout -b nova-branch', this)">git checkout -b nova-branch</button>
+                </li>
+                <li>Faça as alterações desejadas.</li>
+                <li>
+                    <span>Adicionar e commitar:</span><br>
+                    <button class="cmd-btn" data-tooltip="Adiciona todas as alterações ao stage para o próximo commit." onclick='copiarComando("git add .", this)'>git add .</button>
+                    <button class="cmd-btn" data-tooltip="Cria um commit com a mensagem informada. Salva as alterações no histórico do repositório." onclick='copiarComando("git commit -m \"mensagem\"", this)'>git commit -m "mensagem"</button>
+                </li>
+                <li>
+                    <span>Enviar ao GitHub:</span><br>
+                    <button class="cmd-btn" data-tooltip="Envia os commits locais para o repositório remoto." onclick="copiarComando('git push', this)">git push</button>
+                </li>
+            </ol>
+        </div>
+        <div style="margin-bottom: 32px;">
+            <strong>Atualizar seu repositório local com o remoto:</strong>
+            <ol style="margin: 8px 0 0 20px;">
+                <li>
+                    <span>Baixar e integrar alterações:</span><br>
+                    <button class="cmd-btn" data-tooltip="Baixa e integra as alterações do repositório remoto." onclick="copiarComando('git pull', this)">git pull</button>
+                </li>
+            </ol>
+        </div>
+    </section>
+    <div id="tooltip" class="tooltip"></div>
+    <script>
+        function copiarComando(comando, btn) {
+            navigator.clipboard.writeText(comando);
+            if(btn) {
+                btn.classList.add('copied');
+                setTimeout(() => btn.classList.remove('copied'), 900);
+            }
+        }
+
+        // Tooltip flutuante após 3 segundos de hover
+        let tooltipTimeout = null;
+        const tooltip = document.getElementById('tooltip');
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.classList.contains('cmd-btn')) {
+                tooltipTimeout = setTimeout(() => {
+                    tooltip.textContent = e.target.getAttribute('data-tooltip');
+                    const rect = e.target.getBoundingClientRect();
+                    tooltip.style.top = (window.scrollY + rect.top - tooltip.offsetHeight - 8) + 'px';
+                    tooltip.style.left = (window.scrollX + rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+                    tooltip.classList.add('visible');
+                }, 3000);
+            }
+        });
+        document.addEventListener('mouseout', function(e) {
+            if (e.target.classList.contains('cmd-btn')) {
+                clearTimeout(tooltipTimeout);
+                tooltip.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>
