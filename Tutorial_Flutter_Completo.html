@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Completo: Instalação e Configuração do Flutter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2196F3;
+            text-align: center;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #1976D2;
+            margin-top: 30px;
+            padding: 10px;
+            background: linear-gradient(90deg, #E3F2FD, transparent);
+            border-left: 4px solid #2196F3;
+        }
+        h3 {
+            color: #0D47A1;
+            margin-top: 20px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .command-box {
+            background: #263238;
+            color: #00FF00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+        .nav-button:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+        .nav-button::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .warning {
+            background: #FFF3CD;
+            border: 1px solid #FFEEBA;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #F8D7DA;
+            border: 1px solid #F5C6CB;
+            color: #721C24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #D4EDDA;
+            border: 1px solid #C3E6CB;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .download-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .download-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px;
+        }
+        .download-btn:hover {
+            background: #45a049;
+        }
+        .path-input {
+            background: #f1f1f1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .troubleshooting {
+            background: #FFE5B4;
+            border: 1px solid #FFD700;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .checkbox-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .toc {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        .toc a {
+            color: #1976D2;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="nav-button">Voltar ao Índice</a>
+        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+        <h1>🚀 Tutorial Completo: Instalação e Configuração do Flutter</h1>
+        
+        <div class="toc">
+            <h3>📋 Índice</h3>
+            <ul>
+                <li><a href="#download">1. Download do Flutter SDK</a></li>
+                <li><a href="#instalacao">2. Instalação do Flutter</a></li>
+                <li><a href="#path">3. Configuração do PATH</a></li>
+                <li><a href="#verificacao">4. Verificação da Instalação</a></li>
+                <li><a href="#projeto">5. Criação do Primeiro Projeto</a></li>
+                <li><a href="#erros">6. Tratamento de Erros Comuns</a></li>
+                <li><a href="#checklist">7. Checklist Final</a></li>
+            </ul>
+        </div>
+
+        <h2 id="download">📥 1. Download do Flutter SDK</h2>
+        <div class="step">
+            <div class="download-box">
+                <h3>🌐 Links Oficiais para Download</h3>
+                <p>Baixe sempre do site oficial para garantir segurança e atualizações</p>
+                <a href="https://flutter.dev/docs/get-started/install/windows" class="download-btn" target="_blank">
+                    🪟 Flutter para Windows
+                </a>
+                <a href="https://docs.flutter.dev/get-started/install" class="download-btn" target="_blank">
+                    📚 Documentação Oficial
+                </a>
+            </div>
+            
+            <h3>Requisitos do Sistema:</h3>
+            <ul>
+                <li>Windows 10 ou superior (64-bit)</li>
+                <li>Pelo menos 2.8 GB de espaço livre</li>
+                <li>Git para Windows</li>
+                <li>PowerShell 5.0 ou superior</li>
+            </ul>
+        </div>
+
+        <h2 id="instalacao">⚙️ 2. Instalação do Flutter</h2>
+        <div class="step">
+            <h3>Passo 1: Extrair o Flutter SDK</h3>
+            <p>Extraia o arquivo baixado para:</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('C:\\flutter')">Copiar</button>
+                C:\flutter
+            </div>
+            
+            <div class="warning">
+                <strong>⚠️ Importante:</strong> Não instale o Flutter em um diretório que requeira privilégios elevados, como C:\Program Files\.
+            </div>
+            
+            <h3>Passo 2: Verificar a Estrutura de Pastas</h3>
+            <p>Após extrair, você deve ter essa estrutura:</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('C:\\flutter\\bin\\flutter.bat')">Copiar</button>
+                C:\flutter\
+                ├── bin\
+                │   ├── flutter.bat
+                │   └── dart.exe
+                ├── packages\
+                └── README.md
+            </div>
+        </div>
+
+        <h2 id="path">🛣️ 3. Configuração do PATH</h2>
+        <div class="step">
+            <h3>Método 1: Interface Gráfica (Recomendado)</h3>
+            <ol>
+                <li>Pressione <kbd>Win + R</kbd> e digite:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('sysdm.cpl')">Copiar</button>
+                        sysdm.cpl
+                    </div>
+                </li>
+                <li>Clique na aba <strong>"Avançado"</strong></li>
+                <li>Clique em <strong>"Variáveis de Ambiente"</strong></li>
+                <li>Na seção <strong>"Variáveis do sistema"</strong>, encontre <strong>"Path"</strong></li>
+                <li>Clique em <strong>"Editar"</strong></li>
+                <li>Clique em <strong>"Novo"</strong></li>
+                <li>Digite exatamente:
+                    <div class="path-input" id="flutterPath">C:\flutter\bin</div>
+                    <button class="copy-btn" onclick="copyToClipboard('C:\\flutter\\bin')">Copiar Caminho</button>
+                </li>
+                <li>Clique <strong>"OK"</strong> em todas as janelas</li>
+            </ol>
+
+            <h3>Método 2: PowerShell (Temporário)</h3>
+            <p>Para adicionar temporariamente nesta sessão:</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('$env:PATH += &quot;;C:\\flutter\\bin&quot;')">Copiar</button>
+                $env:PATH += ";C:\flutter\bin"
+            </div>
+        </div>
+
+        <h2 id="verificacao">✅ 4. Verificação da Instalação</h2>
+        <div class="step">
+            <h3>Passo 1: Reiniciar o Terminal</h3>
+            <p>Feche e abra um novo PowerShell para aplicar as mudanças do PATH.</p>
+
+            <h3>Passo 2: Testar o Comando Flutter</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter --version')">Copiar</button>
+                flutter --version
+            </div>
+            
+            <div class="success">
+                <strong>✅ Resultado Esperado:</strong><br>
+                Flutter 3.22.2 • channel stable • https://github.com/flutter/flutter.git<br>
+                Framework • revision 761747bfc5 (tempo) • data<br>
+                Engine • revision edd8546116<br>
+                Tools • Dart 3.4.3 • DevTools 2.34.3
+            </div>
+
+            <h3>Passo 3: Executar Flutter Doctor</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter doctor')">Copiar</button>
+                flutter doctor
+            </div>
+            
+            <p>Este comando verifica todas as dependências e configurações necessárias.</p>
+        </div>
+
+        <h2 id="projeto">📱 5. Criação do Primeiro Projeto</h2>
+        <div class="step">
+            <h3>Passo 1: Navegar para o Diretório de Trabalho</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('cd &quot;C:\\Users\\Eduar\\Desktop\\agenda em flutter&quot;')">Copiar</button>
+                cd "C:\Users\Eduar\Desktop\agenda em flutter"
+            </div>
+
+            <h3>Passo 2: Criar o Projeto</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter create agenda_desenvolvedor')">Copiar</button>
+                flutter create agenda_desenvolvedor
+            </div>
+
+            <h3>Passo 3: Entrar no Projeto</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('cd agenda_desenvolvedor')">Copiar</button>
+                cd agenda_desenvolvedor
+            </div>
+
+            <h3>Passo 4: Executar o Projeto</h3>
+            <p>Para Web (Chrome):</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter run -d chrome')">Copiar</button>
+                flutter run -d chrome
+            </div>
+
+            <p>Para ver dispositivos disponíveis:</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter devices')">Copiar</button>
+                flutter devices
+            </div>
+        </div>
+
+        <h2 id="erros">🔧 6. Tratamento de Erros Comuns</h2>
+        
+        <div class="troubleshooting">
+            <h3>❌ Erro: "O termo 'flutter' não é reconhecido"</h3>
+            <div class="error">
+                <strong>Problema:</strong> Flutter não está no PATH ou PATH não foi atualizado.
+            </div>
+            <strong>Soluções:</strong>
+            <ol>
+                <li>Verificar se o PATH foi configurado corretamente:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('$env:PATH -split &quot;;&quot; | Where-Object { $_ -like &quot;*flutter*&quot; }')">Copiar</button>
+                        $env:PATH -split ";" | Where-Object { $_ -like "*flutter*" }
+                    </div>
+                </li>
+                <li>Adicionar temporariamente:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('$env:PATH += &quot;;C:\\flutter\\bin&quot;')">Copiar</button>
+                        $env:PATH += ";C:\flutter\bin"
+                    </div>
+                </li>
+                <li>Reiniciar o computador para aplicar PATH permanente</li>
+                <li>Verificar se o arquivo existe:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('Test-Path &quot;C:\\flutter\\bin\\flutter.bat&quot;')">Copiar</button>
+                        Test-Path "C:\flutter\bin\flutter.bat"
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="troubleshooting">
+            <h3>⚠️ Aviso: Gradle/Java Compatibility</h3>
+            <div class="warning">
+                <strong>Problema:</strong> Versão do Java incompatível com Gradle.
+            </div>
+            <strong>Soluções:</strong>
+            <ol>
+                <li>Configurar JDK compatible:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('flutter config --jdk-dir=JDK_DIRECTORY')">Copiar</button>
+                        flutter config --jdk-dir=&lt;JDK_DIRECTORY&gt;
+                    </div>
+                </li>
+                <li>Atualizar versão do Gradle no arquivo:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('android/gradle/wrapper/gradle-wrapper.properties')">Copiar</button>
+                        android/gradle/wrapper/gradle-wrapper.properties
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="troubleshooting">
+            <h3>🔧 Problemas com Android SDK</h3>
+            <div class="warning">
+                <strong>Problema:</strong> cmdline-tools component missing ou licenças não aceitas.
+            </div>
+            <strong>Soluções:</strong>
+            <ol>
+                <li>Aceitar licenças Android:
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard('flutter doctor --android-licenses')">Copiar</button>
+                        flutter doctor --android-licenses
+                    </div>
+                </li>
+                <li>Instalar cmdline-tools via Android Studio</li>
+                <li>Para desenvolvimento web apenas, estes erros podem ser ignorados</li>
+            </ol>
+        </div>
+
+        <h2 id="checklist">✅ 7. Checklist Final</h2>
+        <div class="step">
+            <h3>Verificações de Instalação:</h3>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check1">
+                <label for="check1">Flutter SDK extraído em C:\flutter</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check2">
+                <label for="check2">C:\flutter\bin adicionado ao PATH do sistema</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check3">
+                <label for="check3">Terminal reiniciado após configurar PATH</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check4">
+                <label for="check4">Comando "flutter --version" funcionando</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check5">
+                <label for="check5">Flutter doctor executado sem erros críticos</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check6">
+                <label for="check6">Projeto "agenda_desenvolvedor" criado com sucesso</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check7">
+                <label for="check7">Projeto executando no navegador (flutter run -d chrome)</label>
+            </div>
+
+            <h3>Comandos de Teste Rápido:</h3>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter --version && flutter doctor && flutter devices')">Copiar</button>
+                flutter --version &amp;&amp; flutter doctor &amp;&amp; flutter devices
+            </div>
+        </div>
+
+        <h2>🎯 Próximos Passos</h2>
+        <div class="step">
+            <h3>Desenvolvimento da Agenda:</h3>
+            <ul>
+                <li>📝 Editar arquivo <code>lib/main.dart</code></li>
+                <li>🎨 Criar interface para adicionar tarefas</li>
+                <li>💾 Implementar persistência de dados</li>
+                <li>📱 Testar em diferentes dispositivos</li>
+                <li>🚀 Build para produção</li>
+            </ul>
+
+            <h3>Estrutura do Projeto Flutter:</h3>
+            <div class="command-box">
+                agenda_desenvolvedor/
+                ├── lib/                 # Código Dart principal
+                │   └── main.dart       # Arquivo principal da app
+                ├── android/            # Configurações Android
+                ├── ios/               # Configurações iOS  
+                ├── web/               # Configurações Web
+                ├── test/              # Testes automatizados
+                └── pubspec.yaml       # Dependências do projeto
+            </div>
+        </div>
+
+        <div class="success">
+            <h3>🎉 Parabéns!</h3>
+            <p>Você configurou com sucesso o Flutter e criou seu primeiro projeto! Agora está pronto para desenvolver aplicativos móveis, web e desktop.</p>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Feedback visual
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copiado!';
+                button.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#4CAF50';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erro ao copiar: ', err);
+                // Fallback para navegadores mais antigos
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copiado!';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Auto-save checkbox states
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+            });
+            
+            // Load saved state
+            const saved = localStorage.getItem(checkbox.id);
+            if (saved === 'true') {
+                checkbox.checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

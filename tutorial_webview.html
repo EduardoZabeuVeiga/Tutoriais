@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial: App Android WebView em Kotlin (com Tratamento de Erros)</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#0b1220;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --acc:#60a5fa;
+      --green:#22c55e;
+      --red:#ef4444;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 80% -10%, #0b1220 0, transparent 40%),
+                      radial-gradient(800px 500px at -10% 10%, #0b1220 0, transparent 40%),
+                      var(--bg);
+      color:var(--text); font-family:var(--sans); line-height:1.6;
+    }
+    .container { max-width: 900px; margin: 32px auto; background: var(--panel); border-radius: 8px; box-shadow: 0 2px 12px #0001; padding: 32px 40px; }
+    h1, h2, h3 { color: var(--acc); }
+    pre { background: var(--card); border-radius: 4px; padding: 12px; overflow-x: auto; color: var(--text); }
+    .code-block { position: relative; margin-bottom: 24px; }
+    .copy-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: var(--acc); color: #fff; border: none; border-radius: 4px;
+      padding: 4px 12px; cursor: pointer; font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .copy-btn:active { background: #1976d2; }
+    .alert { background: #1e293b; color: var(--acc); border-left: 4px solid var(--acc); padding: 8px 16px; margin: 16px 0; border-radius: 4px; }
+    ol li { margin-bottom: 12px; }
+    ul { margin-top: 0; }
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      background: var(--acc);
+      color: #0f172a;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: var(--sans);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .nav-button:hover {
+      background: #a1c9fa;
+      transform: translateY(-1px);
+    }
+    .nav-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .logo:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="nav-button">Voltar ao Índice</a>
+  <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+  <h1>Como Criar um App Android WebView em Kotlin (com Tratamento de Erros)</h1>
+  <p>
+    Este tutorial foi elaborado considerando erros comuns relatados por IAs (como GPT e Gemini) e experiências práticas. Siga cada passo para evitar problemas de importação, recursos, assets, datas e travamentos.
+  </p>
+
+  <h2>1. Crie o Projeto</h2>
+  <ol>
+    <li>Abra o Android Studio e crie um novo projeto <b>Empty Activity</b>.</li>
+    <li>Escolha <b>Kotlin</b> como linguagem.</li>
+    <li>Defina o <b>Package name</b> (exemplo: <code>com.example.numerologiapitagorica</code>).</li>
+    <li>Confirme que o projeto foi criado com a estrutura correta.</li>
+  </ol>
+
+  <h2>2. Corrija o Layout</h2>
+  <p>Abra <b>app/src/main/res/layout/activity_main.xml</b> e substitua o conteúdo por:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+    <pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"&gt;
+
+    &lt;WebView
+        android:id="@+id/webview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" /&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</pre>
+  </div>
+
+  <h2>3. Corrija o Código Kotlin</h2>
+  <p>Abra <b>app/src/main/java/com/example/numerologiapitagorica/MainActivity.kt</b> e use:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+    <pre>package com.example.numerologiapitagorica
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import com.example.numerologiapitagorica.R
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val webView: WebView = findViewById(R.id.webview)
+        val webSettings: WebSettings = webView.settings
+        webSettings.javaScriptEnabled = true
+        webView.webViewClient = WebViewClient()
+        webView.loadUrl("file:///android_asset/index.html")
+    }
+}
+</pre>
+  </div>
+
+  <h2>4. Crie a pasta <code>assets</code> e subpastas</h2>
+  <ol>
+    <li>Crie a pasta <b>app/src/main/assets</b> se não existir.</li>
+    <li>Dentro de <b>assets</b>, crie a subpasta <b>img</b> para imagens.</li>
+    <li>Adicione sua imagem de fundo (ex: <b>3.png</b>) em <b>assets/img/3.png</b>. <span class="alert">Dica: Use imagens otimizadas, até 1920x1080px e menos de 500KB.</span></li>
+  </ol>
+
+  <h2>5. Crie o arquivo HTML</h2>
+  <p>Salve como <b>app/src/main/assets/index.html</b>:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+    <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Calculadora de Mapa Numerológico Pitagórico&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      background-image: url('img/3.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      color: #222;
+      min-height: 100vh;
+      margin: 0; padding: 0;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .container { background: #fff9; padding: 32px; border-radius: 12px; max-width: 500px; width: 100%; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 8px; font-size: 1em; margin-bottom: 16px; }
+    button { padding: 10px 24px; font-size: 1em; background: #2a4d8f; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    #resultado { margin-top: 24px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="container"&gt;
+    &lt;h1&gt;Mapa Numerológico Pitagórico&lt;/h1&gt;
+    &lt;label for="nomeCompleto"&gt;Nome Completo de Nascimento&lt;/label&gt;
+    &lt;input type="text" id="nomeCompleto" placeholder="Ex: Maria da Silva Sauro"&gt;
+
+    &lt;label for="dataNascimento"&gt;Data de Nascimento&lt;/label&gt;
+    &lt;input type="text" id="dataNascimento" placeholder="dd/mm/aaaa" maxlength="10"&gt;
+
+    &lt;button onclick="gerarMapa()"&gt;Gerar Análise Completa&lt;/button&gt;
+    &lt;div id="resultado"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    // Máscara para data (dd/mm/aaaa)
+    document.getElementById('dataNascimento').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\\D/g, '').slice(0,8);
+      if (v.length >= 5)
+        e.target.value = v.replace(/(\\d{2})(\\d{2})(\\d{0,4})/, '$1/$2/$3');
+      else if (v.length >= 3)
+        e.target.value = v.replace(/(\\d{2})(\\d{0,2})/, '$1/$2');
+      else
+        e.target.value = v;
+    });
+
+    // Funções de numerologia (exemplo simplificado)
+    function gerarMapa() {
+      const nomeInput = document.getElementById('nomeCompleto').value;
+      const dataInput = document.getElementById('dataNascimento').value;
+      const resultadoDiv = document.getElementById('resultado');
+      if (!nomeInput || !dataInput) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+      // Parse seguro para dd/mm/aaaa
+      let dataNasc = null;
+      if (/^\\d{2}\\/\\d{2}\\/\\d{4}$/.test(dataInput)) {
+        const [dia, mes, ano] = dataInput.split('/');
+        dataNasc = new Date(`${ano}-${mes}-${dia}T00:00:00`);
+      } else {
+        alert('Data inválida. Use o formato dd/mm/aaaa.');
+        return;
+      }
+      if (isNaN(dataNasc.getTime())) {
+        alert('Data inválida.');
+        return;
+      }
+      // Exemplo de resultado
+      resultadoDiv.innerHTML = '&lt;h2&gt;Análise gerada com sucesso!&lt;/h2&gt;';
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </div>
+
+  <h2>6. Dicas e Tratamento de Erros</h2>
+  <ul>
+    <li><b>Pacote:</b> Sempre confira o <code>package</code> no topo do arquivo Kotlin.</li>
+    <li><b>Imports:</b> Não altere manualmente o import de <code>R</code>.</li>
+    <li><b>Assets:</b> Imagens grandes podem travar o app. Use imagens otimizadas.</li>
+    <li><b>Data:</b> Sempre valide e faça o parse manual do campo de data.</li>
+    <li><b>HTML:</b> Use <code>input type="text"</code> para datas no WebView Android.</li>
+    <li><b>Debug:</b> Use <b>Logcat</b> para identificar erros de assets, classes e recursos.</li>
+  </ul>
+
+  <h2>7. Teste o App</h2>
+  <ol>
+    <li>Rode o app no emulador ou dispositivo físico.</li>
+    <li>Se aparecer tela branca ou travar, confira o Logcat para mensagens de erro.</li>
+    <li>Verifique se todos os arquivos e pastas estão no local correto.</li>
+  </ol>
+
+  <h2>8. Gerando o APK, App Bundle (AAB) e Instalando o Aplicativo</h2>
+  <p>
+    Após finalizar o desenvolvimento, você pode gerar diferentes formatos de instalador para Android:
+  </p>
+  <ul>
+    <li><b>APK</b>: Pacote tradicional, pode ser instalado diretamente em dispositivos Android.</li>
+    <li><b>AAB (Android App Bundle)</b>: Formato recomendado pelo Google Play. O Google Play gera APKs otimizados a partir do AAB para cada dispositivo.</li>
+  </ul>
+
+  <h3>Como Gerar o APK</h3>
+  <ol>
+    <li>No Android Studio, vá em <b>Build &gt; Build Bundle(s) / APK(s) &gt; Build APK(s)</b>.</li>
+    <li>Após o build, clique em <b>locate</b> para abrir a pasta onde o APK foi gerado.</li>
+    <li>O arquivo estará em <code>app/build/outputs/apk/release/</code> ou <code>debug/</code>.</li>
+    <li>Transfira o APK para o dispositivo e instale manualmente.</li>
+  </ol>
+
+  <h3>Como Gerar o App Bundle (AAB)</h3>
+  <ol>
+    <li>No Android Studio, vá em <b>Build &gt; Build Bundle(s) / APK(s) &gt; Build Bundle</b>.</li>
+    <li>O arquivo <code>.aab</code> será gerado em <code>app/build/outputs/bundle/release/</code>.</li>
+    <li>O AAB é o formato aceito para publicação na Google Play Store.</li>
+  </ol>
+
+  <h3>Resumo das Diferenças</h3>
+  <ul>
+    <li><b>APK</b>: Instala direto no aparelho, útil para testes e distribuição manual.</li>
+    <li><b>AAB</b>: Obrigatório para publicação na Play Store. O Google Play converte o AAB em APKs otimizados para cada usuário.</li>
+  </ul>
+
+  <h3>Comandos via Terminal (opcional)</h3>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+    <pre>// Gerar APK debug
+./gradlew assembleDebug
+
+// Gerar APK release (assinatura obrigatória para instalar em outros dispositivos)
+./gradlew assembleRelease
+
+// Gerar App Bundle (AAB) release
+./gradlew bundleRelease
+</pre>
+  </div>
+
+  <h3>Instalando o APK no dispositivo</h3>
+  <ol>
+    <li>Ative a opção "Fontes desconhecidas" no Android.</li>
+    <li>Transfira o APK para o dispositivo (via USB, e-mail, etc).</li>
+    <li>Abra o APK e siga as instruções para instalar.</li>
+  </ol>
+
+  <h3>Publicando na Google Play</h3>
+  <ol>
+    <li>Faça login no <a href="https://play.google.com/console" target="_blank">Google Play Console</a>.</li>
+    <li>Crie um novo app e envie o arquivo <code>.aab</code>.</li>
+    <li>Siga as etapas de publicação exigidas pelo Google.</li>
+  </ol>
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerText = "Copiado!";
+    setTimeout(() => btn.innerText = "Copiar", 1200);
+  });
+}
+</script>
+</body>
+</html>

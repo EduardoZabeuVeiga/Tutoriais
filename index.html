@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub de Tutoriais Práticos</title>
+    <style>
+        :root{
+            --bg:#0f172a;
+            --panel:#111827;
+            --card:#0b1220;
+            --text:#e5e7eb;
+            --muted:#9ca3af;
+            --acc:#60a5fa;
+            --green:#22c55e;
+            --red:#ef4444;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            background: radial-gradient(1200px 600px at 80% -10%, #0b1220 0, transparent 40%),
+                        radial-gradient(800px 500px at -10% 10%, #0b1220 0, transparent 40%),
+                        var(--bg);
+            color:var(--text);
+            font-family:var(--sans);
+            line-height:1.6;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 48px 20px;
+            background: linear-gradient(45deg, var(--panel) 0%, var(--card) 100%);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 5vw, 42px);
+            background: linear-gradient(135deg, var(--acc) 0%, #60a5fa 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: clamp(16px, 2vw, 18px);
+            margin-top: 8px;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 20px 0;
+        }
+        .card {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(96, 165, 250, 0.1);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--acc), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card h2 {
+            color: var(--acc);
+            margin: 0 0 12px 0;
+            font-size: 22px;
+        }
+        .card p {
+            color: var(--muted);
+            margin: 0 0 20px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .card a {
+            color: var(--acc);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .card a:hover {
+            color: #90caf9;
+        }
+        .card a::after {
+            content: '→';
+            margin-left: 6px;
+            transition: transform 0.2s;
+        }
+        .card a:hover::after {
+            transform: translateX(4px);
+        }
+        .tech-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: var(--card);
+            color: var(--muted);
+            font-size: 13px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 60px;
+            background: var(--panel);
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="imagens/kaiseramarelo.png" alt="Logo Tutoriais" class="logo">
+        <h1>Hub de Tutoriais Práticos</h1>
+        <div class="subtitle">Guias detalhados e diretos para o ponto</div>
+    </header>
+
+    <main>
+        <div class="grid">
+            <div class="card">
+                <h2>Electron: Do HTML ao App Desktop</h2>
+                <p>Transforme qualquer página web em uma aplicação desktop profissional com Electron. Inclui empacotamento e distribuição do app.</p>
+                <div>
+                    <span class="tech-tag">Electron</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">HTML</span>
+                </div>
+                <p><a href="tutorial-eletron-detalhado.html">Ver Tutorial</a></p>
+            </div>
+
+            <div class="card">
+                <h2>Git: Comandos e Atalhos</h2>
+                <p>Interface interativa com todos os comandos Git essenciais e roteiros práticos para fluxos de trabalho comuns.</p>
+                <div>
+                    <span class="tech-tag">Git</span>
+                    <span class="tech-tag">CLI</span>
+                    <span class="tech-tag">DevOps</span>
+                </div>
+                <p><a href="comandos.html">Ver Tutorial</a></p>
+            </div>
+
+            <div class="card">
+                <h2>Android WebView em Kotlin</h2>
+                <p>Aprenda a criar um app Android que carrega páginas web com WebView, incluindo tratamento de erros e otimizações.</p>
+                <div>
+                    <span class="tech-tag">Android</span>
+                    <span class="tech-tag">Kotlin</span>
+                    <span class="tech-tag">WebView</span>
+                </div>
+                <p><a href="tutorial_webview.html">Ver Tutorial</a></p>
+            </div>
+
+            <div class="card">
+                <h2>Menu de Contexto: Guia Definitivo</h2>
+                <p>Como criar e personalizar atalhos no menu de contexto do Windows, sem necessidade de privilégios de administrador.</p>
+                <div>
+                    <span class="tech-tag">Windows</span>
+                    <span class="tech-tag">Registry</span>
+                    <span class="tech-tag">Shell</span>
+                </div>
+                <p><a href="Tutorial_Menu_Contexto_Ferramentas.html">Ver Tutorial</a></p>
+            </div>
+
+            <div class="card">
+                <h2>Flutter: Instalação e Configuração</h2>
+                <p>Tutorial completo para instalar e configurar o Flutter no Windows, incluindo SDK, Android Studio e emuladores.</p>
+                <div>
+                    <span class="tech-tag">Flutter</span>
+                    <span class="tech-tag">Dart</span>
+                    <span class="tech-tag">Mobile</span>
+                </div>
+                <p><a href="Tutorial_Flutter_Completo.html">Ver Tutorial</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Hub de Tutoriais Práticos • Mantido com ❤️ para desenvolvedores
+    </footer>
+</body>
+</html>

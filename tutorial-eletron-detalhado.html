@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial Completo: Electron App</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#0b1220;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --acc:#60a5fa;
+      --green:#22c55e;
+      --red:#ef4444;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 80% -10%, #0b1220 0, transparent 40%),
+                      radial-gradient(800px 500px at -10% 10%, #0b1220 0, transparent 40%),
+                      var(--bg);
+      color:var(--text); font-family:var(--sans); line-height:1.6;
+    }
+    .container { max-width: 900px; margin: 32px auto; background: var(--panel); border-radius: 8px; box-shadow: 0 2px 12px #0001; padding: 32px 40px; }
+    h1, h2, h3 { color: var(--acc); }
+    pre, code { background: var(--card); border-radius: 4px; padding: 2px 6px; color: var(--text); font-family: var(--mono); }
+    pre { padding: 16px; padding-top: 40px; overflow-x: auto; }
+    ul, ol { margin-bottom: 1.5em; padding-left: 2em; }
+    .alert { background: #1e293b; color: var(--acc); border-left: 4px solid var(--acc); padding: 8px 16px; margin: 16px 0; border-radius: 4px; }
+    .ok { background: #0b3d1e; color: #60fa9a; border-left: 4px solid var(--green); padding: 8px 16px; margin: 16px 0; border-radius: 4px; }
+    .step { font-weight: bold; color: var(--acc); }
+    .copy-btn { position:absolute;top:8px;right:8px;padding:4px 10px;border-radius:4px;border:none;background:var(--acc);color:#0f172a;cursor:pointer; font-weight: bold; }
+    .copy-btn:hover { background:#a1c9fa; }
+    .cmd-block { position:relative; margin: 16px 0; }
+    .subpasso-eletron {
+      margin-left: 25px;
+      border-left: 2px solid var(--card);
+      padding-left: 25px;
+      margin-bottom: 24px;
+    }
+    .subpasso-eletron .subtitulo-eletron {
+      font-size: 1.13em;
+      color: #93c5fd;
+      font-weight: bold;
+      margin-bottom: 0.7em;
+      margin-left: 0;
+    }
+    /* Estilos para a lista de arquivos copiáveis */
+    .file-list .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    .file-list .file-item code { background: none; padding: 0; font-size: 1.1em; }
+    .file-list .file-item button {
+      padding: 4px 10px; border-radius: 4px; border: none; background: var(--acc);
+      color: #0f172a; cursor: pointer; font-weight: bold; font-family: var(--sans);
+    }
+     .file-list .file-item button:hover { background:#a1c9fa; }
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      background: var(--acc);
+      color: #0f172a;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: var(--sans);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .nav-button:hover {
+      background: #a1c9fa;
+      transform: translateY(-1px);
+    }
+    .nav-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .logo:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="nav-button">Voltar ao Índice</a>
+    <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+    <h1>Tutorial Completo: Criando, Empacotando e Distribuindo um App Electron</h1>
+    
+    <h2>1. Estrutura Inicial do Projeto</h2>
+    <div class="subpasso-eletron">
+        <div class="subtitulo-eletron">1.1 Arquivos Essenciais</div>
+        <p>Crie uma pasta para o projeto e, dentro dela, os seguintes arquivos. Use os botões para copiar cada nome de arquivo:</p>
+        <div class="file-list">
+          <div class="file-item"><code>main.js</code><button onclick="copiarTexto('main.js')">Copiar</button></div>
+          <div class="file-item"><code>index.html</code><button onclick="copiarTexto('index.html')">Copiar</button></div>
+          <div class="file-item"><code>styles.css</code><button onclick="copiarTexto('styles.css')">Copiar</button></div>
+          <div class="file-item"><code>renderer.js</code><button onclick="copiarTexto('renderer.js')">Copiar</button></div>
+          <div class="file-item"><code>package.json</code><button onclick="copiarTexto('package.json')">Copiar</button></div>
+        </div>
+    </div>
+    <div class="subpasso-eletron">
+        <div class="subtitulo-eletron">1.2 Conteúdo Padrão do `main.js`</div>
+        <p>O arquivo <code>main.js</code> é o ponto de entrada do seu aplicativo. Este código padrão, com comentários, serve para a maioria dos projetos:</p>
+        <div class="cmd-block"><pre id="cmd_main_js">// main.js
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+
+const createWindow = () => {
+  // Cria a janela do navegador.
+  const win = new BrowserWindow({
+    width: 1280,
+    height: 800,
+    webPreferences: {
+      // É uma boa prática de segurança usar um script de preload.
+      // preload: path.join(__dirname, 'preload.js') 
+    }
+  });
+
+  // Carrega o index.html do aplicativo.
+  win.loadFile('index.html');
+
+  // Abre o DevTools (ferramentas de desenvolvedor).
+  // Remova ou comente esta linha para a versão de produção.
+  // win.webContents.openDevTools();
+};
+
+// Este método será chamado quando o Electron tiver finalizado
+// a inicialização e estiver pronto para criar janelas do navegador.
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', () => {
+    // No macOS, é comum recriar uma janela no aplicativo quando o
+    // ícone da dock é clicado e não há outras janelas abertas.
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+// Encerra o aplicativo quando todas as janelas são fechadas, exceto no macOS.
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});</pre><button class="copy-btn" onclick="copiarPorId('cmd_main_js')">Copiar</button></div>
+    </div>
+    
+    <h2>2. Configurando o `package.json`</h2>
+    <p>O próximo passo é configurar o arquivo <code>package.json</code>. O comando <code>npm init -y</code> (que rodaremos a seguir) cria um arquivo básico, mas precisamos de mais informações para o Electron. Use o exemplo abaixo como seu conteúdo final.</p>
+    <div class="alert">
+      <b>Atenção:</b> Copie o conteúdo abaixo e cole no seu arquivo <code>package.json</code>. Depois, edite os campos <code>name</code>, <code>author</code>, <code>description</code>, <code>appId</code>, <code>productName</code> e <code>publisherName</code> com os dados do seu app.
+    </div>
+    <div class="cmd-block"><pre id="cmd4">{
+  "name": "meu-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Seu Nome",
+  "description": "Descrição do seu app.",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.suaempresa.meuapp",
+    "productName": "Meu Aplicativo",
+    "files": ["**/*"],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publisherName": "Sua Empresa LTDA"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}</pre><button class="copy-btn" onclick="copiarPorId('cmd4')">Copiar</button></div>
+
+    <h2>3. Instalando Dependências</h2>
+    <p>Agora, com o <code>package.json</code> criado e preenchido, vamos instalar o Electron e o Electron Builder. Abra o terminal na pasta do seu projeto e rode os comandos:</p>
+    <div class="cmd-block"><pre id="cmd1">npm init -y</pre><button class="copy-btn" onclick="copiarPorId('cmd1')">Copiar</button></div>
+    <div class="cmd-block"><pre id="cmd2">npm install</pre><button class="copy-btn" onclick="copiarPorId('cmd2')">Copiar</button></div>
+    <div class="ok">O comando <code>npm install</code> irá ler seu <code>package.json</code> e instalar as dependências listadas em <code>devDependencies</code> (Electron e Electron Builder).</div>
+
+    <h2>4. Executando o App em Desenvolvimento</h2>
+    <p>Com tudo instalado e configurado, você já pode testar o app. Use o comando:</p>
+    <div class="cmd-block"><pre id="cmd3">npm start</pre><button class="copy-btn" onclick="copiarPorId('cmd3')">Copiar</button></div>
+    <div class="ok">Este comando executa o script "start" que você definiu no <code>package.json</code>.</div>
+
+    <h2>5. Configurando o Ícone do Aplicativo</h2>
+    <p>Antes de empacotar, é essencial configurar o ícone que representará seu aplicativo.</p>
+    <ul>
+        <li><b>Nome do Arquivo:</b> O nome <code>icon.ico</code> é uma convenção. O mais importante é que o nome do arquivo na pasta do projeto seja <b>exatamente o mesmo</b> que você especificou no `package.json` (na linha <code>"icon": "icon.ico"</code>).</li>
+        <li><b>Localização:</b> Coloque o arquivo <code>.ico</code> na <b>raiz do projeto</b>.</li>
+        <li><b>Formato e Especificações:</b> Para Windows, o formato deve ser <code>.ico</code>. É recomendável que este arquivo contenha múltiplos tamanhos (ex: 16x16, 32x32, 256x256) para garantir sua exibição correta.</li>
+    </ul>
+    
+    <h2>6. Gerando o Instalador</h2>
+    <p>Para gerar o instalador, execute o comando:</p>
+    <div class="cmd-block"><pre id="cmd5">npm run dist</pre><button class="copy-btn" onclick="copiarPorId('cmd5')">Copiar</button></div>
+    <div class="ok"><b>O arquivo do instalador será gerado na pasta <code>dist</code>.</b></div>
+    
+    <h2>7. Assinatura Digital e Publicação</h2>
+    <ul>
+      <li>Adquira um certificado digital de uma autoridade certificadora (<a href="https://www.sectigo.com/" target="_blank">Sectigo</a>, <a href="https://www.digicert.com/" target="_blank">DigiCert</a>).</li>
+      <li>Preencha <code>appId</code>, <code>author</code>, <code>publisherName</code> corretamente para publicação em lojas.</li>
+    </ul>
+    
+    <h2>8. Erros Comuns e Soluções</h2>
+    <ul>
+      <li><b>Erro:</b> "Can't open output file"<br><b>Solução:</b> Feche qualquer instalador do seu app que esteja aberto e tente o comando novamente.</li>
+      <li><b>Erro:</b> Permissão de escrita em arquivos de dados<br><b>Solução:</b> Use <code>app.getPath('userData')</code> para obter uma pasta segura para salvar dados do usuário.</li>
+    </ul>
+    
+    <h2>9. Referências</h2>
+    <ul>
+      <li><a href="https://www.electronjs.org/docs/latest/tutorial/quick-start" target="_blank">Electron Quick Start</a></li>
+      <li><a href="https://www.electron.build/" target="_blank">Electron Builder</a></li>
+    </ul>
+  </div>
+  <script>
+    function copiarPorId(id) {
+      const el = document.getElementById(id);
+      copiarTexto(el.innerText);
+    }
+    function copiarTexto(texto) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto).catch(err => console.error('Erro:', err));
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = texto;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+    }
+  </script>
+</body>
+</html>
