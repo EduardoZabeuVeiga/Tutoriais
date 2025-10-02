@@ -81,11 +81,63 @@
             word-break: break-all;
         }
     </style>
+    <style>
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 51, 102, 0.2);
+            padding-bottom: 24px;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #003366;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+        .nav-button:hover {
+            background: #004d99;
+            transform: translateY(-1px);
+        }
+        .nav-button::before {
+            content: '←';
+            margin-right: 6px;
+            font-size: 1.1em;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Galeria Extensiva de Ícones (400+)</h1>
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+            </a>
+            <h1>Galeria Extensiva de Ícones (400+)</h1>
+            <a href="index.html" class="nav-button">Voltar ao Índice</a>
+        </div>
         <p>Uma seleção abrangente de ícones para referência rápida. Use a busca para acessar a biblioteca completa.</p>
 
         <div class="search-box">

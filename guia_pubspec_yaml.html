@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Detalhado do arquivo pubspec.yaml</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #0078d7;
+        }
+        h1 {
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        h3 {
+            margin-top: 25px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #005a9e;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .note {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffd600;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .success {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 2px;
+            border-radius: 2px;
+        }
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .version-info {
+            color: #0078d7;
+            font-weight: bold;
+        }
+        .required-field {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .optional-field {
+            color: #4caf50;
+        }
+    </style>
+    <style>
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 120, 215, 0.2);
+            padding-bottom: 24px;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #0078d7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+        .nav-button:hover {
+            background: #005a9e;
+            transform: translateY(-1px);
+        }
+        .nav-button::before {
+            content: '←';
+            margin-right: 6px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <a href="index.html" class="logo-link">
+            <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+        </a>
+        <h1>Guia Completo do arquivo pubspec.yaml em Projetos Flutter</h1>
+        <a href="index.html" class="nav-button">Voltar ao Índice</a>
+    </div>
+    
+    <div class="note">
+        <p><strong>Nota:</strong> Este guia explica detalhadamente cada seção do arquivo pubspec.yaml, com foco especial nas dependências e configurações de empacotamento para diferentes plataformas.</p>
+    </div>
+
+    <div class="success">
+        <p><strong>🎯 Atualização 2025:</strong> Inclui configuração completa <strong>testada e aprovada</strong> pela Microsoft Store com suporte internacional e comandos de build otimizados!</p>
+    </div>
+
+    <h2>Índice</h2>
+    <ol>
+        <li><a href="#introducao">O que é o arquivo pubspec.yaml?</a></li>
+        <li><a href="#secoes-principais">Seções Principais e Campos Obrigatórios</a></li>
+        <li><a href="#dependencias">Entendendo as Dependências</a></li>
+        <li><a href="#empacotamento">Configurações de Empacotamento por Plataforma</a>
+            <ul>
+                <li><a href="#windows">Windows (MSIX) - Configuração Aprovada pela Microsoft Store</a></li>
+                <li><a href="#android">Android</a></li>
+                <li><a href="#ios">iOS</a></li>
+                <li><a href="#linux">Linux</a></li>
+                <li><a href="#web">Web</a></li>
+            </ul>
+        </li>
+        <li><a href="#problemas-comuns">Problemas Comuns e Soluções</a></li>
+        <li><strong>Comandos de Build Recomendados</strong>
+            <ul>
+                <li>Sequência para Microsoft Store</li>
+                <li>Comandos para Desenvolvimento</li>
+            </ul>
+        </li>
+    </ol>
+
+    <div class="section" id="introducao">
+        <h2>1. O que é o arquivo pubspec.yaml?</h2>
+        <p>O arquivo <code>pubspec.yaml</code> é o coração da configuração de um projeto Flutter. Ele define:</p>
+        <ul>
+            <li>Metadados do projeto (nome, versão, descrição)</li>
+            <li>Dependências do projeto (pacotes externos necessários)</li>
+            <li>Configurações de ambiente</li>
+            <li>Recursos como imagens, fontes e outros assets</li>
+            <li>Configurações de empacotamento para várias plataformas</li>
+        </ul>
+        
+        <p>A sintaxe YAML é baseada em indentação, por isso é crucial manter a hierarquia correta com espaços (não tabs).</p>
+        
+        <div class="warning">
+            <p><strong>Importante:</strong> YAML é extremamente sensível à indentação. Sempre use 2 espaços para cada nível de indentação, nunca tabs.</p>
+        </div>
+    </div>
+
+    <div class="section" id="secoes-principais">
+        <h2>2. Seções Principais e Campos Obrigatórios</h2>
+        
+        <h3>Metadados Básicos do Projeto</h3>
+        <table>
+            <tr>
+                <th>Campo</th>
+                <th>Obrigatório?</th>
+                <th>Descrição</th>
+                <th>Exemplo</th>
+            </tr>
+            <tr>
+                <td><code>name</code></td>
+                <td class="required-field">Sim</td>
+                <td>Nome do pacote/aplicativo (apenas letras minúsculas, números e underscores)</td>
+                <td><code>diario_desenvolvimento</code></td>
+            </tr>
+            <tr>
+                <td><code>description</code></td>
+                <td class="required-field">Sim</td>
+                <td>Descrição curta do aplicativo</td>
+                <td><code>Aplicativo para gerenciar projetos de desenvolvimento.</code></td>
+            </tr>
+            <tr>
+                <td><code>version</code></td>
+                <td class="required-field">Sim</td>
+                <td>Versão do aplicativo no formato X.Y.Z+número (semântico)</td>
+                <td><code>1.0.0+1</code></td>
+            </tr>
+            <tr>
+                <td><code>publish_to</code></td>
+                <td class="optional-field">Não</td>
+                <td>Onde publicar o pacote. 'none' significa não publicar</td>
+                <td><code>'none'</code></td>
+            </tr>
+            <tr>
+                <td><code>homepage</code></td>
+                <td class="optional-field">Não</td>
+                <td>URL do site do projeto</td>
+                <td><code>https://kamikaiser.com</code></td>
+            </tr>
+            <tr>
+                <td><code>maintainer</code></td>
+                <td class="optional-field">Não</td>
+                <td>Quem mantém o projeto</td>
+                <td><code>Eduardo &lt;eduardo@kamikaiser.com&gt;</code></td>
+            </tr>
+        </table>
+        
+        <h3>Entendendo o Número de Versão</h3>
+        <p>O formato <code>1.0.0+1</code> tem duas partes:</p>
+        <ul>
+            <li><strong>1.0.0</strong>: Versão semântica (Major.Minor.Patch)
+                <ul>
+                    <li><strong>Major</strong>: Mudanças incompatíveis com versões anteriores</li>
+                    <li><strong>Minor</strong>: Novas funcionalidades, mas compatível com versões anteriores</li>
+                    <li><strong>Patch</strong>: Correções de bugs</li>
+                </ul>
+            </li>
+            <li><strong>+1</strong>: Número da build (incremente para cada nova versão enviada às lojas)</li>
+        </ul>
+        
+        <h3>Environment</h3>
+        <p>Define as restrições de ambiente, principalmente a versão do SDK Dart:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>environment:
+  sdk: '>=3.1.5 <4.0.0'</code></pre>
+        </div>
+        <p>Isso significa: "Este projeto requer uma versão do SDK Dart igual ou superior a 3.1.5, mas menor que 4.0.0".</p>
+    </div>
+
+    <div class="section" id="dependencias">
+        <h2>3. Entendendo as Dependências</h2>
+        
+        <p>A seção <code>dependencies</code> lista todos os pacotes externos que seu aplicativo precisa para funcionar. As dependências são o que frequentemente causa confusão devido à sintaxe e aos números de versão.</p>
+        
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  path_provider: ^2.0.14
+  shared_preferences: ^2.2.2
+  archive: ^3.4.10
+  path: ^1.8.3
+  cron: ^0.5.1
+  file_picker: ^6.1.1
+  msix: ^3.16.7  # Package to create MSIX packages for Windows Store</code></pre>
+        </div>
+        
+        <h3>Explicação linha por linha:</h3>
+        <table>
+            <tr>
+                <th>Dependência</th>
+                <th>Descrição</th>
+                <th>Por que é necessária</th>
+            </tr>
+            <tr>
+                <td><code>flutter: sdk: flutter</code></td>
+                <td>Framework Flutter principal</td>
+                <td>Obrigatória para todos os projetos Flutter</td>
+            </tr>
+            <tr>
+                <td><code>flutter_localizations: sdk: flutter</code></td>
+                <td>Suporte à internacionalização</td>
+                <td>Necessária para traduzir seu aplicativo para vários idiomas</td>
+            </tr>
+            <tr>
+                <td><code>intl: ^0.19.0</code></td>
+                <td>Biblioteca de internacionalização</td>
+                <td>Complementa o flutter_localizations para formatação de datas, números, etc.</td>
+            </tr>
+            <tr>
+                <td><code>path_provider: ^2.0.14</code></td>
+                <td>Acesso ao sistema de arquivos</td>
+                <td>Para salvar/ler arquivos nos diretórios do dispositivo</td>
+            </tr>
+            <tr>
+                <td><code>shared_preferences: ^2.2.2</code></td>
+                <td>Armazenamento de dados simples</td>
+                <td>Para salvar configurações e preferências do usuário</td>
+            </tr>
+            <tr>
+                <td><code>archive: ^3.4.10</code></td>
+                <td>Manipulação de arquivos compactados</td>
+                <td>Para criar/extrair arquivos ZIP ou outros formatos</td>
+            </tr>
+            <tr>
+                <td><code>path: ^1.8.3</code></td>
+                <td>Manipulação de caminhos de arquivos</td>
+                <td>Para trabalhar com caminhos de forma consistente entre plataformas</td>
+            </tr>
+            <tr>
+                <td><code>cron: ^0.5.1</code></td>
+                <td>Agendamento de tarefas</td>
+                <td>Para executar tarefas em intervalos regulares, como backups</td>
+            </tr>
+            <tr>
+                <td><code>file_picker: ^6.1.1</code></td>
+                <td>Seletor de arquivos</td>
+                <td>Para permitir que usuários selecionem arquivos do dispositivo</td>
+            </tr>
+            <tr>
+                <td><code>msix: ^3.16.7</code></td>
+                <td>Criação de pacotes MSIX</td>
+                <td>Específico para empacotamento para Microsoft Store</td>
+            </tr>
+        </table>
+        
+        <h3>Entendendo os números de versão</h3>
+        <p>O formato <code>^x.y.z</code> significa:</p>
+        <ul>
+            <li><strong>^</strong>: "Compatível com" - Aceita qualquer versão com o mesmo número major (primeiro número)</li>
+            <li>Por exemplo: <code>^2.0.14</code> aceita qualquer versão de 2.0.14 até (mas não incluindo) 3.0.0</li>
+        </ul>
+        
+        <p>Outros formatos de versão:</p>
+        <ul>
+            <li><code>any</code>: Qualquer versão (não recomendado)</li>
+            <li><code>1.2.3</code>: Exatamente esta versão</li>
+            <li><code>>=1.2.3 <2.0.0</code>: Intervalo de versões</li>
+            <li><code>~1.2.3</code>: Aproximadamente esta versão (aceita patches)</li>
+        </ul>
+        
+        <div class="note">
+            <p><strong>Por que as versões são importantes?</strong> Versões incompatíveis podem causar erros difíceis de diagnosticar. O Flutter tenta resolver conflitos automaticamente, mas nem sempre consegue.</p>
+        </div>
+        
+        <h3>Dev Dependencies</h3>
+        <p>Pacotes necessários apenas durante o desenvolvimento, não em produção:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1</code></pre>
+        </div>
+        <ul>
+            <li><code>flutter_test</code>: Framework de testes do Flutter</li>
+            <li><code>flutter_lints</code>: Regras de estilo de código</li>
+            <li><code>flutter_launcher_icons</code>: Geração automática de ícones para diferentes plataformas</li>
+        </ul>
+    </div>
+
+    <div class="section" id="empacotamento">
+        <h2>4. Configurações de Empacotamento por Plataforma</h2>
+        
+        <p>Um aplicativo Flutter pode ser empacotado para diferentes plataformas, e cada uma tem suas próprias configurações específicas.</p>
+        
+        <h3 id="windows">Windows (MSIX)</h3>
+        <p>O pacote MSIX é usado para distribuir aplicativos Windows, especialmente na Microsoft Store:</p>
+        
+        <div class="note">
+            <p><strong>📋 Exemplo Básico:</strong></p>
+        </div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>msix_config:
+  display_name: Meu Aplicativo
+  publisher_display_name: Seu Nome  # Nome que aparece na Microsoft Store
+  identity_name: SuaEmpresa.MeuApp  # Use formato CompanyName.AppName
+  publisher: CN=00000000-0000-0000-0000-000000000000  # Substitua pelo seu Publisher ID
+  msix_version: 1.0.0.0
+  logo_path: assets/icone.png
+  capabilities: internetClient
+  languages: pt-BR
+  store: true  # Set to true for Microsoft Store submission</code></pre>
+        </div>
+
+        <div class="success">
+            <p><strong>✅ Exemplo Completo - Aprovado pela Microsoft Store</strong></p>
+            <p>Configuração testada e aprovada com suporte internacional:</p>
+        </div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Configuração para empacotamento Microsoft Store - Distribuição Mundial
+msix_config:
+  display_name: MeuApp                          # Nome reservado na Microsoft Store
+  publisher_display_name: Sua Empresa          # Nome do publisher (igual ao Partner Center)
+  identity_name: SuaEmpresa.MeuApp             # ID único no formato Partner Center
+  publisher: CN=12345678-1234-1234-1234-123456789ABC  # Certificado real Microsoft Partner Center
+  msix_version: 1.0.0.0                        # Versão do pacote MSIX (formato W.X.Y.Z)
+  logo_path: assets/icone.png                  # Caminho para o ícone do aplicativo
+  capabilities: internetClient                  # Permissões: apenas internet (sem runFullTrust)
+  languages: en-US,pt-BR,fr-FR                 # Suporte mundial: Inglês, Português e Francês
+  store: true                                   # Otimizado para Microsoft Store
+  sign_msix: false                              # Microsoft Store assina automaticamente
+  publisher_display_name_localized:             # Nome do desenvolvedor em diferentes idiomas
+    en-us: Your Company
+    pt-br: Sua Empresa
+    fr-fr: Votre Entreprise
+  app_description_localized:                    # Descrição do app em diferentes idiomas
+    en-us: Developer productivity and project management tool
+    pt-br: Ferramenta de produtividade e gerenciamento para desenvolvedores
+    fr-fr: Outil de productivité et gestion pour développeurs
+  protocol_activation: meuapp                   # Protocolo para ativação (meuapp://)
+  metadata:                                     # Metadados para desenvolvedor independente
+    author: SuaEmpresa                          # Desenvolvedor (igual ao Partner Center)
+    contact_email: contato@seusite.com          # Email de suporte internacional
+    website: https://seusite.com                # Website do desenvolvedor
+    copyright: "© 2025 SuaEmpresa. All rights reserved."  # Copyright consistente</code></pre>
+        </div>
+        
+        <table>
+            <tr>
+                <th>Campo</th>
+                <th>Obrigatório?</th>
+                <th>Descrição</th>
+            </tr>
+            <tr>
+                <td><code>display_name</code></td>
+                <td class="required-field">Sim</td>
+                <td>Nome visível do aplicativo na Store e no sistema</td>
+            </tr>
+            <tr>
+                <td><code>publisher_display_name</code></td>
+                <td class="required-field">Sim</td>
+                <td>Nome do desenvolvedor/empresa que aparecerá na Store</td>
+            </tr>
+            <tr>
+                <td><code>identity_name</code></td>
+                <td class="required-field">Sim</td>
+                <td>ID único no formato Empresa.Aplicativo</td>
+            </tr>
+            <tr>
+                <td><code>publisher</code></td>
+                <td class="required-field">Sim</td>
+                <td>ID do publicador obtido no Partner Center (formato CN=GUID)</td>
+            </tr>
+            <tr>
+                <td><code>msix_version</code></td>
+                <td class="required-field">Sim</td>
+                <td>Versão do pacote MSIX (formato W.X.Y.Z)</td>
+            </tr>
+            <tr>
+                <td><code>logo_path</code></td>
+                <td class="required-field">Sim</td>
+                <td>Caminho para o ícone do aplicativo</td>
+            </tr>
+            <tr>
+                <td><code>capabilities</code></td>
+                <td class="optional-field">Não</td>
+                <td>Permissões que o app precisa (internetClient recomendado)</td>
+            </tr>
+            <tr>
+                <td><code>languages</code></td>
+                <td class="optional-field">Não</td>
+                <td>Idiomas suportados (ex: en-US,pt-BR,fr-FR)</td>
+            </tr>
+            <tr>
+                <td><code>store</code></td>
+                <td class="optional-field">Não</td>
+                <td>Se true, o pacote será otimizado para a Microsoft Store</td>
+            </tr>
+            <tr>
+                <td><code>sign_msix</code></td>
+                <td class="optional-field">Não</td>
+                <td>Se false, Microsoft Store assina automaticamente</td>
+            </tr>
+            <tr>
+                <td><code>publisher_display_name_localized</code></td>
+                <td class="optional-field">Não</td>
+                <td>Nome do desenvolvedor localizado por idioma</td>
+            </tr>
+            <tr>
+                <td><code>app_description_localized</code></td>
+                <td class="optional-field">Não</td>
+                <td>Descrição do app localizada por idioma</td>
+            </tr>
+            <tr>
+                <td><code>protocol_activation</code></td>
+                <td class="optional-field">Não</td>
+                <td>URL scheme personalizada (ex: meuapp://)</td>
+            </tr>
+            <tr>
+                <td><code>metadata</code></td>
+                <td class="optional-field">Não</td>
+                <td>Metadados do desenvolvedor (autor, email, website, copyright)</td>
+            </tr>
+        </table>
+
+        <div class="warning">
+            <p><strong>🚨 Campos Críticos para Aprovação na Microsoft Store:</strong></p>
+            <ul>
+                <li><strong>capabilities:</strong> Use apenas "internetClient" para evitar rejeições</li>
+                <li><strong>store: true</strong> - Essencial para Microsoft Store</li>
+                <li><strong>sign_msix: false</strong> - Microsoft Store assina automaticamente</li>
+                <li><strong>languages:</strong> Defina múltiplos idiomas para expandir alcance</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <p><strong>🌍 Vantagens da Configuração Internacional:</strong></p>
+            <ul>
+                <li><strong>Maior Alcance:</strong> Aplicativo disponível em múltiplos países</li>
+                <li><strong>Melhor Ranqueamento:</strong> Microsoft favorece apps com suporte multilíngue</li>
+                <li><strong>Descrições Localizadas:</strong> Cada região vê o app em seu idioma</li>
+                <li><strong>Aprovação Mais Rápida:</strong> Configuração completa reduz revisões</li>
+            </ul>
+        </div>
+        
+        <h3 id="android">Android</h3>
+        <p>A configuração Android geralmente está nos arquivos do diretório <code>android/</code>, mas você pode definir algumas propriedades no pubspec.yaml:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Para adicionar ao seu pubspec.yaml para configuração Android
+flutter:
+  # ... outras configurações flutter ...
+  
+  android:
+    package: com.kamikaiser.diario_dev
+    min_sdk_version: 21
+    target_sdk_version: 33
+    
+# Para configurar ícones Android
+flutter_icons:
+  android: true
+  image_path: "assets/icone.png"</code></pre>
+        </div>
+        
+        <div class="note">
+            <p><strong>Nota:</strong> A maioria das configurações Android são feitas nos arquivos <code>android/app/build.gradle</code> e <code>android/app/src/main/AndroidManifest.xml</code>.</p>
+        </div>
+        
+        <h3 id="ios">iOS</h3>
+        <p>Assim como o Android, a maioria das configurações iOS estão no diretório <code>ios/</code>, mas algumas podem ser definidas no pubspec.yaml:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Para adicionar ao seu pubspec.yaml para configuração iOS
+flutter:
+  # ... outras configurações flutter ...
+  
+  ios:
+    bundle_identifier: com.kamikaiser.diarioDev
+    
+# Para configurar ícones iOS
+flutter_icons:
+  ios: true
+  image_path: "assets/icone.png"</code></pre>
+        </div>
+        
+        <div class="note">
+            <p><strong>Nota:</strong> Para iOS, muitas configurações são feitas usando o Xcode, nos arquivos dentro do diretório <code>ios/</code>.</p>
+        </div>
+        
+        <h3 id="linux">Linux</h3>
+        <p>Para Linux, você geralmente precisa configurar os arquivos no diretório <code>linux/</code>. Não há muitas configurações específicas no pubspec.yaml, mas você pode adicionar:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Para adicionar ao seu pubspec.yaml para configuração Linux
+flutter:
+  # ... outras configurações flutter ...
+  
+  linux:
+    identifier: com.kamikaiser.diario-dev</code></pre>
+        </div>
+        
+        <p>Para empacotar para Linux:</p>
+        <ol>
+            <li>Construa o aplicativo: <code>flutter build linux</code></li>
+            <li>Use ferramentas como <code>snapcraft</code> ou <code>flatpak</code> para criar pacotes de distribuição</li>
+        </ol>
+        
+        <h3 id="web">Web</h3>
+        <p>Para Web, você pode configurar:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Para adicionar ao seu pubspec.yaml para configuração Web
+flutter:
+  # ... outras configurações flutter ...
+  
+# Para configurar ícones Web
+flutter_icons:
+  web: true
+  image_path: "assets/icone.png"</code></pre>
+        </div>
+        
+        <p>Para build web:</p>
+        <ol>
+            <li><code>flutter build web</code></li>
+            <li>O resultado estará em <code>build/web/</code> e pode ser hospedado em qualquer servidor web</li>
+        </ol>
+    </div>
+
+    <div class="section" id="problemas-comuns">
+        <h2>5. Problemas Comuns e Soluções</h2>
+        
+        <h3>Duplicação Aparente de Informações</h3>
+        <p>Você pode ver informações similares repetidas em diferentes seções. Por exemplo:</p>
+        <ul>
+            <li>Ícones definidos em <code>flutter_icons</code> e também em <code>msix_config</code></li>
+            <li>Informações de versão em <code>version</code> e também em <code>msix_version</code></li>
+        </ul>
+        
+        <p><strong>Por que isso acontece?</strong> Cada plataforma tem seu próprio sistema de empacotamento e requisitos específicos. O que parece duplicação é na verdade configuração específica para cada plataforma.</p>
+        
+        <div class="warning">
+            <p><strong>Importante:</strong> Mantenha as informações consistentes entre as diferentes seções para evitar confusão.</p>
+        </div>
+        
+        <h3>Problemas com números de versão</h3>
+        <p>Os formatos de versão diferem entre plataformas:</p>
+        <ul>
+            <li><strong>Versão Flutter</strong>: <code>1.0.0+1</code> (semântica + número de build)</li>
+            <li><strong>Versão MSIX</strong>: <code>1.0.0.0</code> (quatro números)</li>
+            <li><strong>Android versionCode</strong>: Número inteiro como <code>1</code> (geralmente em build.gradle)</li>
+        </ul>
+        
+        <div class="note">
+            <p><strong>Dica:</strong> Use sempre o mesmo número de versão semântica (1.0.0) para todas as plataformas, mas adapte o formato conforme necessário.</p>
+        </div>
+        
+        <h3>Erro de dependências incompatíveis</h3>
+        <p>Se você encontrar erros como "Incompatible dependencies":</p>
+        <ol>
+            <li>Execute <code>flutter pub outdated</code> para ver quais pacotes precisam de atualização</li>
+            <li>Atualize as dependências uma por vez: <code>flutter pub upgrade --major-versions nome_do_pacote</code></li>
+            <li>Se o problema persistir, tente <code>flutter clean</code> seguido de <code>flutter pub get</code></li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Comandos de Build Recomendados</h2>
+        <p>Para garantir builds bem-sucedidos, sempre execute os comandos <strong>individualmente</strong> na sequência correta:</p>
+        
+        <h3>🏪 Para Microsoft Store</h3>
+        <div class="warning">
+            <p><strong>Execute um comando por vez:</strong></p>
+        </div>
+        
+        <p><strong>1º:</strong> Limpar builds anteriores</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter clean</code></pre>
+        </div>
+        
+        <p><strong>2º:</strong> Instalar dependências</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub get</code></pre>
+        </div>
+        
+        <p><strong>3º:</strong> Compilar para Windows</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter build windows --release</code></pre>
+        </div>
+        
+        <p><strong>4º:</strong> Criar MSIX para Store</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create --store</code></pre>
+        </div>
+
+        <h3>🚀 Para Desenvolvimento e Testes</h3>
+        <p>Para desenvolvimento, use <code>--install</code> no último comando:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create --install</code></pre>
+        </div>
+
+        <div class="success">
+            <p><strong>✅ Por que comandos individuais?</strong></p>
+            <ul>
+                <li><strong>Controle total:</strong> Pode parar e corrigir problemas em qualquer etapa</li>
+                <li><strong>Debug fácil:</strong> Identifica rapidamente onde está o problema</li>
+                <li><strong>Progresso visível:</strong> Vê exatamente o que está acontecendo</li>
+                <li><strong>Retomada inteligente:</strong> Pode pular etapas já concluídas</li>
+            </ul>
+        </div>
+
+        <h2>Outras Plataformas</h2>
+        <p>Para empacotar seu aplicativo para diferentes plataformas:</p>
+        <ul>
+            <li><strong>Android</strong>: <code>flutter build appbundle</code> ou <code>flutter build apk</code></li>
+            <li><strong>iOS</strong>: <code>flutter build ipa</code> (requer macOS)</li>
+            <li><strong>Linux</strong>: <code>flutter build linux</code> + ferramentas de empacotamento Linux</li>
+            <li><strong>Web</strong>: <code>flutter build web</code></li>
+        </ul>
+
+        <h2>Conclusão</h2>
+        <p>O arquivo pubspec.yaml é fundamental para seu projeto Flutter, controlando dependências e configurações de empacotamento. A configuração correta do <code>msix_config</code> é especialmente importante para aprovação na Microsoft Store.</p>
+        
+        <div class="success">
+            <p>Mantenha seu pubspec.yaml organizado e bem documentado. Use comentários para explicar decisões não óbvias, especialmente em projetos com múltiplos desenvolvedores.</p>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(button) {
+            const codeBlock = button.nextElementSibling;
+            const codeText = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = button.textContent;
+                button.textContent = "Copiado!";
+                button.style.backgroundColor = "#4caf50";
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = "#0078d7";
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar texto: ', err);
+                alert('Falha ao copiar. Por favor, tente manualmente.');
+            });
+        }
+    </script>
+</body>
+</html>

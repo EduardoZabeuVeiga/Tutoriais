@@ -69,17 +69,40 @@
         .copy-btn:hover {
             background: #45a049;
         }
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            padding-bottom: 24px;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
         .nav-button {
             display: inline-flex;
             align-items: center;
-            padding: 12px 20px;
+            padding: 8px 16px;
             background: #2196F3;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            font-size: 0.9em;
             transition: all 0.2s;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
         .nav-button:hover {
             background: #1976D2;
@@ -87,19 +110,8 @@
         }
         .nav-button::before {
             content: '←';
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 16px;
-            border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-        .logo:hover {
-            transform: scale(1.05);
+            margin-right: 6px;
+            font-size: 1.1em;
         }
         .warning {
             background: #FFF3CD;
@@ -197,9 +209,13 @@
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="nav-button">Voltar ao Índice</a>
-        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
-        <h1>🚀 Tutorial Completo: Instalação e Configuração do Flutter</h1>
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+            </a>
+            <h1>🚀 Tutorial Completo: Instalação e Configuração do Flutter</h1>
+            <a href="index.html" class="nav-button">Voltar ao Índice</a>
+        </div>
         
         <div class="toc">
             <h3>📋 Índice</h3>

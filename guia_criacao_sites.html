@@ -38,18 +38,41 @@
             border-radius: 8px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.1);
         }
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            padding-bottom: 24px;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
         .nav-button {
             display: inline-flex;
             align-items: center;
-            padding: 12px 20px;
+            padding: 8px 16px;
             background: var(--acc);
             color: #0f172a;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            font-size: 0.9em;
             font-family: var(--sans);
             transition: all 0.2s;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
         .nav-button:hover {
             background: #a1c9fa;
@@ -57,19 +80,8 @@
         }
         .nav-button::before {
             content: '←';
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 16px;
-            border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-        .logo:hover {
-            transform: scale(1.05);
+            margin-right: 6px;
+            font-size: 1.1em;
         }
         h1, h2, h3 {
             color: var(--acc);
@@ -193,9 +205,13 @@
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="nav-button">Voltar ao Índice</a>
-        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
-        <h1>Guia Definitivo: Criação de Sites Profissionais</h1>
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+            </a>
+            <h1>Guia Definitivo: Criação de Sites Profissionais</h1>
+            <a href="index.html" class="nav-button">Voltar ao Índice</a>
+        </div>
 
         <div class="alert">
             Este guia fornece uma visão completa do processo de criação de sites, desde a contratação de domínio e hospedagem até a estruturação e desenvolvimento. Inclui estimativas de tempo e comparativos para ajudar na tomada de decisão.

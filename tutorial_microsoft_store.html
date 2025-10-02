@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Publicando seu Aplicativo Flutter na Microsoft Store</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #0078d7;
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0078d7;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #333;
+            margin-top: 25px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #005a9e;
+        }
+        .step {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .note {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffd600;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .success {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        li {
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #fffde7;
+            padding: 2px;
+        }
+    </style>
+    <style>
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 120, 215, 0.2);
+            padding-bottom: 24px;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #0078d7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+        .nav-button:hover {
+            background: #005a9e;
+            transform: translateY(-1px);
+        }
+        .nav-button::before {
+            content: '←';
+            margin-right: 6px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <a href="index.html" class="logo-link">
+            <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+        </a>
+        <h1>Tutorial Completo: Publicando seu Aplicativo Flutter na Microsoft Store</h1>
+        <a href="index.html" class="nav-button">Voltar ao Índice</a>
+    </div>
+    
+    <div class="note">
+        <p><strong>Nota:</strong> Este tutorial foi criado especificamente para o aplicativo "Diário do Desenvolvedor" e contém todas as etapas necessárias para publicar o aplicativo na Microsoft Store.</p>
+    </div>
+
+    <h2>Índice</h2>
+    <ol>
+        <li><a href="#pre-requisitos">Pré-requisitos</a></li>
+        <li><a href="#configurar-pubspec">Configurando o pubspec.yaml</a></li>
+        <li><a href="#obter-publisher-id">Obter seu Publisher ID</a></li>
+        <li><a href="#criando-msix">Criando o pacote MSIX</a></li>
+        <li><a href="#publicando">Publicando na Microsoft Store</a>
+            <ul>
+                <li>Fluxo de Trabalho Recomendado</li>
+                <li>Guia Rápido de Comandos</li>
+            </ul>
+        </li>
+        <li><a href="#solucao-problemas">Solução de problemas comuns</a></li>
+    </ol>
+
+    <div class="step" id="pre-requisitos">
+        <h2>1. Pré-requisitos</h2>
+        <p>Antes de começar, você precisará ter:</p>
+        <ul>
+            <li>Flutter SDK instalado e configurado para desenvolvimento Windows</li>
+            <li>Visual Studio 2019 ou posterior com o "Desktop development with C++" workload instalado</li>
+            <li>Uma conta de desenvolvedor Microsoft (Partner Center) - <a href="https://partner.microsoft.com/dashboard/registration" target="_blank">Registre-se aqui</a></li>
+            <li>Windows 10 versão 1809 ou posterior</li>
+        </ul>
+
+        <h3>Verificando a configuração do Flutter para Windows</h3>
+        <p>Execute o comando abaixo para verificar se o Flutter está configurado corretamente para desenvolvimento Windows:</p>
+        
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter doctor -v</code></pre>
+        </div>
+
+        <p>Verifique se a saída mostra "Windows toolchain" como OK.</p>
+    </div>
+
+    <div class="step" id="configurar-pubspec">
+        <h2>2. Configurando o pubspec.yaml</h2>
+        <p>Você precisará adicionar o pacote msix e configurar as informações necessárias no arquivo pubspec.yaml.</p>
+
+        <h3>2.1. Adicione o pacote msix</h3>
+        <p>Adicione esta linha na seção de dependências do seu pubspec.yaml:</p>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>msix: ^3.16.7</code></pre>
+        </div>
+
+        <h3>2.2. Configure as informações do MSIX</h3>
+        <p>Adicione a seção msix_config no final do seu pubspec.yaml:</p>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code># Microsoft Store packaging configuration
+msix_config:
+  display_name: Meu Aplicativo
+  publisher_display_name: Seu Nome
+  identity_name: SuaEmpresa.MeuAplicativo
+  publisher: CN=00000000-0000-0000-0000-000000000000
+  msix_version: 1.0.0.0
+  logo_path: assets/icone.png
+  capabilities: internetClient
+  languages: pt-BR
+  store: true</code></pre>
+        </div>
+
+        <h3>2.3. Exemplo Completo - Aprovado pela Microsoft Store</h3>
+        <p>Aqui está um exemplo completo de pubspec.yaml que foi <strong>aprovado pela Microsoft Store</strong> com suporte internacional:</p>
+
+        <div class="success">
+            <p><strong>✅ Configuração Testada e Aprovada</strong></p>
+        </div>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>name: meuapp                      # Nome do pacote/aplicativo (deve corresponder ao nome reservado na Microsoft Store)
+description: A professional development project management application for developers worldwide.  # Descrição em inglês para distribuição global
+publish_to: 'none'              # 'none' significa que não será publicado como pacote no pub.dev
+version: 1.0.0+1                # Versão do aplicativo (formato semântico: MAJOR.MINOR.PATCH+número da build)
+homepage: https://seusite.com    # URL do desenvolvedor
+maintainer: Seu Nome <seu@email.com>  # Desenvolvedor independente
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'         # Versão do SDK Dart compatível com este projeto
+
+dependencies:                   # Dependências necessárias para o aplicativo funcionar
+  flutter:                      # Framework Flutter principal
+    sdk: flutter
+  flutter_localizations:        # Suporte à internacionalização (traduções)
+    sdk: flutter
+  intl: ^0.19.0                 # Biblioteca de internacionalização (formatação de datas, números)
+  path_provider: ^2.0.14        # Acesso ao sistema de arquivos do dispositivo
+  shared_preferences: ^2.2.2    # Armazenamento de dados simples (configurações do usuário)
+  archive: ^3.4.10              # Manipulação de arquivos compactados (ZIP, etc)
+  path: ^1.8.3                  # Manipulação de caminhos de arquivos (compatível com múltiplas plataformas)
+  cron: ^0.5.1                  # Agendamento de tarefas (para execução periódica)
+  file_picker: ^6.1.1           # Seletor de arquivos (para o usuário escolher arquivos)
+  msix: ^3.16.7                 # Pacote para criar arquivos MSIX para Microsoft Store
+
+  cupertino_icons: ^1.0.2       # Ícones no estilo iOS (Cupertino)
+  share_plus: ^12.0.0           # Compartilhamento de conteúdo com outras aplicações
+  url_launcher: ^6.2.2          # Lançador de URLs (email, navegador, telefone, etc)
+
+dev_dependencies:               # Dependências apenas para desenvolvimento (não usadas em produção)
+  flutter_test:                 # Framework para testes do Flutter
+    sdk: flutter
+  flutter_lints: ^2.0.0         # Regras de análise de código e boas práticas
+  flutter_launcher_icons: ^0.13.1  # Geração automática de ícones para todas as plataformas
+
+flutter:
+  uses-material-design: true    # Usa os widgets Material Design do Google
+  generate: true                # Gerar arquivos de localização automaticamente
+  
+  # Assets (recursos como imagens, fontes, etc)
+  assets:
+    - assets/                   # Inclui todos os arquivos da pasta assets/
+    - img/                      # Inclui todos os arquivos da pasta img/
+
+# Configuração do Flutter Launcher Icons (gera automaticamente ícones para todas as plataformas)
+flutter_icons:
+  android: true                 # Gerar ícones para Android
+  ios: true                     # Gerar ícones para iOS
+  windows:                      # Configuração específica para Windows
+    generate: true
+    image_path: "assets/icone.png"
+  web:                          # Configuração específica para Web
+    generate: true
+    image_path: "assets/icone.png"
+  image_path: "assets/icone.png" # Caminho da imagem de ícone base
+  
+# Configuração para empacotamento Microsoft Store - Distribuição Mundial
+msix_config:
+  display_name: MeuApp                          # Nome reservado na Microsoft Store
+  publisher_display_name: Sua Empresa          # Nome do publisher (igual ao Partner Center)
+  identity_name: SuaEmpresa.MeuApp             # ID único no formato Partner Center
+  publisher: CN=12345678-1234-1234-1234-123456789ABC  # Certificado real Microsoft Partner Center
+  msix_version: 1.0.0.0                        # Versão do pacote MSIX (formato W.X.Y.Z)
+  logo_path: assets/icone.png                  # Caminho para o ícone do aplicativo
+  capabilities: internetClient                  # Permissões: apenas internet (sem runFullTrust)
+  languages: en-US,pt-BR,fr-FR                 # Suporte mundial: Inglês, Português e Francês
+  store: true                                   # Otimizado para Microsoft Store
+  sign_msix: false                              # Microsoft Store assina automaticamente
+  publisher_display_name_localized:             # Nome do desenvolvedor em diferentes idiomas
+    en-us: Your Company
+    pt-br: Sua Empresa
+    fr-fr: Votre Entreprise
+  app_description_localized:                    # Descrição do app em diferentes idiomas
+    en-us: Developer productivity and project management tool
+    pt-br: Ferramenta de produtividade e gerenciamento para desenvolvedores
+    fr-fr: Outil de productivité et gestion pour développeurs
+  protocol_activation: meuapp                   # Protocolo para ativação (meuapp://)
+  metadata:                                     # Metadados para desenvolvedor independente
+    author: SuaEmpresa                          # Desenvolvedor (igual ao Partner Center)
+    contact_email: contato@seusite.com          # Email de suporte internacional
+    website: https://seusite.com                # Website do desenvolvedor
+    copyright: "© 2025 SuaEmpresa. All rights reserved."  # Copyright consistente</code></pre>
+        </div>
+
+        <div class="note">
+            <p><strong>📝 Notas Importantes sobre este exemplo:</strong></p>
+            <ul>
+                <li><strong>Suporte Internacional:</strong> Configurado para inglês, português e francês</li>
+                <li><strong>Sem runFullTrust:</strong> Usa apenas internetClient para aprovação mais rápida</li>
+                <li><strong>Metadados Completos:</strong> Todas as informações necessárias para a Store</li>
+                <li><strong>Localização:</strong> Descrições em múltiplos idiomas</li>
+                <li><strong>Protocol Activation:</strong> Permite abrir o app via URLs customizadas</li>
+            </ul>
+        </div>
+
+        <h3>2.4. Explicação dos campos principais</h3>
+        <table>
+            <tr>
+                <th>Campo</th>
+                <th>Descrição</th>
+                <th>Exemplo</th>
+            </tr>
+            <tr>
+                <td><code>display_name</code></td>
+                <td>Nome que aparece na Microsoft Store</td>
+                <td>"Meu Aplicativo"</td>
+            </tr>
+            <tr>
+                <td><code>publisher_display_name</code></td>
+                <td>Nome do desenvolvedor/empresa</td>
+                <td>"Sua Empresa"</td>
+            </tr>
+            <tr>
+                <td><code>identity_name</code></td>
+                <td>ID único do aplicativo</td>
+                <td>"SuaEmpresa.MeuApp"</td>
+            </tr>
+            <tr>
+                <td><code>publisher</code></td>
+                <td>Publisher ID do Partner Center</td>
+                <td>"CN=12345678-1234-1234-1234-123456789ABC"</td>
+            </tr>
+            <tr>
+                <td><code>languages</code></td>
+                <td>Idiomas suportados</td>
+                <td>"en-US,pt-BR,fr-FR"</td>
+            </tr>
+            <tr>
+                <td><code>capabilities</code></td>
+                <td>Permissões do app</td>
+                <td>"internetClient" (recomendado para aprovação)</td>
+            </tr>
+            <tr>
+                <td><code>protocol_activation</code></td>
+                <td>URL scheme personalizada</td>
+                <td>"meuapp" (permite meuapp://)</td>
+            </tr>
+        </table>
+
+        <div class="warning">
+            <p><strong>🚨 Campos Críticos para Aprovação:</strong></p>
+            <ul>
+                <li><strong>capabilities:</strong> Use apenas "internetClient" para evitar rejeições</li>
+                <li><strong>store: true</strong> - Essencial para Microsoft Store</li>
+                <li><strong>sign_msix: false</strong> - Microsoft Store assina automaticamente</li>
+                <li><strong>languages:</strong> Defina idiomas suportados para expandir alcance</li>
+            </ul>
+        </div>
+
+        <h3>2.5. Vantagens da Configuração Internacional</h3>
+        <div class="success">
+            <p><strong>🌍 Por que usar configuração internacional?</strong></p>
+            <ul>
+                <li><strong>Maior Alcance:</strong> Aplicativo disponível em múltiplos países</li>
+                <li><strong>Melhor Ranqueamento:</strong> Microsoft favorece apps com suporte multilíngue</li>
+                <li><strong>Descrições Localizadas:</strong> Cada região vê o app em seu idioma</li>
+                <li><strong>Aprovação Mais Rápida:</strong> Configuração completa reduz revisões</li>
+                <li><strong>URL Scheme:</strong> Permite integração com outros aplicativos</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <p><strong>💡 Dica:</strong> Mesmo que seu app seja inicialmente em português, configure para múltiplos idiomas. Você pode traduzir o conteúdo posteriormente e expandir o mercado automaticamente.</p>
+        </div>
+    </div>
+
+    <div class="step" id="obter-publisher-id">
+        <h2>3. Obter seu Publisher ID</h2>
+        <p>O Publisher ID é obrigatório e deve ser obtido no Partner Center da Microsoft.</p>
+
+        <h3>3.1. Acesse o Partner Center</h3>
+        <ol>
+            <li>Acesse <a href="https://partner.microsoft.com/dashboard" target="_blank">https://partner.microsoft.com/dashboard</a></li>
+            <li>Faça login com sua conta Microsoft</li>
+            <li>Se não tiver uma conta de desenvolvedor, será necessário criar uma (taxa única de US$ 19 para contas individuais e US$ 99 para empresas)</li>
+        </ol>
+
+        <h3>3.2. Encontre seu Publisher ID</h3>
+        <ol>
+            <li>No menu lateral, clique em "Configurações de conta"</li>
+            <li>Selecione "Informações legais"</li>
+            <li>Localize a seção "Conta de desenvolvedor do Windows" e procure por "Publisher ID"</li>
+            <li>O valor deve ter o formato <code>CN=00000000-0000-0000-0000-000000000000</code></li>
+        </ol>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar formato</button>
+            <pre><code>CN=00000000-0000-0000-0000-000000000000</code></pre>
+        </div>
+
+        <div class="note">
+            <p><strong>Importante:</strong> Substitua o GUID (números zeros) pelo seu próprio Publisher ID encontrado no Partner Center.</p>
+        </div>
+    </div>
+
+    <div class="step" id="criando-msix">
+        <h2>4. Criando o pacote MSIX</h2>
+        <p>Agora vamos criar o pacote MSIX para publicação.</p>
+
+        <h3>4.1. Sequência Recomendada de Comandos</h3>
+        <p>Para garantir que o pacote MSIX seja criado corretamente, execute esta sequência de comandos na ordem:</p>
+
+        <div class="warning">
+            <p><strong>📋 Comandos na Ordem Correta:</strong></p>
+        </div>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter clean</code></pre>
+        </div>
+        <p><strong>Explicação:</strong> Remove todos os arquivos de build anteriores, garantindo uma compilação limpa sem resíduos de builds anteriores.</p>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub get</code></pre>
+        </div>
+        <p><strong>Explicação:</strong> Baixa e instala todas as dependências especificadas no pubspec.yaml, incluindo o pacote msix necessário.</p>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter build windows --release</code></pre>
+        </div>
+        <p><strong>Explicação:</strong> Compila o aplicativo Flutter para Windows em modo de release (otimizado), criando os executáveis necessários.</p>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create</code></pre>
+        </div>
+        <p><strong>Explicação:</strong> Gera o pacote MSIX usando as configurações do pubspec.yaml, criando o arquivo de instalação para Windows.</p>
+
+        <div class="success">
+            <p>Se tudo ocorrer bem, você verá uma mensagem de sucesso e o arquivo MSIX será criado em <code>build\windows\runner\Release\</code></p>
+        </div>
+
+        <h3>4.2. Variações do Comando MSIX</h3>
+        <p>Existem diferentes variações do comando <code>msix:create</code> para diferentes propósitos:</p>
+
+        <h4>🔧 Comando Básico</h4>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create</code></pre>
+        </div>
+        <p><strong>Quando usar:</strong> Para desenvolvimento e testes locais. Cria um MSIX com certificado de desenvolvimento.</p>
+
+        <h4>🏪 Comando para Microsoft Store</h4>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create --store</code></pre>
+        </div>
+        <p><strong>Quando usar:</strong> Especificamente para submissão à Microsoft Store. Remove certificados de desenvolvimento e prepara o pacote para certificação da Microsoft.</p>
+        <div class="note">
+            <p><strong>⚠️ Importante:</strong> Use <code>--store</code> APENAS quando for enviar para a Microsoft Store. Este comando remove assinaturas locais.</p>
+        </div>
+
+        <h4>⚡ Comando com Instalação Automática</h4>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create --install</code></pre>
+        </div>
+        <p><strong>Quando usar:</strong> Para testes rápidos. Cria o MSIX e automaticamente instala no computador local para testes imediatos.</p>
+
+        <h3>4.3. Resumo das Diferenças</h3>
+        <table>
+            <tr>
+                <th>Comando</th>
+                <th>Finalidade</th>
+                <th>Certificado</th>
+                <th>Instala Automaticamente</th>
+            </tr>
+            <tr>
+                <td><code>msix:create</code></td>
+                <td>Desenvolvimento/Teste</td>
+                <td>✅ Desenvolvimento</td>
+                <td>❌ Não</td>
+            </tr>
+            <tr>
+                <td><code>msix:create --store</code></td>
+                <td>Microsoft Store</td>
+                <td>❌ Removido</td>
+                <td>❌ Não</td>
+            </tr>
+            <tr>
+                <td><code>msix:create --install</code></td>
+                <td>Teste Rápido</td>
+                <td>✅ Desenvolvimento</td>
+                <td>✅ Sim</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="step" id="publicando">
+        <h2>5. Publicando na Microsoft Store</h2>
+
+        <h3>5.1. Acesse o Partner Center</h3>
+        <ol>
+            <li>Acesse o <a href="https://partner.microsoft.com/dashboard/windows/overview" target="_blank">Partner Center</a></li>
+            <li>No menu lateral, selecione "Windows & Xbox"</li>
+            <li>Clique em "Visão geral"</li>
+            <li>Clique em "Criar um novo aplicativo"</li>
+            <li>Digite o nome reservado para o seu aplicativo "Diário do Desenvolvedor" (ou o nome que desejar usar)</li>
+        </ol>
+
+        <h3>5.2. Configure o produto</h3>
+        <p>Preencha os campos necessários em cada seção:</p>
+        <ul>
+            <li><strong>Disponibilidade do produto:</strong> Selecione preço, países, data de lançamento</li>
+            <li><strong>Propriedades:</strong> Categoria do aplicativo, restrição de idade, etc.</li>
+            <li><strong>Listagens de armazenamento:</strong> Descrição, capturas de tela, ícones</li>
+        </ul>
+
+        <h3>5.3. Envie o pacote</h3>
+        <ol>
+            <li>Na seção "Pacotes", clique em "Criar um novo envio"</li>
+            <li>Arraste ou selecione o arquivo MSIX criado anteriormente</li>
+            <li>Aguarde o upload e processamento</li>
+            <li>Passe por todas as etapas de verificação</li>
+            <li>Clique em "Enviar para certificação"</li>
+        </ol>
+
+        <div class="note">
+            <p><strong>Tempo de avaliação:</strong> O processo de certificação pode levar de algumas horas até dias. Você será notificado por e-mail quando o aplicativo for aprovado.</p>
+        </div>
+
+        <h3>5.4. Fluxo de Trabalho Recomendado</h3>
+        <div class="success">
+            <p><strong>📋 Fluxo Completo para Microsoft Store:</strong></p>
+            <ol>
+                <li><strong>Desenvolvimento e Teste:</strong> Use <code>flutter pub run msix:create --install</code> para testes rápidos</li>
+                <li><strong>Teste Final:</strong> Use <code>flutter pub run msix:create</code> para validação completa</li>
+                <li><strong>Submissão à Store:</strong> Use <code>flutter pub run msix:create --store</code> para o pacote final</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <p><strong>⚠️ Atenção:</strong> NUNCA use <code>--store</code> durante desenvolvimento. Este parâmetro remove certificados necessários para instalação local.</p>
+        </div>
+    </div>
+
+    <div class="step">
+    <div class="step">
+        <h2>5.5. Por que Executar Comandos Individualmente?</h2>
+        <div class="warning">
+            <h3>🚨 Problemas com Comandos Aglutinados</h3>
+            <ul>
+                <li><strong>Falha em Cadeia:</strong> Se um comando falha, os seguintes não executam</li>
+                <li><strong>Difícil Debugging:</strong> Não fica claro qual comando causou o erro</li>
+                <li><strong>Sem Progresso Visual:</strong> Usuário não vê o andamento de cada etapa</li>
+                <li><strong>Impossível Retomar:</strong> Precisa executar tudo novamente em caso de erro</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>✅ Vantagens da Execução Individual</h3>
+            <ul>
+                <li><strong>Controle Total:</strong> Pode parar e corrigir problemas em qualquer etapa</li>
+                <li><strong>Progresso Visível:</strong> Vê exatamente o que está acontecendo</li>
+                <li><strong>Debug Fácil:</strong> Identifica rapidamente onde está o problema</li>
+                <li><strong>Retomada Inteligente:</strong> Pode pular etapas já concluídas</li>
+                <li><strong>Aprendizado:</strong> Entende o que cada comando faz</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <h3>💡 Exemplo Prático</h3>
+            <p>Se <code>flutter build windows --release</code> falhar por um erro de dependência, você pode:</p>
+            <ol>
+                <li>Corrigir o erro no pubspec.yaml</li>
+                <li>Executar apenas <code>flutter pub get</code></li>
+                <li>Continuar com <code>flutter build windows --release</code></li>
+                <li>Não precisar executar <code>flutter clean</code> novamente</li>
+            </ol>
+        </div>
+
+        <h2>5.6. Guia Rápido de Comandos</h2>
+        <div class="success">
+            <h3>🚀 Para Desenvolvimento</h3>
+            <p>Execute <strong>um comando por vez</strong> na sequência para desenvolvimento e testes rápidos:</p>
+            
+            <p><strong>Passo 1:</strong> Limpar builds anteriores</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter clean</code></pre>
+            </div>
+            
+            <p><strong>Passo 2:</strong> Instalar dependências</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub get</code></pre>
+            </div>
+            
+            <p><strong>Passo 3:</strong> Compilar para Windows</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter build windows --release</code></pre>
+            </div>
+            
+            <p><strong>Passo 4:</strong> Criar e instalar MSIX</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub run msix:create --install</code></pre>
+            </div>
+            <p>O parâmetro <code>--install</code> instala automaticamente o app no seu computador para teste.</p>
+        </div>
+
+        <div class="warning">
+            <h3>🏪 Para Microsoft Store</h3>
+            <p>Execute <strong>um comando por vez</strong> na sequência para submissão à Microsoft Store:</p>
+            
+            <p><strong>Passo 1:</strong> Limpar builds anteriores</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter clean</code></pre>
+            </div>
+            
+            <p><strong>Passo 2:</strong> Instalar dependências</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub get</code></pre>
+            </div>
+            
+            <p><strong>Passo 3:</strong> Compilar para Windows</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter build windows --release</code></pre>
+            </div>
+            
+            <p><strong>Passo 4:</strong> Criar MSIX para Store</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub run msix:create --store</code></pre>
+            </div>
+            <p><strong>⚠️ IMPORTANTE:</strong> Use <code>--store</code> <strong>APENAS</strong> para submissão à Microsoft Store. Remove certificados de desenvolvimento.</p>
+        </div>
+
+        <div class="note">
+            <h3>🔧 Para Teste Final (sem instalar)</h3>
+            <p>Execute <strong>um comando por vez</strong> para validação final antes da Store:</p>
+            
+            <p><strong>Passo 1:</strong> Limpar builds anteriores</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter clean</code></pre>
+            </div>
+            
+            <p><strong>Passo 2:</strong> Instalar dependências</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub get</code></pre>
+            </div>
+            
+            <p><strong>Passo 3:</strong> Compilar para Windows</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter build windows --release</code></pre>
+            </div>
+            
+            <p><strong>Passo 4:</strong> Criar MSIX básico</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+                <pre><code>flutter pub run msix:create</code></pre>
+            </div>
+            <p>Cria o MSIX com certificado de desenvolvimento, sem instalar automaticamente. Ideal para validação final.</p>
+        </div>
+
+        <h3>📊 Comparação de Parâmetros</h3>
+        <table>
+            <tr>
+                <th>Situação</th>
+                <th>Comando MSIX</th>
+                <th>Resultado</th>
+                <th>Quando Usar</th>
+            </tr>
+            <tr>
+                <td>Teste de Desenvolvimento</td>
+                <td><code>msix:create --install</code></td>
+                <td>Cria e instala automaticamente</td>
+                <td>Durante o desenvolvimento</td>
+            </tr>
+            <tr>
+                <td>Validação Final</td>
+                <td><code>msix:create</code></td>
+                <td>Cria MSIX com certificado dev</td>
+                <td>Teste final antes da Store</td>
+            </tr>
+            <tr>
+                <td>Submissão Store</td>
+                <td><code>msix:create --store</code></td>
+                <td>MSIX pronto para certificação</td>
+                <td>Envio para Microsoft Store</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="step" id="solucao-problemas">
+        <h2>6. Solução de problemas comuns</h2>
+
+        <h3>6.1. Erro de Publisher ID inválido</h3>
+        <div class="warning">
+            <p><strong>Problema:</strong> "Publisher identity is not valid"</p>
+            <p><strong>Solução:</strong> Verifique se o formato do Publisher ID está correto e se você substituiu pelo seu valor real do Partner Center.</p>
+        </div>
+
+        <h3>6.2. Erro de certificado</h3>
+        <div class="warning">
+            <p><strong>Problema:</strong> "Certificate not found"</p>
+            <p><strong>Solução:</strong> Execute o comando abaixo para criar um certificado de teste (apenas para desenvolvimento):</p>
+        </div>
+        
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create --certificate-path test_certificate.pfx --certificate-password 123456</code></pre>
+        </div>
+
+        <h3>6.3. Falha na criação do MSIX</h3>
+        <div class="warning">
+            <p><strong>Problema:</strong> O comando msix:create falha sem mensagem clara</p>
+            <p><strong>Solução:</strong> Execute os comandos individualmente na sequência para identificar onde está falhando:</p>
+        </div>
+        
+        <p><strong>1º:</strong> Limpar build anterior</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter clean</code></pre>
+        </div>
+        
+        <p><strong>2º:</strong> Fazer build release</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter build windows --release</code></pre>
+        </div>
+        
+        <p><strong>3º:</strong> Criar MSIX</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copiar</button>
+            <pre><code>flutter pub run msix:create</code></pre>
+        </div>
+
+        <h3>6.4. Erro na validação da Microsoft Store</h3>
+        <div class="warning">
+            <p><strong>Problema:</strong> Rejeição durante a certificação da Microsoft Store</p>
+            <p><strong>Solução:</strong> Leia cuidadosamente o relatório de erros. Geralmente, os problemas estão relacionados a:</p>
+            <ul>
+                <li>Informações incorretas ou incompletas na submissão</li>
+                <li>Problemas de compatibilidade ou desempenho</li>
+                <li>Capturas de tela ou descrição inadequadas</li>
+                <li>Violação das políticas da Microsoft Store</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="note">
+        <h3>Recursos adicionais</h3>
+        <ul>
+            <li><a href="https://pub.dev/packages/msix" target="_blank">Documentação oficial do pacote msix</a></li>
+            <li><a href="https://docs.microsoft.com/pt-br/windows/uwp/publish/" target="_blank">Documentação Microsoft para publicação de aplicativos</a></li>
+            <li><a href="https://docs.flutter.dev/platform-integration/windows/building" target="_blank">Flutter para Windows - Documentação oficial</a></li>
+        </ul>
+    </div>
+
+    <script>
+        function copyToClipboard(button) {
+            const codeBlock = button.nextElementSibling;
+            const codeText = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = button.textContent;
+                button.textContent = "Copiado!";
+                button.style.backgroundColor = "#4caf50";
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = "#0078d7";
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar texto: ', err);
+                alert('Falha ao copiar. Por favor, tente manualmente.');
+            });
+        }
+    </script>
+</body>
+</html>

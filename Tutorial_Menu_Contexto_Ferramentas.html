@@ -58,18 +58,41 @@
     a:hover{text-decoration:underline}
     .badge{display:inline-block; border:1px solid var(--panel); border-radius:999px; padding:2px 10px; font-size:12px; color:var(--acc)}
     .step{counter-increment: step}
+    .header-container {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+      padding-bottom: 24px;
+    }
+    .logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      display: block;
+    }
+    .logo:hover {
+      transform: scale(1.05);
+    }
     .nav-button {
       display: inline-flex;
       align-items: center;
-      padding: 12px 20px;
+      padding: 8px 16px;
       background: var(--acc);
       color: #0f172a;
       text-decoration: none;
       border-radius: 6px;
       font-weight: bold;
+      font-size: 0.9em;
       font-family: var(--sans);
       transition: all 0.2s;
-      margin-bottom: 20px;
+      margin-top: 15px;
     }
     .nav-button:hover {
       background: #a1c9fa;
@@ -77,19 +100,8 @@
     }
     .nav-button::before {
       content: '←';
-      margin-right: 8px;
-      font-size: 1.2em;
-    }
-    .logo {
-      width: 50px;
-      height: 50px;
-      margin-bottom: 16px;
-      border-radius: 10px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-    }
-    .logo:hover {
-      transform: scale(1.05);
+      margin-right: 6px;
+      font-size: 1.1em;
     }
     .step h3::before{
       content: counter(step) "."; margin-right:8px; color:var(--acc)
@@ -104,8 +116,12 @@
   </header>
 
   <main>
-    <a href="index.html" class="nav-button">Voltar ao Índice</a>
-    <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+    <div class="header-container">
+      <a href="index.html" class="logo-link">
+        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+      </a>
+      <a href="index.html" class="nav-button">Voltar ao Índice</a>
+    </div>
     <section class="card">
       <h2>Visão geral</h2>
       <p>Este tutorial explica como adicionar itens personalizados ao <strong>menu de contexto quando você clica com o botão direito em um espaço vazio de uma pasta</strong>. O método usa somente o Registro do Windows no caminho <code>HKEY_CURRENT_USER\\Software\\Classes\\Directory\\Background\\shell</code>, não requer admin e funciona por usuário.</p>
