@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial Completo: HTML Head - Meta Tags, CSS e JavaScript</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#0b1220;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --acc:#60a5fa;
+      --green:#22c55e;
+      --red:#ef4444;
+      --orange:#f59e0b;
+      --purple:#8b5cf6;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 80% -10%, #0b1220 0, transparent 40%),
+                      radial-gradient(800px 500px at -10% 10%, #0b1220 0, transparent 40%),
+                      var(--bg);
+      color:var(--text); font-family:var(--sans); line-height:1.6;
+    }
+    .container { max-width: 1100px; margin: 32px auto; background: var(--panel); border-radius: 8px; box-shadow: 0 2px 12px #0001; padding: 32px 40px; }
+    h1, h2, h3 { color: var(--acc); }
+    pre, code { background: var(--card); border-radius: 4px; padding: 2px 6px; color: var(--text); font-family: var(--mono); }
+    pre { padding: 16px; padding-top: 40px; overflow-x: auto; position: relative; }
+    ul, ol { margin-bottom: 1.5em; padding-left: 2em; }
+    .alert { background: #1e293b; color: var(--acc); border-left: 4px solid var(--acc); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .warning { background: #2d1b0e; color: var(--orange); border-left: 4px solid var(--orange); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .ok { background: #0b3d1e; color: #60fa9a; border-left: 4px solid var(--green); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .info { background: #1e1b3a; color: var(--purple); border-left: 4px solid var(--purple); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .copy-btn { position:absolute;top:8px;right:8px;padding:4px 10px;border-radius:4px;border:none;background:var(--acc);color:#0f172a;cursor:pointer; font-weight: bold; }
+    .copy-btn:hover { background:#a1c9fa; }
+    .cmd-block { position:relative; margin: 16px 0; }
+    .subpasso { margin-left: 25px; border-left: 2px solid var(--card); padding-left: 25px; margin-bottom: 24px; }
+    .subpasso .subtitulo { font-size: 1.13em; color: #93c5fd; font-weight: bold; margin-bottom: 0.7em; margin-left: 0; }
+    
+    .tag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .tag-section {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+    }
+    
+    .tag-section.meta {
+      border-color: var(--green);
+    }
+    
+    .tag-section.css {
+      border-color: var(--acc);
+    }
+    
+    .tag-section.js {
+      border-color: var(--orange);
+    }
+    
+    .tag-section h4 {
+      margin-top: 0;
+      color: var(--acc);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .tag-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .tag-icon.meta { background: var(--green); color: white; }
+    .tag-icon.css { background: var(--acc); color: white; }
+    .tag-icon.js { background: var(--orange); color: white; }
+    
+    .path-label {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--card);
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin: 5px 2px;
+      font-family: var(--mono);
+      font-size: 0.9em;
+    }
+    
+    .copy-path-btn {
+      background-color: var(--green);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-left: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    
+    .copy-path-btn:hover {
+      background-color: #16a34a;
+    }
+    
+    .example-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .example-section {
+      background: var(--card);
+      padding: 15px;
+      border-radius: 8px;
+    }
+    
+    .example-section h5 {
+      margin-top: 0;
+      color: var(--acc);
+      font-size: 1.1em;
+    }
+    
+    .header-container {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+      padding-bottom: 24px;
+    }
+    
+    .logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      display: block;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--acc);
+      color: #0f172a;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.9em;
+      font-family: var(--sans);
+      transition: all 0.2s;
+      margin: 5px;
+    }
+    
+    .nav-button:hover {
+      background: #a1c9fa;
+      transform: translateY(-1px);
+    }
+    
+    .nav-button::before {
+      content: '←';
+      margin-right: 6px;
+      font-size: 1.1em;
+    }
+    
+    #copy-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--green);
+      color: var(--bg);
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1000;
+      font-weight: bold;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .feature-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .feature-list li:before {
+      content: '✅';
+      margin-right: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .tag-grid, .example-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <a href="index.html" class="logo-link">
+        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+      </a>
+      <h1>Tutorial Completo: HTML Head</h1>
+      <p style="color: var(--muted); font-size: 1.1em;">Meta tags, CSS, JavaScript e todas as configurações essenciais</p>
+      <a href="index.html" class="nav-button">Voltar ao Índice</a>
+    </div>
+
+    <div class="alert">
+      <strong>🎯 O que você aprenderá:</strong> Como configurar corretamente o &lt;head&gt; do HTML com meta tags, links CSS, scripts JavaScript e otimizações para SEO e performance.
+    </div>
+
+    <h2>1. Estrutura Básica do Head</h2>
+    <div class="subpasso">
+      <div class="subtitulo">1.1 Template Completo</div>
+      <p>Aqui está um template completo de <code>&lt;head&gt;</code> que você pode usar como base:</p>
+      
+      <div class="cmd-block">
+        <pre id="basic_head">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta name="description" content="Descrição da sua página"&gt;
+    &lt;meta name="keywords" content="palavra-chave1, palavra-chave2, palavra-chave3"&gt;
+    &lt;meta name="author" content="Seu Nome"&gt;
+    
+    &lt;title&gt;Título da Página&lt;/title&gt;
+    
+    &lt;!-- Favicon --&gt;
+    &lt;link rel="icon" type="image/x-icon" href="favicon.ico"&gt;
+    
+    &lt;!-- CSS --&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+    
+    &lt;!-- JavaScript --&gt;
+    &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('basic_head')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>2. Meta Tags Essenciais</h2>
+    <div class="tag-grid">
+      <div class="tag-section meta">
+        <h4><span class="tag-icon meta">M</span> Charset e Viewport</h4>
+        <div class="cmd-block">
+          <pre id="meta_basic">&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</pre>
+          <button class="copy-btn" onclick="copyCode('meta_basic')">Copiar</button>
+        </div>
+        <p><strong>Obrigatórias</strong> para funcionamento correto em dispositivos móveis.</p>
+      </div>
+      
+      <div class="tag-section meta">
+        <h4><span class="tag-icon meta">M</span> SEO Básico</h4>
+        <div class="cmd-block">
+          <pre id="meta_seo">&lt;meta name="description" content="Sua descrição aqui (máx 160 caracteres)"&gt;
+&lt;meta name="keywords" content="html, css, javascript, tutorial"&gt;
+&lt;meta name="author" content="Seu Nome"&gt;</pre>
+          <button class="copy-btn" onclick="copyCode('meta_seo')">Copiar</button>
+        </div>
+        <p>Fundamentais para <strong>SEO</strong> e busca no Google.</p>
+      </div>
+      
+      <div class="tag-section meta">
+        <h4><span class="tag-icon meta">M</span> Open Graph (Redes Sociais)</h4>
+        <div class="cmd-block">
+          <pre id="meta_og">&lt;meta property="og:title" content="Título para compartilhamento"&gt;
+&lt;meta property="og:description" content="Descrição para redes sociais"&gt;
+&lt;meta property="og:image" content="https://seusite.com/imagem.jpg"&gt;
+&lt;meta property="og:url" content="https://seusite.com"&gt;</pre>
+          <button class="copy-btn" onclick="copyCode('meta_og')">Copiar</button>
+        </div>
+        <p>Para <strong>Facebook, LinkedIn</strong> e outras redes sociais.</p>
+      </div>
+      
+      <div class="tag-section meta">
+        <h4><span class="tag-icon meta">M</span> Twitter Cards</h4>
+        <div class="cmd-block">
+          <pre id="meta_twitter">&lt;meta name="twitter:card" content="summary_large_image"&gt;
+&lt;meta name="twitter:title" content="Título para Twitter"&gt;
+&lt;meta name="twitter:description" content="Descrição para Twitter"&gt;
+&lt;meta name="twitter:image" content="https://seusite.com/imagem.jpg"&gt;</pre>
+          <button class="copy-btn" onclick="copyCode('meta_twitter')">Copiar</button>
+        </div>
+        <p>Otimização específica para <strong>Twitter</strong>.</p>
+      </div>
+    </div>
+
+    <h2>3. Configurando CSS</h2>
+    <div class="subpasso">
+      <div class="subtitulo">3.1 Um Arquivo CSS</div>
+      <p>Para incluir um único arquivo CSS:</p>
+      
+      <div class="cmd-block">
+        <pre id="css_single">&lt;link rel="stylesheet" href="styles.css"&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('css_single')">Copiar</button>
+      </div>
+      
+      <p>Arquivo: <span class="path-label">styles.css <button class="copy-path-btn" onclick="copyToClipboard('styles.css')">📋</button></span></p>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">3.2 Múltiplos Arquivos CSS</div>
+      <p>Para incluir vários arquivos CSS (ordem importa!):</p>
+      
+      <div class="cmd-block">
+        <pre id="css_multiple">&lt;!-- CSS base (primeiro) --&gt;
+&lt;link rel="stylesheet" href="css/reset.css"&gt;
+&lt;link rel="stylesheet" href="css/base.css"&gt;
+
+&lt;!-- CSS específicos --&gt;
+&lt;link rel="stylesheet" href="css/header.css"&gt;
+&lt;link rel="stylesheet" href="css/main.css"&gt;
+&lt;link rel="stylesheet" href="css/footer.css"&gt;
+
+&lt;!-- CSS responsivo (último) --&gt;
+&lt;link rel="stylesheet" href="css/responsive.css"&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('css_multiple')">Copiar</button>
+      </div>
+      
+      <div class="info">
+        <strong>💡 Dica:</strong> Organize em pastas: 
+        <span class="path-label">css/reset.css <button class="copy-path-btn" onclick="copyToClipboard('css/reset.css')">📋</button></span>
+        <span class="path-label">css/base.css <button class="copy-path-btn" onclick="copyToClipboard('css/base.css')">📋</button></span>
+        <span class="path-label">css/components.css <button class="copy-path-btn" onclick="copyToClipboard('css/components.css')">📋</button></span>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">3.3 CSS Externos (CDN)</div>
+      <p>Para incluir bibliotecas CSS de CDN:</p>
+      
+      <div class="cmd-block">
+        <pre id="css_cdn">&lt;!-- Bootstrap --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+
+&lt;!-- Font Awesome --&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+
+&lt;!-- Google Fonts --&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"&gt;
+
+&lt;!-- Seu CSS (sempre por último) --&gt;
+&lt;link rel="stylesheet" href="styles.css"&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('css_cdn')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>4. Configurando JavaScript</h2>
+    <div class="subpasso">
+      <div class="subtitulo">4.1 Um Arquivo JavaScript</div>
+      <p>Para incluir um único arquivo JS:</p>
+      
+      <div class="cmd-block">
+        <pre id="js_single">&lt;script src="script.js" defer&gt;&lt;/script&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('js_single')">Copiar</button>
+      </div>
+      
+      <p>Arquivo: <span class="path-label">script.js <button class="copy-path-btn" onclick="copyToClipboard('script.js')">📋</button></span></p>
+      
+      <div class="ok">
+        <strong>✅ Atributo defer:</strong> Garante que o script execute após o HTML estar carregado.
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">4.2 Múltiplos Arquivos JavaScript</div>
+      <p>Para incluir vários arquivos JS:</p>
+      
+      <div class="cmd-block">
+        <pre id="js_multiple">&lt;!-- Bibliotecas externas primeiro --&gt;
+&lt;script src="js/vendor/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script src="js/vendor/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Seus módulos JS --&gt;
+&lt;script src="js/utils.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/components.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/main.js" defer&gt;&lt;/script&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('js_multiple')">Copiar</button>
+      </div>
+      
+      <div class="info">
+        <strong>💡 Estrutura sugerida:</strong> 
+        <span class="path-label">js/vendor/ <button class="copy-path-btn" onclick="copyToClipboard('js/vendor/')">📋</button></span> (bibliotecas)
+        <span class="path-label">js/modules/ <button class="copy-path-btn" onclick="copyToClipboard('js/modules/')">📋</button></span> (seus módulos)
+        <span class="path-label">js/main.js <button class="copy-path-btn" onclick="copyToClipboard('js/main.js')">📋</button></span> (arquivo principal)
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">4.3 JavaScript com CDN</div>
+      <p>Para incluir bibliotecas JS de CDN:</p>
+      
+      <div class="cmd-block">
+        <pre id="js_cdn">&lt;!-- jQuery --&gt;
+&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Bootstrap --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Chart.js --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
+
+&lt;!-- Seus scripts (sempre por último) --&gt;
+&lt;script src="js/app.js" defer&gt;&lt;/script&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('js_cdn')">Copiar</button>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">4.4 Atributos Importantes</div>
+      <div class="example-grid">
+        <div class="example-section">
+          <h5>⚡ defer</h5>
+          <div class="cmd-block">
+            <pre>&lt;script src="script.js" defer&gt;&lt;/script&gt;</pre>
+          </div>
+          <p>Executa após o HTML carregar completamente.</p>
+        </div>
+        
+        <div class="example-section">
+          <h5>🚀 async</h5>
+          <div class="cmd-block">
+            <pre>&lt;script src="analytics.js" async&gt;&lt;/script&gt;</pre>
+          </div>
+          <p>Carrega e executa em paralelo (para scripts independentes).</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>5. Exemplos Práticos Completos</h2>
+    <div class="subpasso">
+      <div class="subtitulo">5.1 Site Simples</div>
+      <div class="cmd-block">
+        <pre id="example_simple">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta name="description" content="Meu site pessoal - Portfolio de desenvolvimento web"&gt;
+    
+    &lt;title&gt;João Silva - Desenvolvedor Web&lt;/title&gt;
+    
+    &lt;link rel="icon" href="favicon.ico"&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+    
+    &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('example_simple')">Copiar</button>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">5.2 E-commerce Completo</div>
+      <div class="cmd-block">
+        <pre id="example_ecommerce">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta name="description" content="Loja online de eletrônicos - Melhores preços e qualidade"&gt;
+    &lt;meta name="keywords" content="eletrônicos, celulares, notebooks, loja online"&gt;
+    &lt;meta name="author" content="TechStore"&gt;
+    
+    &lt;!-- Open Graph --&gt;
+    &lt;meta property="og:title" content="TechStore - Eletrônicos com Desconto"&gt;
+    &lt;meta property="og:description" content="Os melhores eletrônicos com até 50% de desconto"&gt;
+    &lt;meta property="og:image" content="https://techstore.com/og-image.jpg"&gt;
+    &lt;meta property="og:url" content="https://techstore.com"&gt;
+    
+    &lt;title&gt;TechStore - Eletrônicos com Desconto&lt;/title&gt;
+    
+    &lt;!-- Favicon --&gt;
+    &lt;link rel="icon" href="assets/favicon.ico"&gt;
+    &lt;link rel="apple-touch-icon" href="assets/apple-touch-icon.png"&gt;
+    
+    &lt;!-- CSS --&gt;
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+    &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="css/style.css"&gt;
+    
+    &lt;!-- JavaScript --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    &lt;script src="js/cart.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/products.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/main.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('example_ecommerce')">Copiar</button>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">5.3 Aplicação Web (SPA)</div>
+      <div class="cmd-block">
+        <pre id="example_spa">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta name="description" content="TaskManager - Gerencie suas tarefas de forma eficiente"&gt;
+    
+    &lt;title&gt;TaskManager - Gestão de Tarefas&lt;/title&gt;
+    
+    &lt;!-- PWA Meta Tags --&gt;
+    &lt;meta name="theme-color" content="#2563eb"&gt;
+    &lt;link rel="manifest" href="manifest.json"&gt;
+    
+    &lt;!-- CSS Modular --&gt;
+    &lt;link rel="stylesheet" href="css/reset.css"&gt;
+    &lt;link rel="stylesheet" href="css/variables.css"&gt;
+    &lt;link rel="stylesheet" href="css/base.css"&gt;
+    &lt;link rel="stylesheet" href="css/components/header.css"&gt;
+    &lt;link rel="stylesheet" href="css/components/sidebar.css"&gt;
+    &lt;link rel="stylesheet" href="css/components/tasks.css"&gt;
+    &lt;link rel="stylesheet" href="css/responsive.css"&gt;
+    
+    &lt;!-- JavaScript Modular --&gt;
+    &lt;script src="js/utils/storage.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/utils/api.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/modules/auth.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/modules/tasks.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/modules/ui.js" defer&gt;&lt;/script&gt;
+    &lt;script src="js/app.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('example_spa')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>6. Otimizações e Melhores Práticas</h2>
+    <div class="subpasso">
+      <div class="subtitulo">6.1 Performance</div>
+      <ul class="feature-list">
+        <li>Use <code>defer</code> para scripts que dependem do DOM</li>
+        <li>Use <code>async</code> para scripts independentes (analytics)</li>
+        <li>Coloque CSS no <code>&lt;head&gt;</code> e JS antes do <code>&lt;/body&gt;</code></li>
+        <li>Minimize o número de requests HTTP</li>
+        <li>Use CDN para bibliotecas populares</li>
+      </ul>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">6.2 SEO</div>
+      <ul class="feature-list">
+        <li>Sempre inclua <code>meta description</code> (máx 160 caracteres)</li>
+        <li>Use <code>title</code> descritivo e único por página</li>
+        <li>Configure Open Graph para redes sociais</li>
+        <li>Adicione meta tags de autor e keywords</li>
+        <li>Use favicon para melhorar a confiabilidade</li>
+      </ul>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">6.3 Estrutura de Arquivos Recomendada</div>
+      <div class="cmd-block">
+        <pre id="file_structure">projeto/
+├── index.html
+├── favicon.ico
+├── css/
+│   ├── reset.css
+│   ├── base.css
+│   ├── components/
+│   │   ├── header.css
+│   │   ├── footer.css
+│   │   └── buttons.css
+│   └── responsive.css
+├── js/
+│   ├── vendor/
+│   │   ├── jquery.min.js
+│   │   └── bootstrap.min.js
+│   ├── modules/
+│   │   ├── auth.js
+│   │   └── api.js
+│   └── main.js
+└── assets/
+    ├── images/
+    ├── fonts/
+    └── icons/</pre>
+        <button class="copy-btn" onclick="copyCode('file_structure')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>7. Checklist Final</h2>
+    <div class="ok">
+      <strong>✅ CHECKLIST HEAD COMPLETO:</strong>
+      <ul class="feature-list" style="list-style: none; padding-left: 0;">
+        <li>✅ DOCTYPE e lang definidos</li>
+        <li>✅ Meta charset UTF-8</li>
+        <li>✅ Meta viewport para mobile</li>
+        <li>✅ Title único e descritivo</li>
+        <li>✅ Meta description (SEO)</li>
+        <li>✅ Favicon configurado</li>
+        <li>✅ CSS organizados (reset → base → componentes)</li>
+        <li>✅ JavaScript com defer/async apropriados</li>
+        <li>✅ Open Graph para redes sociais</li>
+        <li>✅ Caminhos relativos corretos</li>
+      </ul>
+    </div>
+
+    <div class="alert">
+      <strong>🎯 Próximos Passos:</strong> Use estes templates como base para seus projetos e adapte conforme necessário. Lembre-se de sempre testar em diferentes dispositivos e navegadores!
+    </div>
+  </div>
+
+  <div id="copy-notification"></div>
+
+  <script>
+    function copyCode(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
+      copyToClipboard(text);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showNotification('Copiado com sucesso!');
+        }).catch(err => {
+          showNotification('Erro ao copiar!', true);
+        });
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showNotification('Copiado com sucesso!');
+      }
+    }
+
+    function showNotification(message, isError = false) {
+      const notification = document.getElementById('copy-notification');
+      notification.textContent = message;
+      notification.style.backgroundColor = isError ? '#ef4444' : '#22c55e';
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

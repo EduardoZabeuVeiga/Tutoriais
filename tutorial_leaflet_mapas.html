@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Leaflet: Criando Mapas Interativos</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #111827;
+            --card: #0b1220;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --acc: #60a5fa;
+            --green: #22c55e;
+            --red: #ef4444;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 48px 20px;
+            background: linear-gradient(45deg, var(--panel) 0%, var(--card) 100%);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            color: var(--acc);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .back-button:hover {
+            opacity: 1;
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            margin: 0;
+            background: linear-gradient(135deg, var(--acc) 0%, #60a5fa 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: clamp(16px, 2vw, 18px);
+            margin-top: 8px;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--acc);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        h3 {
+            color: var(--text);
+            margin: 24px 0 16px;
+            font-size: 20px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .code-block {
+            background: var(--card);
+            padding: 16px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: var(--panel);
+            border: none;
+            border-radius: 4px;
+            color: var(--muted);
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            background: var(--acc);
+            color: var(--text);
+        }
+
+        .copy-feedback {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
+
+        .note {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 4px solid var(--acc);
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .map-container {
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .result {
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid var(--green);
+            border-radius: 0 8px 8px 0;
+        }
+
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        a {
+            color: var(--acc);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #a1c9fa;
+        }
+
+        code {
+            background: var(--card);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.9em;
+            color: var(--text);
+        }
+
+        pre {
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+        }
+
+        pre code {
+            padding: 0;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 4.158a.75.75 0 11-1.04 1.04l-5.5-5.5a.75.75 0 010-1.04l5.5-5.5a.75.75 0 111.04 1.04L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" />
+            </svg>
+            Voltar para o Hub
+        </a>
+        <h1>Tutorial Leaflet: Criando Mapas Interativos</h1>
+        <div class="subtitle">Aprenda a criar mapas interativos com marcadores, popups e controles</div>
+    </header>
+
+    <main>
+        <section>
+            <h2>Introdução ao Leaflet</h2>
+            <p>O Leaflet é uma das bibliotecas JavaScript mais populares para criação de mapas interativos. É conhecida por ser leve, ter uma API simples e funcionar bem em dispositivos móveis. Neste tutorial, você aprenderá:</p>
+            <ul>
+                <li>Como criar e configurar um mapa básico</li>
+                <li>Adicionar marcadores, popups e formas geométricas</li>
+                <li>Personalizar ícones e estilos</li>
+                <li>Trabalhar com camadas e controles</li>
+                <li>Responder a eventos do mapa</li>
+                <li>Integrar diferentes provedores de mapas</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>1. Configuração Inicial</h2>
+            <p>Para começar a usar o Leaflet, você precisa incluir os arquivos CSS e JavaScript necessários e criar um container para o mapa:</p>
+
+            <!-- CSS do Leaflet -->
+            <div class="code-block">
+                <button class="copy-button">Copiar CSS</button>
+                <pre><code>&lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/&gt;</code></pre>
+            </div>
+
+            <!-- Container do Mapa -->
+            <div class="code-block">
+                <button class="copy-button">Copiar HTML</button>
+                <pre><code>&lt;div id="map" style="height: 400px"&gt;&lt;/div&gt;</code></pre>
+            </div>
+
+            <!-- JavaScript do Leaflet -->
+            <div class="code-block">
+                <button class="copy-button">Copiar JavaScript</button>
+                <pre><code>&lt;script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""&gt;&lt;/script&gt;</code></pre>
+            </div>
+
+            <div class="note">
+                <strong>Importante:</strong> O container do mapa deve ter uma altura definida, caso contrário o mapa não será exibido corretamente.
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Criando seu Primeiro Mapa</h2>
+            <p>Vamos criar um mapa básico centrado em São Paulo:</p>
+
+            <!-- Inicialização do Mapa -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Inicialização</button>
+                <pre><code>const map = L.map('map').setView([-23.5505, -46.6333], 13);</code></pre>
+            </div>
+
+            <!-- Camada de Tiles -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Layer de Tiles</button>
+                <pre><code>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; &lt;a href="https://www.openstreetmap.org/copyright"&gt;OpenStreetMap&lt;/a&gt; contributors'
+}).addTo(map);</code></pre>
+            </div>
+
+            <h3>Resultado:</h3>
+            <div id="map1" class="map-container"></div>
+
+            <div class="note">
+                <strong>Explicação:</strong>
+                <ul>
+                    <li><code>L.map('map')</code> - Cria uma instância do mapa no elemento com ID 'map'</li>
+                    <li><code>setView([-23.5505, -46.6333], 13)</code> - Define o centro do mapa (São Paulo) e o nível de zoom</li>
+                    <li><code>L.tileLayer()</code> - Adiciona uma camada de tiles do OpenStreetMap</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Adicionando Marcadores e Popups</h2>
+            <p>Marcadores são úteis para destacar locais específicos no mapa. Vamos adicionar um marcador com um popup informativo:</p>
+
+            <!-- Marcador Simples -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Marcador</button>
+                <pre><code>const marker = L.marker([-23.5505, -46.6333]).addTo(map);</code></pre>
+            </div>
+
+            <!-- Popup no Marcador -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Popup</button>
+                <pre><code>marker.bindPopup("&lt;b&gt;São Paulo&lt;/b&gt;&lt;br&gt;A maior cidade do Brasil").openPopup();</code></pre>
+            </div>
+
+            <h3>Personalizando Marcadores</h3>
+            <p>Você pode personalizar o ícone do marcador:</p>
+
+            <!-- Definição do Ícone -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Configuração do Ícone</button>
+                <pre><code>const iconePersonalizado = L.icon({
+    iconUrl: 'caminho/para/seu/icone.png',
+    iconSize: [38, 38],     // tamanho do ícone
+    iconAnchor: [19, 38],   // ponto do ícone que corresponderá à localização
+    popupAnchor: [0, -38]   // ponto de onde o popup deve abrir
+});</code></pre>
+            </div>
+
+            <!-- Uso do Ícone Personalizado -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Uso do Ícone</button>
+                <pre><code>L.marker([-23.5505, -46.6333], {icon: iconePersonalizado}).addTo(map);</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Formas Geométricas</h2>
+            <p>O Leaflet permite adicionar várias formas geométricas ao mapa:</p>
+
+            <!-- Círculo -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Círculo</button>
+                <pre><code>const circulo = L.circle([-23.5505, -46.6333], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+}).addTo(map);</code></pre>
+            </div>
+
+            <!-- Polígono -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Polígono</button>
+                <pre><code>const poligono = L.polygon([
+    [-23.54, -46.63],
+    [-23.55, -46.64],
+    [-23.53, -46.65]
+], {
+    color: 'purple',
+    fillColor: '#909',
+    fillOpacity: 0.5
+}).addTo(map);</code></pre>
+            </div>
+
+            <!-- Linha -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Linha</button>
+                <pre><code>const linha = L.polyline([
+    [-23.54, -46.63],
+    [-23.55, -46.64],
+    [-23.53, -46.65]
+], {
+    color: 'blue',
+    weight: 3
+}).addTo(map);</code></pre>
+            </div>
+
+            <div class="note">
+                <strong>Dica:</strong> Todas as formas podem ter popups e eventos associados a elas.
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Eventos do Mapa</h2>
+            <p>O Leaflet oferece vários eventos que você pode usar para tornar seu mapa interativo:</p>
+
+            <!-- Evento de Clique -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Evento de Clique</button>
+                <pre><code>map.on('click', function(e) {
+    const lat = e.latlng.lat.toFixed(4);
+    const lng = e.latlng.lng.toFixed(4);
+    L.popup()
+        .setLatLng(e.latlng)
+        .setContent(`Você clicou em: ${lat}, ${lng}`)
+        .openOn(map);
+});</code></pre>
+            </div>
+
+            <!-- Evento de Zoom -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Evento de Zoom</button>
+                <pre><code>map.on('zoomend', function() {
+    const zoom = map.getZoom();
+    console.log(`Nível de zoom atual: ${zoom}`);
+});</code></pre>
+            </div>
+
+            <!-- Evento de Movimento -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Evento de Movimento</button>
+                <pre><code>map.on('moveend', function() {
+    const centro = map.getCenter();
+    console.log(`Centro do mapa: ${centro.lat}, ${centro.lng}`);
+});</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>6. Camadas e Controles</h2>
+            <p>Você pode adicionar diferentes camadas de mapas e permitir que o usuário alterne entre elas:</p>
+
+            <!-- Camada OpenStreetMap -->
+            <div class="code-block">
+                <button class="copy-button">Copiar OpenStreetMap</button>
+                <pre><code>const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+});</code></pre>
+            </div>
+
+            <!-- Camada Satélite -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Satélite</button>
+                <pre><code>const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});</code></pre>
+            </div>
+
+            <!-- Configuração das Camadas Base -->
+            <div class="code-block">
+                <button class="copy-button">Copiar Configuração de Camadas</button>
+                <pre><code>const baseMaps = {
+    "OpenStreetMap": osm,
+    "Satélite": satellite
+};
+
+// Adiciona o controle de camadas
+L.control.layers(baseMaps).addTo(map);</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Exemplo Completo</h2>
+            <p>Aqui está um exemplo que combina todos os conceitos que aprendemos:</p>
+
+            <h3>Exemplo Completo Passo a Passo</h3>
+            <p>Vamos criar um exemplo completo que inclui todas as funcionalidades principais. Siga estas etapas na ordem:</p>
+
+            <!-- 1. Estrutura HTML Base - Crie um novo arquivo chamado mapa.html -->
+            <div class="code-block">
+                <button class="copy-button">1. Copiar Estrutura HTML</button>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Mapa Interativo com Leaflet&lt;/title&gt;
+    
+    &lt;!-- CSS do Leaflet --&gt;
+    &lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /&gt;
+    
+    &lt;style&gt;
+        #map { 
+            height: 400px; 
+            width: 100%; 
+        }
+        .info-distancia {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Mapa Interativo&lt;/h1&gt;
+    &lt;div id="map"&gt;&lt;/div&gt;
+    &lt;div class="info-distancia"&gt;Calculando sua localização...&lt;/div&gt;
+
+    &lt;!-- JavaScript do Leaflet --&gt;
+    &lt;script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Seu código JavaScript vai aqui --&gt;
+    &lt;script&gt;
+        // O código JavaScript será adicionado aqui
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <!-- 2. Inicialização do Mapa - Adicione dentro da tag <script> -->
+            <div class="code-block">
+                <button class="copy-button">2. Copiar Inicialização do Mapa</button>
+                <pre><code>// Coordenadas do ponto de referência (São Paulo)
+const pontoRef = {
+    lat: -23.5505,
+    lng: -46.6333
+};
+
+// Inicializa o mapa
+const map = L.map('map').setView([pontoRef.lat, pontoRef.lng], 13);
+
+// Adiciona camada de tiles
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+}).addTo(map);</code></pre>
+            </div>
+
+            <!-- 3. Marcador de Referência - Adicione após a inicialização -->
+            <div class="code-block">
+                <button class="copy-button">3. Copiar Marcador de Referência</button>
+                <pre><code>// Adiciona marcador no ponto de referência
+const marcadorRef = L.marker([pontoRef.lat, pontoRef.lng])
+    .addTo(map)
+    .bindPopup('&lt;b&gt;São Paulo&lt;/b&gt;&lt;br&gt;Ponto de Referência')
+    .openPopup();</code></pre>
+            </div>
+
+            <!-- 4. Geolocalização e Cálculo de Distância -->
+            <div class="code-block">
+                <button class="copy-button">4. Copiar Código de Geolocalização</button>
+                <pre><code>// Função para calcular distância usando Haversine
+function calcularDistancia(coord1, coord2) {
+    function toRad(x) {
+        return x * Math.PI / 180;
+    }
+
+    const R = 6371; // Raio da Terra em km
+    const dLat = toRad(coord2.lat - coord1.lat);
+    const dLon = toRad(coord2.lng - coord1.lng);
+    const lat1 = toRad(coord1.lat);
+    const lat2 = toRad(coord2.lat);
+
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
+// Obtém localização do usuário
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            
+            // Adiciona marcador da localização do usuário
+            const marcadorUsuario = L.marker([userLat, userLng])
+                .addTo(map)
+                .bindPopup('Sua Localização')
+                .openPopup();
+
+            // Calcula e exibe a distância
+            const distancia = calcularDistancia(
+                {lat: userLat, lng: userLng},
+                pontoRef
+            );
+
+            // Atualiza a informação de distância
+            document.querySelector('.info-distancia').innerHTML = 
+                `Você está a aproximadamente ${distancia.toFixed(1)} km do ponto de referência.`;
+
+            // Ajusta o zoom para mostrar ambos os pontos
+            const bounds = L.latLngBounds([[userLat, userLng], [pontoRef.lat, pontoRef.lng]]);
+            map.fitBounds(bounds, {padding: [50, 50]});
+
+            // Desenha uma linha entre os pontos
+            const linha = L.polyline([
+                [userLat, userLng],
+                [pontoRef.lat, pontoRef.lng]
+            ], {
+                color: 'blue',
+                weight: 2,
+                opacity: 0.7
+            }).addTo(map);
+        },
+        (error) => {
+            document.querySelector('.info-distancia').innerHTML = 
+                'Não foi possível obter sua localização. Por favor, permita o acesso à sua localização.';
+        }
+    );
+} else {
+    document.querySelector('.info-distancia').innerHTML = 
+        'Seu navegador não suporta geolocalização.';
+}</code></pre>
+            </div>
+
+            <!-- 5. Eventos Interativos -->
+            <div class="code-block">
+                <button class="copy-button">5. Copiar Eventos Interativos</button>
+                <pre><code>// Adiciona círculo ao clicar no mapa
+map.on('click', function(e) {
+    // Remove círculo anterior se existir
+    if (window.lastCircle) {
+        map.removeLayer(window.lastCircle);
+    }
+
+    // Cria novo círculo
+    window.lastCircle = L.circle(e.latlng, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+    }).addTo(map);
+
+    // Mostra popup com coordenadas
+    L.popup()
+        .setLatLng(e.latlng)
+        .setContent(`Latitude: ${e.latlng.lat.toFixed(4)}<br>Longitude: ${e.latlng.lng.toFixed(4)}`)
+        .openOn(map);
+});</code></pre>
+            </div>
+
+            <div class="note">
+                <strong>Instruções de Uso:</strong>
+                <ol>
+                    <li>Crie um novo arquivo chamado <code>mapa.html</code></li>
+                    <li>Copie e cole a "Estrutura HTML" (#1)</li>
+                    <li>Dentro da tag <code>&lt;script&gt;</code> vazia, cole os códigos #2 a #5 <strong>na ordem apresentada</strong></li>
+                    <li>Cada bloco deve ser colado <strong>um após o outro</strong>, mantendo a sequência</li>
+                    <li>Salve o arquivo e abra-o no navegador</li>
+                </ol>
+
+                <p><strong>Funcionalidades incluídas:</strong></p>
+                <ul>
+                    <li>Mapa base com OpenStreetMap</li>
+                    <li>Geolocalização do usuário</li>
+                    <li>Cálculo de distância até o ponto de referência</li>
+                    <li>Linha conectando sua localização ao ponto de referência</li>
+                    <li>Círculos interativos ao clicar no mapa</li>
+                    <li>Popups informativos</li>
+                </ul>
+            </div>
+
+            <div class="note">
+                <strong>Próximos Passos:</strong>
+                <ul>
+                    <li>Explore a <a href="https://leafletjs.com/reference.html" target="_blank">documentação oficial do Leaflet</a> para mais recursos</li>
+                    <li>Experimente diferentes provedores de tiles</li>
+                    <li>Adicione plugins do Leaflet para funcionalidades extras</li>
+                    <li>Integre com APIs de geocodificação</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Gerenciador de cópia de código
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const codeBlock = button.nextElementSibling;
+                const code = codeBlock.textContent;
+
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = button.textContent;
+                    const originalColor = button.style.backgroundColor;
+
+                    // Feedback visual no botão
+                    button.textContent = 'Copiado!';
+                    button.style.backgroundColor = 'var(--green)';
+
+                    // Restaura o botão após 2 segundos
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = originalColor;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Erro ao copiar:', err);
+                    alert('Falha ao copiar. Por favor, tente manualmente.');
+                });
+            });
+        });
+
+        // Inicialização do mapa de exemplo
+        const map1 = L.map('map1').setView([-23.5505, -46.6333], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map1);
+
+        // Adiciona um marcador de exemplo
+        L.marker([-23.5505, -46.6333])
+            .addTo(map1)
+            .bindPopup('<b>São Paulo</b><br>Centro da cidade')
+            .openPopup();
+    </script>
+</body>
+</html>

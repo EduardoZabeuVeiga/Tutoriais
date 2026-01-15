@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial: Migrando Projeto Web para Electron</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#0b1220;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --acc:#60a5fa;
+      --green:#22c55e;
+      --red:#ef4444;
+      --orange:#f59e0b;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 80% -10%, #0b1220 0, transparent 40%),
+                      radial-gradient(800px 500px at -10% 10%, #0b1220 0, transparent 40%),
+                      var(--bg);
+      color:var(--text); font-family:var(--sans); line-height:1.6;
+    }
+    .container { max-width: 1000px; margin: 32px auto; background: var(--panel); border-radius: 8px; box-shadow: 0 2px 12px #0001; padding: 32px 40px; }
+    h1, h2, h3 { color: var(--acc); }
+    pre, code { background: var(--card); border-radius: 4px; padding: 2px 6px; color: var(--text); font-family: var(--mono); }
+    pre { padding: 16px; padding-top: 40px; overflow-x: auto; position: relative; }
+    ul, ol { margin-bottom: 1.5em; padding-left: 2em; }
+    .alert { background: #1e293b; color: var(--acc); border-left: 4px solid var(--acc); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .warning { background: #2d1b0e; color: var(--orange); border-left: 4px solid var(--orange); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .ok { background: #0b3d1e; color: #60fa9a; border-left: 4px solid var(--green); padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+    .step { font-weight: bold; color: var(--acc); }
+    .copy-btn { position:absolute;top:8px;right:8px;padding:4px 10px;border-radius:4px;border:none;background:var(--acc);color:#0f172a;cursor:pointer; font-weight: bold; }
+    .copy-btn:hover { background:#a1c9fa; }
+    .cmd-block { position:relative; margin: 16px 0; }
+    .subpasso { margin-left: 25px; border-left: 2px solid var(--card); padding-left: 25px; margin-bottom: 24px; }
+    .subpasso .subtitulo { font-size: 1.13em; color: #93c5fd; font-weight: bold; margin-bottom: 0.7em; margin-left: 0; }
+    
+    .file-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .file-section {
+      background: var(--card);
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+    }
+    
+    .file-section.source {
+      border-color: var(--orange);
+    }
+    
+    .file-section.target {
+      border-color: var(--green);
+    }
+    
+    .file-section h4 {
+      margin-top: 0;
+      color: var(--acc);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .file-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .file-icon.html { background: #e34c26; color: white; }
+    .file-icon.css { background: #1572b6; color: white; }
+    .file-icon.js { background: #f7df1e; color: black; }
+    
+    .path-label {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--card);
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin: 5px 2px;
+      font-family: var(--mono);
+      font-size: 0.9em;
+    }
+    
+    .copy-path-btn {
+      background-color: var(--green);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-left: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    
+    .copy-path-btn:hover {
+      background-color: #16a34a;
+    }
+    
+    .migration-arrow {
+      text-align: center;
+      font-size: 2em;
+      color: var(--acc);
+      margin: 10px 0;
+      grid-column: 1 / -1;
+    }
+    
+    .header-container {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+      padding-bottom: 24px;
+    }
+    
+    .logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      display: block;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--acc);
+      color: #0f172a;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.9em;
+      font-family: var(--sans);
+      transition: all 0.2s;
+      margin: 5px;
+    }
+    
+    .nav-button:hover {
+      background: #a1c9fa;
+      transform: translateY(-1px);
+    }
+    
+    .nav-button::before {
+      content: '←';
+      margin-right: 6px;
+      font-size: 1.1em;
+    }
+    
+    .nav-button.tutorial::before {
+      content: '📚';
+    }
+    
+    #copy-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--green);
+      color: var(--bg);
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1000;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      .file-comparison {
+        grid-template-columns: 1fr;
+      }
+      
+      .migration-arrow {
+        grid-column: 1;
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <a href="index.html" class="logo-link">
+        <img src="imagens/kaiseramarelo.png" alt="Logo" class="logo">
+      </a>
+      <h1>Tutorial: Migrando Projeto Web para Electron</h1>
+      <p style="color: var(--muted); font-size: 1.1em;">Como transformar sua aplicação web em um app desktop</p>
+      <div>
+        <a href="index.html" class="nav-button">Voltar ao Índice</a>
+        <a href="tutorial-eletron-detalhado.html" class="nav-button tutorial">Tutorial Base Electron</a>
+      </div>
+    </div>
+
+    <div class="alert">
+      <strong>📋 Pré-requisitos:</strong> Este tutorial assume que você já seguiu o 
+      <a href="tutorial-eletron-detalhado.html" style="color: var(--acc); text-decoration: underline;">Tutorial Completo: Criando um App Electron</a> 
+      e tem a estrutura básica configurada.
+    </div>
+
+    <h2>1. Visão Geral da Migração</h2>
+    <div class="subpasso">
+      <div class="subtitulo">1.1 O que vamos migrar?</div>
+      <p>Vamos ensinar como pegar qualquer projeto web existente (HTML, CSS, JS) e transformá-lo em uma aplicação Electron desktop. O processo envolve:</p>
+      <ul>
+        <li><strong>HTML:</strong> Copiar e adaptar para o <span class="path-label">index.html <button class="copy-path-btn" onclick="copyToClipboard('index.html')">📋</button></span> do Electron</li>
+        <li><strong>CSS:</strong> Migrar estilos para <span class="path-label">styles.css <button class="copy-path-btn" onclick="copyToClipboard('styles.css')">📋</button></span> ou criar arquivos separados</li>
+        <li><strong>JavaScript:</strong> Adaptar para <span class="path-label">renderer.js <button class="copy-path-btn" onclick="copyToClipboard('renderer.js')">📋</button></span> e configurar segurança</li>
+        <li><strong>Assets:</strong> Migrar imagens, fontes e outros recursos</li>
+      </ul>
+    </div>
+
+    <h2>2. Preparando o Ambiente</h2>
+    <div class="subpasso">
+      <div class="subtitulo">2.1 Estrutura do Projeto Original vs Electron</div>
+      <div class="file-comparison">
+        <div class="file-section source">
+          <h4><span class="file-icon html">H</span> Projeto Web Original</h4>
+          <pre>meu-site/
+├── index.html
+├── style.css
+├── script.js
+├── sobre.html
+├── contato.html
+├── images/
+│   ├── logo.png
+│   └── banner.jpg
+└── assets/
+    ├── fonts/
+    └── icons/</pre>
+        </div>
+        
+        <div class="file-section target">
+          <h4><span class="file-icon js">E</span> Projeto Electron</h4>
+          <pre>meu-app-electron/
+├── main.js
+├── index.html
+├── styles.css
+├── renderer.js
+├── package.json
+├── assets/
+│   ├── images/
+│   ├── fonts/
+│   └── icons/
+├── pages/
+│   ├── sobre.html
+│   └── contato.html
+└── icon.ico</pre>
+        </div>
+      </div>
+    </div>
+
+    <h2>3. Migrando o HTML</h2>
+    <div class="subpasso">
+      <div class="subtitulo">3.1 Adaptando o arquivo principal</div>
+      <p><strong>📂 DE ONDE PEGAR:</strong> Do seu arquivo <span class="path-label">index.html <button class="copy-path-btn" onclick="copyToClipboard('index.html')">📋</button></span> original</p>
+      <p><strong>📁 PARA ONDE COLOCAR:</strong> No arquivo <span class="path-label">index.html <button class="copy-path-btn" onclick="copyToClipboard('index.html')">📋</button></span> do Electron (substituir o conteúdo)</p>
+      
+      <div class="warning">
+        <strong>⚠️ Importante:</strong> Você deve adaptar os caminhos dos links CSS e JS para funcionarem no Electron.
+      </div>
+
+      <p><strong>PASSO A PASSO SIMPLIFICADO:</strong></p>
+      <ol>
+        <li>Abra seu arquivo HTML original</li>
+        <li>Copie <strong>TUDO</strong> que está dentro do <code>&lt;body&gt;</code> (sem as tags &lt;body&gt;)</li>
+        <li>No Electron, substitua <code>&lt;body&gt;</code> por:</li>
+      </ol>
+
+      <p><strong>🔹 Tag de abertura:</strong></p>
+      <div class="cmd-block">
+        <pre id="container_open">&lt;div class="container"&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('container_open')">Copiar</button>
+      </div>
+
+      <p><strong>📝 Depois cole todo seu conteúdo HTML aqui</strong></p>
+
+      <p><strong>🔹 Tag de fechamento:</strong></p>
+      <div class="cmd-block">
+        <pre id="container_close">&lt;/div&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('container_close')">Copiar</button>
+      </div>
+
+      <div class="ok">
+        <strong>✅ Resultado:</strong> Em vez de <code>&lt;body&gt;conteúdo&lt;/body&gt;</code> você terá <code>&lt;div class="container"&gt;conteúdo&lt;/div&gt;</code>
+      </div>
+
+      <p><strong>ANTES (HTML original):</strong></p>
+      <div class="cmd-block">
+        <pre id="html_before">&lt;link rel="stylesheet" href="style.css"&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('html_before')">Copiar</button>
+      </div>
+
+      <p><strong>DEPOIS (Electron):</strong></p>
+      <div class="cmd-block">
+        <pre id="html_after">&lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;script src="renderer.js"&gt;&lt;/script&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('html_after')">Copiar</button>
+      </div>
+
+      <div class="subpasso">
+        <div class="subtitulo">📍 Onde colocar seu conteúdo no index.html do Electron</div>
+        <p>O index.html do tutorial Electron tem esta estrutura:</p>
+        
+        <div class="cmd-block">
+          <pre id="electron_structure">&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;header&gt;
+            &lt;h1&gt;🚀 Meu Primeiro App Electron&lt;/h1&gt;
+            &lt;p&gt;Bem-vindo ao seu aplicativo desktop!&lt;/p&gt;
+        &lt;/header&gt;
+        
+        &lt;main&gt;
+            &lt;!-- SEÇÕES EXISTENTES: contador, notificações, etc. --&gt;
+            
+            &lt;!-- 👇 COLE SEU CONTEÚDO AQUI 👇 --&gt;
+            &lt;section&gt;
+                &lt;!-- Seu HTML aqui --&gt;
+            &lt;/section&gt;
+            &lt;!-- 👆 COLE SEU CONTEÚDO AQUI 👆 --&gt;
+            
+        &lt;/main&gt;
+        
+        &lt;footer&gt;
+            &lt;p&gt;Criado com ❤️ usando Electron&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+    
+    &lt;script src="renderer.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</pre>
+          <button class="copy-btn" onclick="copyCode('electron_structure')">Copiar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">3.2 Migrando páginas adicionais</div>
+      <p><strong>📂 DE ONDE PEGAR:</strong> Arquivos como <code>sobre.html</code>, <code>contato.html</code>, etc.</p>
+      <p><strong>📁 PARA ONDE COLOCAR:</strong> Crie uma pasta <span class="path-label">pages <button class="copy-path-btn" onclick="copyToClipboard('pages')">📋</button></span> no projeto Electron</p>
+      
+      <div class="cmd-block">
+        <pre id="create_pages_folder">mkdir pages</pre>
+        <button class="copy-btn" onclick="copyCode('create_pages_folder')">Copiar</button>
+      </div>
+
+      <p>E copie os arquivos HTML adicionais para esta pasta, ajustando os caminhos relativos.</p>
+    </div>
+
+    <h2>4. Migrando o CSS</h2>
+    <div class="subpasso">
+      <div class="subtitulo">4.1 CSS Principal</div>
+      <p><strong>📂 DE ONDE PEGAR:</strong> Do seu arquivo <span class="path-label">style.css <button class="copy-path-btn" onclick="copyToClipboard('style.css')">📋</button></span> (ou similar) original</p>
+      <p><strong>📁 PARA ONDE COLOCAR:</strong> No arquivo <span class="path-label">styles.css <button class="copy-path-btn" onclick="copyToClipboard('styles.css')">📋</button></span> do Electron</p>
+
+      <p><strong>OPÇÕES DE MIGRAÇÃO:</strong></p>
+      
+      <div class="file-comparison">
+        <div class="file-section source">
+          <h4><span class="file-icon css">C</span> Opção 1: Substituição Total</h4>
+          <p>Substitua completamente o conteúdo do <code>styles.css</code> do Electron pelo seu CSS original.</p>
+          <ol>
+            <li>Abra seu <code>style.css</code> original</li>
+            <li>Selecione tudo (<code>Ctrl+A</code>)</li>
+            <li>Copie (<code>Ctrl+C</code>)</li>
+            <li>Abra <code>styles.css</code> do Electron</li>
+            <li>Substitua tudo (<code>Ctrl+A</code> + <code>Ctrl+V</code>)</li>
+          </ol>
+        </div>
+        
+        <div class="file-section target">
+          <h4><span class="file-icon css">C</span> Opção 2: Mesclar Estilos</h4>
+          <p>Adicione seus estilos ao final do <code>styles.css</code> existente do Electron.</p>
+          <ol>
+            <li>Abra <code>styles.css</code> do Electron</li>
+            <li>Vá até o final do arquivo</li>
+            <li>Adicione o comentário: <code>/* ESTILOS MIGRADOS */</code></li>
+            <li>Cole seu CSS original abaixo</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">4.2 CSS Adicional e Frameworks</div>
+      <p>Se você usa múltiplos arquivos CSS ou frameworks:</p>
+      
+      <div class="cmd-block">
+        <pre id="css_multiple"><!-- No index.html do Electron, adicione todos os CSS necessários -->
+&lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;link rel="stylesheet" href="assets/css/framework.css"&gt;
+&lt;link rel="stylesheet" href="assets/css/componentes.css"&gt;
+
+<!-- Para frameworks externos (Bootstrap, etc.) -->
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('css_multiple')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>5. Migrando o JavaScript</h2>
+    <div class="subpasso">
+      <div class="subtitulo">5.1 JavaScript Principal</div>
+      <p><strong>📂 DE ONDE PEGAR:</strong> Do seu arquivo <span class="path-label">script.js <button class="copy-path-btn" onclick="copyToClipboard('script.js')">📋</button></span> (ou similar) original</p>
+      <p><strong>📁 PARA ONDE COLOCAR:</strong> No arquivo <span class="path-label">renderer.js <button class="copy-path-btn" onclick="copyToClipboard('renderer.js')">📋</button></span> do Electron</p>
+
+      <div class="warning">
+        <strong>⚠️ Importante:</strong> No Electron, há separação entre "processo principal" (main.js) e "processo renderer" (renderer.js). Seu JavaScript de interface vai no renderer.js.
+      </div>
+
+      <p><strong>ESTRATÉGIAS DE MIGRAÇÃO:</strong></p>
+      
+      <ul>
+        <li><strong>ESTRATÉGIA 1: Substituição Total</strong><br>
+        Substitua todo o conteúdo do <code>renderer.js</code> pelo seu <code>script.js</code> original</li>
+        
+        <li><strong>ESTRATÉGIA 2: Mesclar Código</strong><br>
+        Mantenha as funcionalidades do Electron e adicione as suas ao final do arquivo</li>
+        
+        <li><strong>ESTRATÉGIA 3: Modular</strong><br>
+        Crie arquivos separados e importe no <code>index.html</code> usando múltiplas tags <code>&lt;script&gt;</code></li>
+      </ul>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">5.2 Exemplo Prático de Migração JS</div>
+      <p>Vamos supor que você tem este código no seu <code>script.js</code> original:</p>
+      
+      <div class="cmd-block">
+        <pre id="original_js">// script.js original
+document.addEventListener('DOMContentLoaded', function() {
+    const botao = document.getElementById('meuBotao');
+    const resultado = document.getElementById('resultado');
+    
+    botao.addEventListener('click', function() {
+        resultado.textContent = 'Botão clicado!';
+    });
+    
+    // Fetch para API externa
+    fetch('https://api.exemplo.com/dados')
+        .then(response => response.json())
+        .then(data => console.log(data));
+});</pre>
+        <button class="copy-btn" onclick="copyCode('original_js')">Copiar</button>
+      </div>
+
+      <p><strong>📁 COLE NO renderer.js do Electron:</strong></p>
+      
+      <div class="cmd-block">
+        <pre id="electron_js">// renderer.js do Electron - ADICIONE ao final do arquivo existente
+
+// ========== CÓDIGO MIGRADO ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Suas funcionalidades originais
+    const botao = document.getElementById('meuBotao');
+    const resultado = document.getElementById('resultado');
+    
+    if (botao && resultado) {
+        botao.addEventListener('click', function() {
+            resultado.textContent = 'Botão clicado!';
+            showFeedback('Ação executada!', 'success'); // Usa função do Electron
+        });
+    }
+    
+    // APIs externas funcionam normalmente no Electron
+    fetch('https://api.exemplo.com/dados')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            showFeedback('Dados carregados!', 'success');
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            showFeedback('Erro ao carregar dados', 'error');
+        });
+});</pre>
+        <button class="copy-btn" onclick="copyCode('electron_js')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>6. Migrando Assets (Imagens, Fontes, etc.)</h2>
+    <div class="subpasso">
+      <div class="subtitulo">6.1 Estrutura de Assets</div>
+      <p><strong>📂 DE ONDE PEGAR:</strong> Pastas como <code>images/</code>, <code>fonts/</code>, <code>icons/</code> do projeto original</p>
+      <p><strong>📁 PARA ONDE COLOCAR:</strong> Crie uma pasta <span class="path-label">assets <button class="copy-path-btn" onclick="copyToClipboard('assets')">📋</button></span> no projeto Electron</p>
+
+      <div class="cmd-block">
+        <pre id="create_assets">mkdir assets
+mkdir assets/images
+mkdir assets/fonts  
+mkdir assets/icons
+mkdir assets/css
+mkdir assets/js</pre>
+        <button class="copy-btn" onclick="copyCode('create_assets')">Copiar</button>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">6.2 Ajustando Caminhos</div>
+      <p>Após copiar os assets, você precisa ajustar os caminhos no seu HTML e CSS:</p>
+
+      <div class="file-comparison">
+        <div class="file-section source">
+          <h4>🔴 ANTES (Projeto Original)</h4>
+          <div class="cmd-block">
+            <pre><!-- HTML -->
+&lt;img src="images/logo.png"&gt;
+
+/* CSS */
+background-image: url('images/banner.jpg');
+
+/* JavaScript */
+document.querySelector('img').src = 'images/foto.png';</pre>
+          </div>
+        </div>
+        
+        <div class="file-section target">
+          <h4>🟢 DEPOIS (Electron)</h4>
+          <div class="cmd-block">
+            <pre><!-- HTML -->
+&lt;img src="assets/images/logo.png"&gt;
+
+/* CSS */
+background-image: url('assets/images/banner.jpg');
+
+/* JavaScript */
+document.querySelector('img').src = 'assets/images/foto.png';</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>7. Configurações Especiais do Electron</h2>
+    <div class="subpasso">
+      <div class="subtitulo">7.1 Atualizando package.json</div>
+      <p>Se seu projeto web usa dependências npm, adicione-as ao <span class="path-label">package.json <button class="copy-path-btn" onclick="copyToClipboard('package.json')">📋</button></span> do Electron:</p>
+      
+      <div class="cmd-block">
+        <pre id="package_json_update">{
+  "name": "meu-app-migrado",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}</pre>
+        <button class="copy-btn" onclick="copyCode('package_json_update')">Copiar</button>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">7.2 Configurando Segurança (webPreferences)</div>
+      <p>Se seu projeto usa recursos avançados, ajuste o <span class="path-label">main.js <button class="copy-path-btn" onclick="copyToClipboard('main.js')">📋</button></span>:</p>
+      
+      <div class="cmd-block">
+        <pre id="security_config">// No main.js, configure webPreferences conforme necessário
+const win = new BrowserWindow({
+  width: 1280,
+  height: 800,
+  webPreferences: {
+    nodeIntegration: false,          // Segurança
+    contextIsolation: true,          // Segurança  
+    enableRemoteModule: false,       // Segurança
+    webSecurity: true,              // Para CORS se necessário
+    allowRunningInsecureContent: false
+  }
+});</pre>
+        <button class="copy-btn" onclick="copyCode('security_config')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>8. Testando a Migração</h2>
+    <div class="subpasso">
+      <div class="subtitulo">8.1 Checklist de Verificação</div>
+      <div class="ok">
+        <strong>✅ LISTA DE VERIFICAÇÃO:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+          <li>✅ HTML carrega corretamente</li>
+          <li>✅ CSS está sendo aplicado</li>
+          <li>✅ JavaScript funciona sem erros</li>
+          <li>✅ Imagens e assets carregam</li>
+          <li>✅ Links internos funcionam</li>
+          <li>✅ APIs externas respondem</li>
+          <li>✅ Funcionalidades interativas operam</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">8.2 Executando e Debugando</div>
+      <div class="cmd-block">
+        <pre id="test_commands">npm install
+
+npm start</pre>
+        <button class="copy-btn" onclick="copyCode('test_commands')">Copiar</button>
+      </div>
+      <p><strong>Para debug:</strong> Abra DevTools no app com <code>Ctrl+Shift+I</code> (Windows/Linux) ou <code>Cmd+Option+I</code> (Mac)</p>
+    </div>
+
+    <h2>9. Exemplo Completo de Migração</h2>
+    <div class="subpasso">
+      <div class="subtitulo">9.1 Projeto Web Simples → Electron</div>
+      <p>Vamos ver um exemplo prático completo:</p>
+
+      <div class="warning">
+        <strong>📂 PROJETO ORIGINAL:</strong> Um site simples com calculadora
+      </div>
+      
+      <div class="cmd-block">
+        <pre id="original_project"><!-- index.html original -->
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Calculadora Web&lt;/title&gt;
+    &lt;link rel="stylesheet" href="calc.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="calculator"&gt;
+        &lt;input type="text" id="display" readonly&gt;
+        &lt;button onclick="clearDisplay()"&gt;C&lt;/button&gt;
+        &lt;button onclick="appendToDisplay('7')"&gt;7&lt;/button&gt;
+        &lt;!-- mais botões... --&gt;
+    &lt;/div&gt;
+    &lt;script src="calc.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('original_project')">Copiar</button>
+      </div>
+
+      <div class="ok">
+        <strong>📁 MIGRAÇÃO PARA ELECTRON:</strong>
+      </div>
+
+      <div class="cmd-block">
+        <pre id="electron_migration"><!-- index.html no Electron -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Calculadora Electron&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;🧮 Calculadora Desktop&lt;/h1&gt;
+        
+        &lt;!-- CONTEÚDO MIGRADO DO PROJETO ORIGINAL --&gt;
+        &lt;div class="calculator"&gt;
+            &lt;input type="text" id="display" readonly&gt;
+            &lt;button onclick="clearDisplay()"&gt;C&lt;/button&gt;
+            &lt;button onclick="appendToDisplay('7')"&gt;7&lt;/button&gt;
+            &lt;!-- mais botões... --&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;script src="renderer.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+        <button class="copy-btn" onclick="copyCode('electron_migration')">Copiar</button>
+      </div>
+
+      <p><strong>📄 No renderer.js, adicione as funções da calculadora:</strong></p>
+
+      <div class="cmd-block">
+        <pre id="renderer_calc">// renderer.js - Adicione ao final do arquivo
+
+// ========== FUNÇÕES MIGRADAS DA CALCULADORA ==========
+function clearDisplay() {
+    document.getElementById('display').value = '';
+    showFeedback('Display limpo', 'info');
+}
+
+function appendToDisplay(value) {
+    document.getElementById('display').value += value;
+}
+
+function calculate() {
+    try {
+        const result = eval(document.getElementById('display').value);
+        document.getElementById('display').value = result;
+        showFeedback('Cálculo realizado!', 'success');
+    } catch (error) {
+        document.getElementById('display').value = 'Erro';
+        showFeedback('Erro no cálculo', 'error');
+    }
+}</pre>
+        <button class="copy-btn" onclick="copyCode('renderer_calc')">Copiar</button>
+      </div>
+    </div>
+
+    <h2>10. Problemas Comuns e Soluções</h2>
+    <div class="subpasso">
+      <div class="subtitulo">10.1 Erros Frequentes</div>
+      <div class="alert">
+        <strong>❌ PROBLEMA:</strong> "Cannot read property of undefined"<br>
+        <strong>✅ SOLUÇÃO:</strong> Verifique se os IDs dos elementos HTML estão corretos após a migração.
+      </div>
+      
+      <div class="alert">
+        <strong>❌ PROBLEMA:</strong> CSS não carrega<br>
+        <strong>✅ SOLUÇÃO:</strong> Verifique os caminhos relativos dos arquivos CSS no HTML.
+      </div>
+      
+      <div class="alert">
+        <strong>❌ PROBLEMA:</strong> Imagens não aparecem<br>
+        <strong>✅ SOLUÇÃO:</strong> Ajuste os caminhos para <code>assets/images/</code> em todo o projeto.
+      </div>
+    </div>
+
+    <h2>11. Conclusão</h2>
+    <div class="ok">
+      <strong>🎉 Parabéns!</strong> Você aprendeu como migrar qualquer projeto web para Electron. 
+      O processo sempre segue o mesmo padrão:
+      <ul style="margin: 10px 0; padding-left: 20px;">
+        <li><strong>HTML</strong> → <code>index.html</code> (adaptar caminhos)</li>
+        <li><strong>CSS</strong> → <code>styles.css</code> (mesclar ou substituir)</li>
+        <li><strong>JS</strong> → <code>renderer.js</code> (adicionar ao final)</li>
+        <li><strong>Assets</strong> → <code>assets/</code> (ajustar caminhos)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="copy-notification"></div>
+
+  <script>
+    function copyCode(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
+      copyToClipboard(text);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showNotification('Copiado com sucesso!');
+        }).catch(err => {
+          showNotification('Erro ao copiar!', true);
+        });
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showNotification('Copiado com sucesso!');
+      }
+    }
+
+    function showNotification(message, isError = false) {
+      const notification = document.getElementById('copy-notification');
+      notification.textContent = message;
+      notification.style.backgroundColor = isError ? '#ef4444' : '#22c55e';
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

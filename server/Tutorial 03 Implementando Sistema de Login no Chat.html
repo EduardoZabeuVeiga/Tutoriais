@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 03: Implementando Sistema de Login no Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        .step {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Consolas', monospace;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .terminal-command {
+            background-color: #2d2d2d;
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .path-label {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .copy-path-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-path-btn:hover {
+            background-color: #218838;
+        }
+
+        .redirect-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .redirect-btn:hover {
+            background-color: #5a6268;
+        }
+
+        #copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copiado com sucesso!');
+            }).catch(err => {
+                showNotification('Erro ao copiar!', true);
+            });
+        }
+
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('copy-notification');
+            notification.textContent = message;
+            notification.style.backgroundColor = isError ? '#dc3545' : '#28a745';
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tutorial 03: Implementando Sistema de Login no Chat</h1>
+        
+        <div class="note">
+            <strong>Pré-requisitos:</strong>
+            <ul>
+                <li>Tutorial 02 completado (chat funcionando)</li>
+                <li>Servidor de chat rodando corretamente</li>
+                <li>Conhecimento básico de autenticação</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h2>1. Criando o Arquivo de Usuários</h2>
+            <p>Primeiro, vamos criar um arquivo para armazenar os usuários e senhas. Crie um arquivo chamado 
+            <span class="path-label">users.json <button class="copy-path-btn" onclick="copyToClipboard('users.json')">Copiar</button></span> 
+            na raiz do projeto com os seguintes usuários:</p>
+
+            <div class="code-block">
+                <pre>[
+    {
+        "username": "admin",
+        "password": "123456",
+        "role": "admin"
+    },
+    {
+        "username": "joao",
+        "password": "senha123",
+        "role": "user"
+    },
+    {
+        "username": "maria",
+        "password": "maria2024",
+        "role": "user"
+    }
+]</pre>
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>2. Atualizando o Servidor para Suportar Login</h2>
+            <p>Vamos modificar o arquivo <span class="path-label">server-chat.js <button class="copy-path-btn" onclick="copyToClipboard('server-chat.js')">Copiar</button></span> para incluir autenticação. Substitua todo o conteúdo do arquivo pelo código abaixo:</p>
+
+            <div class="code-block">
+                <pre>const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const fs = require('fs');
+const path = require('path');
+
+// Middleware para processar JSON
+app.use(express.json());
+
+// Carregar usuários do arquivo
+let users = [];
+try {
+    const usersData = fs.readFileSync('users.json', 'utf8');
+    users = JSON.parse(usersData);
+} catch (error) {
+    console.log('Erro ao carregar usuários:', error.message);
+    users = [];
+}
+
+// Rota principal redireciona para o login
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+});
+
+// Rota do chat (só acessível após login)
+app.get('/chat', (req, res) => {
+    res.sendFile(__dirname + '/public/chat.html');
+});
+
+// Rota para verificar login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        res.json({ 
+            success: true, 
+            message: 'Login realizado com sucesso!',
+            user: { username: user.username, role: user.role }
+        });
+    } else {
+        res.json({ 
+            success: false, 
+            message: 'Usuário ou senha incorretos!' 
+        });
+    }
+});
+
+// Servir arquivos estáticos da pasta 'public'
+app.use(express.static('public'));
+
+// Lista de usuários conectados
+const usuarios = new Set();
+
+// Configuração do Socket.IO com sistema de usuários
+io.on('connection', (socket) => {
+    let username = '';
+
+    // Quando um novo usuário entra
+    socket.on('novo usuario', (novoUsername) => {
+        username = novoUsername;
+        usuarios.add(username);
+        
+        // Avisar a todos que um novo usuário entrou
+        io.emit('system message', `${username} entrou no chat`);
+        
+        // Atualizar lista de usuários para todos
+        io.emit('users list', Array.from(usuarios));
+    });
+
+    // Quando um usuário envia uma mensagem
+    socket.on('chat message', (data) => {
+        io.emit('chat message', {
+            username: data.username,
+            message: data.message
+        });
+    });
+
+    // Quando um usuário desconecta
+    socket.on('disconnect', () => {
+        if (username) {
+            usuarios.delete(username);
+            io.emit('system message', `${username} saiu do chat`);
+            io.emit('users list', Array.from(usuarios));
+        }
+    });
+});
+
+// Iniciando o servidor na porta 3000
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});</pre>
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>3. Criando a Página de Login</h2>
+            <p>Agora vamos criar a interface de login. Dentro da pasta <span class="path-label">public <button class="copy-path-btn" onclick="copyToClipboard('public')">Copiar</button></span>, crie um arquivo chamado <span class="path-label">login.html <button class="copy-path-btn" onclick="copyToClipboard('login.html')">Copiar</button></span>:</p>
+
+            <div class="code-block">
+                <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Login - Chat em Tempo Real&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .login-header p {
+            color: #666;
+            margin: 10px 0 0 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .users-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .users-info h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .user-item {
+            margin: 8px 0;
+            font-family: monospace;
+            background-color: white;
+            padding: 8px;
+            border-radius: 3px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="login-container"&gt;
+        &lt;div class="login-header"&gt;
+            &lt;h1&gt;🔐 Login&lt;/h1&gt;
+            &lt;p&gt;Entre no chat em tempo real&lt;/p&gt;
+        &lt;/div&gt;
+        
+        &lt;form id="loginForm"&gt;
+            &lt;div class="form-group"&gt;
+                &lt;label for="username"&gt;Usuário:&lt;/label&gt;
+                &lt;input type="text" id="username" name="username" required&gt;
+            &lt;/div&gt;
+            
+            &lt;div class="form-group"&gt;
+                &lt;label for="password"&gt;Senha:&lt;/label&gt;
+                &lt;input type="password" id="password" name="password" required&gt;
+            &lt;/div&gt;
+            
+            &lt;button type="submit" class="login-btn" id="loginBtn"&gt;Entrar no Chat&lt;/button&gt;
+        &lt;/form&gt;
+        
+        &lt;div id="message" class="message"&gt;&lt;/div&gt;
+        
+        &lt;div class="users-info"&gt;
+            &lt;h3&gt;👥 Usuários de Teste:&lt;/h3&gt;
+            &lt;div class="user-item"&gt;&lt;strong&gt;admin&lt;/strong&gt; / 123456&lt;/div&gt;
+            &lt;div class="user-item"&gt;&lt;strong&gt;joao&lt;/strong&gt; / senha123&lt;/div&gt;
+            &lt;div class="user-item"&gt;&lt;strong&gt;maria&lt;/strong&gt; / maria2024&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const messageDiv = document.getElementById('message');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+
+        function hideMessage() {
+            messageDiv.style.display = 'none';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                showMessage('Por favor, preencha todos os campos!', 'error');
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Entrando...';
+            
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(result.message, 'success');
+                    // Salvar dados do usuário
+                    sessionStorage.setItem('user', JSON.stringify(result.user));
+                    // Redirecionar para o chat após 1 segundo
+                    setTimeout(() => {
+                        window.location.href = '/chat';
+                    }, 1000);
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Erro ao conectar com o servidor!', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar no Chat';
+            }
+        });
+
+        // Enter para enviar
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>4. Atualizando a Página do Chat</h2>
+            <p>Agora vamos modificar o arquivo <span class="path-label">chat.html <button class="copy-path-btn" onclick="copyToClipboard('chat.html')">Copiar</button></span> para trabalhar com o sistema de login. Substitua todo o conteúdo do arquivo:</p>
+
+            <div class="code-block">
+                <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Chat em Tempo Real&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        #chat-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #chat-content {
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        #main-chat {
+            flex: 1;
+        }
+        
+        #messages {
+            height: 400px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            border-radius: 4px;
+        }
+        
+        #user-list {
+            width: 250px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        #user-list h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        #users {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #users li {
+            padding: 8px;
+            margin: 5px 0;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            border-left: 3px solid #2196f3;
+        }
+        
+        .message {
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .system-message {
+            background-color: #fff3cd;
+            border-left: 3px solid #ffc107;
+            font-style: italic;
+            color: #856404;
+            text-align: center;
+            max-width: 100%;
+        }
+        
+        .user-message {
+            background-color: #e3f2fd;
+            border-left: 3px solid #2196f3;
+        }
+        
+        .my-message {
+            background-color: #e8f5e8;
+            border-left: 3px solid #4caf50;
+            margin-left: auto;
+        }
+        
+        #controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        #controls input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        #controls button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        #controls button:hover {
+            background-color: #0056b3;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="chat-container"&gt;
+        &lt;div class="chat-header"&gt;
+            &lt;div class="user-info"&gt;
+                &lt;span&gt;💬 Chat em Tempo Real&lt;/span&gt;
+                &lt;span id="current-user"&gt;&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;button class="logout-btn" onclick="logout()"&gt;🚪 Sair&lt;/button&gt;
+        &lt;/div&gt;
+        
+        &lt;div id="chat-content"&gt;
+            &lt;div id="main-chat"&gt;
+                &lt;div id="messages"&gt;&lt;/div&gt;
+                &lt;div id="controls"&gt;
+                    &lt;input type="text" id="message" placeholder="Digite sua mensagem" /&gt;
+                    &lt;button onclick="enviarMensagem()"&gt;Enviar&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div id="user-list"&gt;
+                &lt;h3&gt;Usuários Online&lt;/h3&gt;
+                &lt;ul id="users"&gt;&lt;/ul&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script src="/socket.io/socket.io.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        // Verificar se o usuário está logado
+        const userData = sessionStorage.getItem('user');
+        if (!userData) {
+            window.location.href = '/';
+            throw new Error('Usuário não logado');
+        }
+        
+        const user = JSON.parse(userData);
+        const socket = io();
+        
+        // Elementos do DOM
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('message');
+        const usersList = document.getElementById('users');
+        const currentUserSpan = document.getElementById('current-user');
+        
+        // Mostrar nome do usuário logado
+        currentUserSpan.textContent = `👤 ${user.username}`;
+        
+        // Entrar automaticamente no chat com o usuário logado
+        socket.emit('novo usuario', user.username);
+        
+        function enviarMensagem() {
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.emit('chat message', {
+                    username: user.username,
+                    message: message
+                });
+                messageInput.value = '';
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        // Pressionar Enter para enviar mensagem
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                enviarMensagem();
+            }
+        });
+
+        // Receber mensagens
+        socket.on('chat message', (data) => {
+            const messageElement = document.createElement('div');
+            const isMyMessage = data.username === user.username;
+            messageElement.className = `message ${isMyMessage ? 'my-message' : 'user-message'}`;
+            messageElement.textContent = `${data.username}: ${data.message}`;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+
+        // Atualizar lista de usuários
+        socket.on('users list', (users) => {
+            usersList.innerHTML = '';
+            users.forEach(username => {
+                const li = document.createElement('li');
+                li.textContent = username;
+                if (username === user.username) {
+                    li.style.backgroundColor = '#c8e6c9';
+                    li.style.borderLeftColor = '#4caf50';
+                }
+                usersList.appendChild(li);
+            });
+        });
+
+        // Mensagens do sistema
+        socket.on('system message', (message) => {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message system-message';
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+
+        // Status de conexão
+        socket.on('connect', () => {
+            console.log('Conectado ao servidor');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Desconectado do servidor');
+        });
+        
+        // Focar no campo de mensagem
+        messageInput.focus();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>5. Testando o Sistema de Login</h2>
+            <p>Agora vamos testar o sistema completo:</p>
+
+            <div class="terminal-command">
+                <pre>npm start</pre>
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+
+            <div class="success">
+                <p>Acesse <span class="path-label">http://localhost:3000 
+                <button class="copy-path-btn" onclick="copyToClipboard('http://localhost:3000')">Copiar</button>
+                <a href="http://localhost:3000" target="_blank" class="redirect-btn">Abrir</a></span>
+                </p>
+            </div>
+
+            <ol>
+                <li>Você verá a tela de login com os usuários de teste</li>
+                <li>Teste com um dos usuários:
+                    <ul>
+                        <li><strong>admin</strong> / 123456</li>
+                        <li><strong>joao</strong> / senha123</li>
+                        <li><strong>maria</strong> / maria2024</li>
+                    </ul>
+                </li>
+                <li>Após login bem-sucedido, será redirecionado para o chat</li>
+                <li>O chat mostrará seu nome de usuário no cabeçalho</li>
+                <li>Suas mensagens aparecerão destacadas em verde</li>
+            </ol>
+
+            <div class="note">
+                <h3>Como Testar com Múltiplos Usuários</h3>
+                <p>Para simular múltiplos usuários logados:</p>
+                <ol>
+                    <li>Faça login com um usuário em uma janela normal</li>
+                    <li>Abra uma janela anônima (<code>Ctrl + Shift + N</code>)</li>
+                    <li>Acesse <code>http://localhost:3000</code> na janela anônima</li>
+                    <li>Faça login com outro usuário</li>
+                    <li>Agora você pode conversar entre os dois usuários!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>6. Funcionalidades Implementadas</h2>
+            <p>O sistema agora possui:</p>
+            <ul>
+                <li><strong>Autenticação segura:</strong> Login com usuário e senha</li>
+                <li><strong>Proteção de rotas:</strong> Chat só acessível após login</li>
+                <li><strong>Sessão de usuário:</strong> Dados salvos durante a navegação</li>
+                <li><strong>Interface de login:</strong> Design moderno e responsivo</li>
+                <li><strong>Identificação visual:</strong> Mensagens próprias destacadas</li>
+                <li><strong>Sistema de logout:</strong> Sair do chat com segurança</li>
+                <li><strong>Usuários de teste:</strong> Três contas pré-configuradas</li>
+                <li><strong>Validação de dados:</strong> Verificação de campos obrigatórios</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h2>Estrutura Final do Projeto</h2>
+            <pre>
+server-z-novo/
+├── node_modules/
+├── public/
+│   ├── index.html      (teste básico do Tutorial 01)
+│   ├── chat.html       (chat com sistema de login)
+│   └── login.html      (página de autenticação)
+├── users.json          (banco de dados de usuários)
+├── server.js           (servidor básico do Tutorial 01)
+├── server-chat.js      (servidor com autenticação)
+├── package.json
+└── package-lock.json</pre>
+        </div>
+
+        <div class="note">
+            <h3>Próximos Passos</h3>
+            <ul>
+                <li>Adicione criptografia nas senhas (bcrypt)</li>
+                <li>Implemente registro de novos usuários</li>
+                <li>Adicione diferentes níveis de permissão</li>
+                <li>Crie sistema de salas privadas</li>
+                <li>Implemente histórico de mensagens por usuário</li>
+                <li>Adicione notificações push</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="copy-notification"></div>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('pre').innerText;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Copiado!';
+                button.style.backgroundColor = '#28a745';
+                
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.backgroundColor = '#007bff';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

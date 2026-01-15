@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tutorial — Adicionar atalhos ao menu de contexto (fundo da pasta)</title>
+  <title>Tutorial — Menu de Contexto (Arquivos, Pastas e Fundo)</title>
   <style>
     :root{
       --bg:#0f172a;
@@ -107,12 +107,17 @@
       content: counter(step) "."; margin-right:8px; color:var(--acc)
     }
     .step h3{display:flex; align-items:center}
+    /* Destaque para a nova seção */
+    .highlight-card {
+      border: 1px solid var(--acc);
+      background: rgba(96, 165, 250, 0.05);
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Atalhos no menu de contexto (fundo da pasta)</h1>
-    <div class="subtitle">Guia prático para criar e manter comandos no clique direito — <span class="badge">HKCU\\Software\\Classes\\Directory\\Background\\shell</span></div>
+    <h1>Menu de Contexto Customizado</h1>
+    <div class="subtitle">Guia prático para criar comandos no Fundo, Arquivos e Pastas</div>
   </header>
 
   <main>
@@ -122,52 +127,90 @@
       </a>
       <a href="index.html" class="nav-button">Voltar ao Índice</a>
     </div>
+
     <section class="card">
       <h2>Visão geral</h2>
-      <p>Este tutorial explica como adicionar itens personalizados ao <strong>menu de contexto quando você clica com o botão direito em um espaço vazio de uma pasta</strong>. O método usa somente o Registro do Windows no caminho <code>HKEY_CURRENT_USER\\Software\\Classes\\Directory\\Background\\shell</code>, não requer admin e funciona por usuário.</p>
-      <p class="tip"><strong>Dica rápida:</strong> Para scripts que precisam saber <em>qual pasta foi clicada</em>, use o placeholder <code>"%V"</code> como argumento.</p>
+      <p>Este tutorial explica como adicionar itens personalizados ao menu do botão direito no Windows. O método usa o Registro (Regedit) em <code>HKEY_CURRENT_USER\Software\Classes\...</code>, não requer admin e é seguro.</p>
     </section>
 
-    <section class="card">
-      <h2>Modelo básico (um comando)</h2>
-      <ol>
-        <li class="step">
-          <h3>Criar a chave do item</h3>
-          <p>Abra <kbd>regedit</kbd> e navegue até <code>HKCU\\Software\\Classes\\Directory\\Background\\shell</code>. Clique com o botão direito em <em>shell</em> → <em>Novo &gt; Chave</em>. Nome sugestivo, ex.: <code>Estrutura</code>.</p>
-        </li>
-        <li class="step">
-          <h3>Definir o texto visível</h3>
-          <p>Do lado direito, dê duplo clique em <em>(Padrão)</em> e defina, por exemplo: <code>Criar Estrutura</code>.</p>
-        </li>
-        <li class="step">
-          <h3>Apontar o comando</h3>
-          <p>Crie uma subchave chamada <code>command</code> dentro da sua chave (<code>Estrutura</code>). No <em>(Padrão)</em> coloque:</p>
-          <pre>wscript.exe "G:\Meu Drive\workspace\estrutura.vbs" "%V"</pre>
-          <p>Isso chama o <code>wscript.exe</code> e passa o caminho da pasta atual (<code>%V</code>) ao seu script.</p>
-        </li>
-      </ol>
-      <div class="ok"><strong>Pronto!</strong> Abra qualquer pasta, clique no fundo com o botão direito e use o comando.</div>
-    </section>
-
-    <section class="card">
-      <h2>Outros tipos de comandos (exemplos prontos)</h2>
+    <section class="card highlight-card">
+      <h2>🎯 Onde você quer clicar? (A Regra de Ouro)</h2>
+      <p>O local onde você cria a chave no registro muda dependendo de onde você quer clicar com o mouse.</p>
+      
       <div class="grid">
         <div>
-          <h3>.BAT / .CMD</h3>
-          <pre>cmd.exe /c ""C:\Caminho\minha-acao.bat" "%V"""</pre>
-          <p class="small">Observação: o par de aspas duplas após <code>/c</code> é intencional para preservar caminhos com espaços.</p>
+          <h3>📂 Em cima de uma PASTA</h3>
+          <p class="small">Ex: Renomear a pasta, Carimbar versão.</p>
+          <p><strong>Caminho:</strong> <code>Directory\shell</code></p>
+          <p>Note que <strong>NÃO</strong> tem "Background".</p>
+          <pre>Argumento: "%V"</pre>
+          <p class="small muted">O %V envia o caminho da pasta clicada.</p>
+        </div>
+
+        <div>
+          <h3>📄 Em cima de um ARQUIVO</h3>
+          <p class="small">Ex: Abrir arquivo, Converter imagem.</p>
+          <p><strong>Caminho:</strong> <code>*\shell</code></p>
+          <p>A pasta se chama literalmente asterisco (*).</p>
+          <pre>Argumento: "%1"</pre>
+          <p class="small muted">O %1 envia o caminho do arquivo clicado.</p>
+        </div>
+
+        <div>
+          <h3>🖱️ No VAZIO (Fundo da Pasta)</h3>
+          <p class="small">Ex: Abrir terminal aqui, Criar estrutura.</p>
+          <p><strong>Caminho:</strong> <code>Directory\Background\shell</code></p>
+          <p>Note a pasta extra "Background".</p>
+          <pre>Argumento: "%V"</pre>
+          <p class="small muted">O %V envia o caminho da pasta onde você está.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Passo a Passo (Como criar)</h2>
+      <ol>
+        <li class="step">
+          <h3>Escolha o caminho</h3>
+          <p>Abra o <kbd>regedit</kbd> e navegue até <code>HKEY_CURRENT_USER\Software\Classes\</code>. Escolha a subpasta com base na tabela acima (ex: <code>Directory\shell</code> para pastas).</p>
+        </li>
+        <li class="step">
+          <h3>Crie a chave do item (O Nome)</h3>
+          <p>Clique com botão direito em <em>shell</em> → <em>Novo &gt; Chave</em>. Dê um nome interno (ex: <code>versionamento</code>).</p>
+          <p>No lado direito, edite o <em>(Padrão)</em> para o nome que vai aparecer no menu (ex: <code>Carimbar Versão</code>).</p>
+        </li>
+        <li class="step">
+          <h3>Crie a chave do comando</h3>
+          <p>Dentro da pasta que você acabou de criar, crie outra Chave chamada obrigatoriamente de <code>command</code>.</p>
+        </li>
+        <li class="step">
+          <h3>Defina o Script</h3>
+          <p>Dentro de <code>command</code>, edite o <em>(Padrão)</em> com o código:</p>
+          <pre>wscript.exe "G:\Meu Drive\workspace\script.vbs" "%V"</pre>
+          <div class="warn"><strong>Atenção:</strong> Se for para <strong>Arquivos (*)</strong>, troque o final <code>"%V"</code> por <code>"%1"</code>.</div>
+        </li>
+      </ol>
+      <div class="ok"><strong>Pronto!</strong> Não precisa reiniciar, o menu aparece na hora.</div>
+    </section>
+
+    <section class="card">
+      <h2>Exemplos de Códigos</h2>
+      <div class="grid">
+        <div>
+          <h3>Script VBS (Pastas)</h3>
+          <pre>wscript.exe "C:\Scripts\vers.vbs" "%V"</pre>
         </div>
         <div>
-          <h3>PowerShell (.ps1)</h3>
-          <pre>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Caminho\acao.ps1" "%V"</pre>
+          <h3>Script VBS (Arquivos)</h3>
+          <pre>wscript.exe "C:\Scripts\vers.vbs" "%1"</pre>
         </div>
         <div>
-          <h3>Executável (.exe)</h3>
-          <pre>"C:\Caminho\app.exe" "%V"</pre>
+          <h3>Arquivo .BAT</h3>
+          <pre>cmd.exe /c ""C:\Script.bat" "%V"""</pre>
         </div>
         <div>
-          <h3>VBS (outro local)</h3>
-          <pre>wscript.exe "C:\Scripts\util.vbs" "%V"</pre>
+          <h3>PowerShell</h3>
+          <pre>powershell.exe -File "C:\Scpt.ps1" "%V"</pre>
         </div>
       </div>
     </section>
@@ -175,129 +218,19 @@
     <section class="card">
       <h2>Melhorias úteis (opcionais)</h2>
       <h3>Ícone no menu</h3>
-      <p>Na sua chave do item (ex.: <code>Estrutura</code>), crie um valor de cadeia (REG_SZ) chamado <code>Icon</code> com o caminho do ícone:</p>
+      <p>Na sua chave do item (ex: <code>versionamento</code>), crie um valor de cadeia (REG_SZ) chamado <code>Icon</code>:</p>
       <pre>(REG_SZ) Icon = "C:\Caminho\icone.ico"</pre>
-      <p class="small muted">Também funciona apontar para um .exe ou .dll com índice, ex.: <code>"C:\Windows\System32\shell32.dll,80"</code>.</p>
 
-      <h3>Mostrar somente com Shift (menu estendido)</h3>
-      <p>Crie um valor de cadeia vazio chamado <code>Extended</code>. O item só aparece ao usar <kbd>Shift</kbd> + clique direito.</p>
-      <pre>(REG_SZ) Extended = ""</pre>
-
-      <h3>Posicionar no topo ou base</h3>
-      <p>Crie um valor de cadeia <code>Position</code> com <code>Top</code> ou <code>Bottom</code>:</p>
-      <pre>(REG_SZ) Position = "Top"</pre>
-
-      <h3>Separadores visuais</h3>
-      <p>Algumas versões do Explorer respeitam chaves vazias para separadores. Você pode criar valores (REG_SZ) <code>SeparatorBefore</code> e/ou <code>SeparatorAfter</code>:</p>
-      <pre>(REG_SZ) SeparatorBefore = ""</pre>
-
-      <h3>Atalhos de teclado (aceleradores)</h3>
-      <p>No texto do menu, prefixe uma letra com <code>&amp;</code> para sublinhá-la: <code>&amp;Criar Estrutura</code> (atalho: <kbd>C</kbd>).</p>
-    </section>
-
-    <section class="card">
-      <h2>Submenu com vários comandos</h2>
-      <p>Você pode criar um grupo (submenu) e, dentro dele, múltiplos itens.</p>
-      <ol>
-        <li class="step">
-          <h3>Criar o grupo</h3>
-          <p>Em <code>...\\shell</code>, crie a chave <code>Ferramentas</code>. Defina <em>(Padrão)</em> como <code>Minhas Ferramentas</code>. (Opcional) adicione <code>Icon</code>.</p>
-        </li>
-        <li class="step">
-          <h3>Adicionar os filhos</h3>
-          <p>Dentro de <code>Ferramentas</code>, crie uma subchave chamada <code>shell</code>. Cada item fica como uma chave dentro dessa <code>shell</code> interna:</p>
-          <pre>
-Ferramentas
- ├─ (Padrão) = "Minhas Ferramentas"
- ├─ Icon = "C:\Caminho\icone.ico"     (opcional)
- └─ shell
-     ├─ Estrutura
-     │   └─ command
-     │       └─ (Padrão) = wscript.exe "G:\Meu Drive\workspace\estrutura.vbs" "%V"
-     └─ AbrirCMD
-         └─ command
-             └─ (Padrão) = cmd.exe /k "cd /d "%V""
-          </pre>
-        </li>
-      </ol>
-      <p class="tip small">No exemplo acima, <em>AbrirCMD</em> mantém o prompt na pasta clicada.</p>
-    </section>
-
-    <section class="card">
-      <h2>Modelos (.reg) para importar</h2>
-      <p>Copie, salve como <code>.reg</code> e dê dois cliques para importar.</p>
-      <h3>1) Item simples chamando VBS (seu caso)</h3>
-      <pre>Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Estrutura]
-@="Criar Estrutura"
-"Icon"="C:\\Windows\\System32\\shell32.dll,268"  ; opcional
-"Position"="Top"                                 ; opcional
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Estrutura\command]
-@="wscript.exe \"G:\\Meu Drive\\workspace\\estrutura.vbs\" \"%V\""
-</pre>
-
-      <h3>2) Submenu com dois itens</h3>
-      <pre>Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas]
-@="Minhas Ferramentas"
-"Icon"="C:\\Windows\\System32\\imageres.dll,15"
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas\shell]
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas\shell\Estrutura]
-@="&amp;Criar Estrutura"
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas\shell\Estrutura\command]
-@="wscript.exe \"G:\\Meu Drive\\workspace\\estrutura.vbs\" \"%V\""
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas\shell\AbrirCMD]
-@="Abrir &amp;Prompt aqui"
-
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Ferramentas\shell\AbrirCMD\command]
-@="cmd.exe /k \"cd /d \"%V\"\""
-</pre>
-      <p class="small muted">Atenção às barras invertidas duplas (<code>\\</code>) e aspas escapadas (<code>\"</code>) dentro do arquivo .reg.</p>
-    </section>
-
-    <section class="card">
-      <h2>Boas práticas</h2>
-      <ul>
-        <li>Use caminhos absolutos e entre aspas; evite depender da pasta atual.</li>
-        <li>Teste com pastas que têm espaços e acentos.</li>
-        <li>Para scripts PowerShell, prefira <code>-NoProfile</code> e <code>-ExecutionPolicy Bypass</code> para reduzir interferências.</li>
-        <li>Mantenha todos os scripts/atalhos em uma pasta dedicada, ex.: <code>G:\Meu Drive\workspace</code>.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Remover/Desinstalar um item</h2>
-      <p>Para remover, apague a chave do item (ou do submenu) que você criou. Exemplo:</p>
-      <pre>HKCU\Software\Classes\Directory\Background\shell\Estrutura</pre>
-      <details>
-        <summary>Modelo .reg para remover</summary>
-        <pre>Windows Registry Editor Version 5.00
-
-[-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Estrutura]
-</pre>
-      </details>
-    </section>
-
-    <section class="card">
-      <h2>Resolução de problemas</h2>
-      <ul>
-        <li><strong>O item não aparece:</strong> confirme o caminho da chave; reinicie o Explorer (Gerenciador de Tarefas → <em>Windows Explorer</em> → Reiniciar).</li>
-        <li><strong>O comando não roda:</strong> verifique as aspas e se o arquivo existe; teste o comando direto no <kbd>Win+R</kbd>.</li>
-        <li><strong>Script PowerShell bloqueado:</strong> certifique-se de usar <code>-ExecutionPolicy Bypass</code> no comando.</li>
-        <li><strong>Quero que apareça só com Shift:</strong> adicione o valor <code>Extended</code> vazio na chave do item.</li>
-      </ul>
+      <h3>Mostrar somente com Shift</h3>
+      <p>Crie um valor de cadeia vazio chamado <code>Extended</code>. O item só aparece ao segurar <kbd>Shift</kbd>.</p>
+      
+      <h3>Posicionar no topo</h3>
+      <p>Crie um valor de cadeia <code>Position</code> com o texto <code>Top</code>.</p>
     </section>
 
     <div class="hr"></div>
     <footer class="small muted">
-      Versão 1.0 — Este guia foi feito para uso interno. Modifique os caminhos conforme necessário.
+      Versão 2.0 — Atualizado com suporte para Arquivos e Pastas individuais.
     </footer>
   </main>
 </body>

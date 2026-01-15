@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de Atalhos Git</title>
     <style>
+
         .tooltip {
             position: absolute;
             background: #222;
@@ -138,7 +139,6 @@
     <section class="baloes-section">
         <div class="container">
             <div id="tooltip" class="tooltip"></div>
-            <!-- Commit -->
             <div class="card">
                 <div class="card-title">Commit</div>
                 <div class="card-desc">Salve alterações no repositório local.</div>
@@ -146,7 +146,6 @@
                 <button class="cmd-btn" data-tooltip="Cria um commit com a mensagem informada. Salva as alterações no histórico do repositório." onclick='copiarComando("git commit -m \"mensagem\"", this)'>git commit -m "mensagem"</button>
                 <button class="cmd-btn" data-tooltip="Altera o último commit (mensagem ou arquivos). Use com cuidado!" onclick='copiarComando("git commit --amend", this)'>git commit --amend</button>
             </div>
-            <!-- Branch -->
             <div class="card">
                 <div class="card-title">Branch</div>
                 <div class="card-desc">Gerencie ramificações do projeto.</div>
@@ -155,7 +154,6 @@
                 <button class="cmd-btn" data-tooltip="Cria e já troca para uma nova branch." onclick="copiarComando('git checkout -b nova-branch', this)">git checkout -b nova-branch</button>
                 <button class="cmd-btn" data-tooltip="Remove a branch localmente (apenas se já foi mesclada)." onclick="copiarComando('git branch -d nome-da-branch', this)">git branch -d nome-da-branch</button>
             </div>
-            <!-- Push/Pull -->
             <div class="card">
                 <div class="card-title">Push & Pull</div>
                 <div class="card-desc">Envie ou receba alterações do repositório remoto.</div>
@@ -163,34 +161,29 @@
                 <button class="cmd-btn" data-tooltip="Baixa e integra as alterações do repositório remoto." onclick="copiarComando('git pull', this)">git pull</button>
                 <button class="cmd-btn" data-tooltip="Envia a branch atual para o remoto e define como padrão para futuros pushes." onclick="copiarComando('git push -u origin nome-da-branch', this)">git push -u origin nome-da-branch</button>
             </div>
-            <!-- Clone -->
             <div class="card">
                 <div class="card-title">Clone</div>
                 <div class="card-desc">Clone um repositório remoto para sua máquina.</div>
                 <button class="cmd-btn" data-tooltip="Clona um repositório remoto para sua máquina." onclick="copiarComando('git clone https://github.com/usuario/repositorio.git', this)">git clone ...</button>
             </div>
-            <!-- Stash -->
             <div class="card">
                 <div class="card-title">Stash</div>
                 <div class="card-desc">Guarde alterações temporariamente.</div>
                 <button class="cmd-btn" data-tooltip="Guarda temporariamente alterações não commitadas." onclick="copiarComando('git stash', this)">git stash</button>
                 <button class="cmd-btn" data-tooltip="Restaura as alterações guardadas pelo último stash." onclick="copiarComando('git stash pop', this)">git stash pop</button>
             </div>
-            <!-- Log -->
             <div class="card">
                 <div class="card-title">Log</div>
                 <div class="card-desc">Veja o histórico de commits.</div>
                 <button class="cmd-btn" data-tooltip="Mostra o histórico completo de commits." onclick="copiarComando('git log', this)">git log</button>
                 <button class="cmd-btn" data-tooltip="Mostra o histórico de commits em uma linha por commit." onclick="copiarComando('git log --oneline', this)">git log --oneline</button>
             </div>
-            <!-- Reset/Revert -->
             <div class="card">
                 <div class="card-title">Reset & Revert</div>
                 <div class="card-desc">Desfaça alterações locais ou remotas.</div>
                 <button class="cmd-btn" data-tooltip="Desfaz todas as alterações locais e volta ao último commit." onclick="copiarComando('git reset --hard HEAD', this)">git reset --hard HEAD</button>
                 <button class="cmd-btn" data-tooltip="Cria um novo commit que desfaz as alterações do commit informado." onclick="copiarComando('git revert hash-do-commit', this)">git revert hash-do-commit</button>
             </div>
-            <!-- Merge/Rebase -->
             <div class="card">
                 <div class="card-title">Merge & Rebase</div>
                 <div class="card-desc">Integre alterações de branches.</div>
@@ -202,6 +195,29 @@
 
     <section class="roteiro-section" style="background:#f0f4ff; border-radius:12px; max-width: 900px; margin: 0 auto; padding: 24px 12px 32px 12px;">
         <h2 style="color:#1a237e; font-size:1.18em; margin-bottom:10px;">Roteiros de Uso Rápido</h2>
+        
+        <div style="margin-bottom: 32px;">
+            <strong>Vincular seu projeto local a um repositório remoto existente (em branco):</strong>
+            <ol style="margin: 8px 0 0 20px;">
+                <li>
+                    <span>Inicializar o repositório local:</span><br>
+                    <button class="cmd-btn" data-tooltip="Inicializa o controle do Git na pasta atual." onclick="copiarComando('git init', this)">git init</button>
+                </li>
+                <li>
+                    <span>Adicionar a origem remota:</span><br>
+                    <button class="cmd-btn" data-tooltip="Substitua a URL pela do seu repositório." onclick="copiarComando('git remote add origin https://SEU_LINK_DO_GITHUB.git', this)">git remote add origin https://SEU_LINK_DO_GITHUB.git</button>
+                </li>
+                <li>
+                    <span>Adicionar arquivos e salvar (commit):</span><br>
+                    <button class="cmd-btn" data-tooltip="Adiciona todos os arquivos ao stage." onclick="copiarComando('git add .', this)">git add .</button>
+                    <button class="cmd-btn" data-tooltip="Cria o primeiro commit." onclick="copiarComando('git commit -m &quot;Primeiro commit&quot;', this)">git commit -m "Primeiro commit"</button>
+                </li>
+                <li>
+                    <span>Definir branch e enviar:</span><br>
+                    <button class="cmd-btn" data-tooltip="Renomeia a branch para main e envia para o remoto." onclick="copiarComando('git branch -M main && git push -u origin main', this)">git branch -M main && git push -u origin main</button>
+                </li>
+            </ol>
+        </div>
         <div style="margin-bottom: 32px;">
             <strong>Fazer um convite para colaborar em um repositório:</strong>
             <ol style="margin: 8px 0 0 20px;">
