@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial SEO - Otimize seu Site no Google</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto; padding: 20px; color: #333; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #8e44ad; }
+        h2 { color: #8e44ad; margin-top: 30px; }
+        .step { background: #f9f9f9; padding: 15px; border-left: 5px solid #8e44ad; margin-bottom: 20px; }
+        code { background: #eee; padding: 2px 5px; border-radius: 4px; }
+        .highlight { font-weight: bold; color: #d35400; }
+    </style>
+</head>
+<body>
+
+    <h1>Tutorial: Como otimizar seu site no Google</h1>
+    <p>Este guia apresenta o passo a passo completo para melhorar a visibilidade do seu site nos resultados de busca do Google. Funciona para qualquer tipo de negócio ou projeto web.</p>
+
+    <div class="step">
+        <h2>Passo 1: Criar conta no Google Search Console</h2>
+        <p>O Google Search Console é a ferramenta oficial do Google para monitorar e otimizar a presença do seu site nas buscas.</p>
+        <ol>
+            <li>Acesse <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a> e faça login com sua conta Google.</li>
+            <li>Clique em <span class="highlight">"Adicionar propriedade"</span>.</li>
+            <li>Selecione a opção <strong>"Domínio"</strong> (recomendado) e digite seu domínio (ex: <code>seusite.com.br</code>)</li>
+            <li>O Google vai solicitar uma verificação de propriedade via registro DNS.</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 2: Verificação de Propriedade via DNS</h2>
+        <p>Agora você precisa provar ao Google que é o dono do seu domínio.</p>
+        <ol>
+            <li>O Search Console vai gerar um código de verificação (algo como <code>google-site-verification=XXXX...</code>).</li>
+            <li>Copie esse código.</li>
+            <li>Acesse o painel de controle do seu provedor de hospedagem/registrador de domínio (ex: UOL Host, GoDaddy, Namecheap, etc).</li>
+            <li>Localize a seção de <em>Gerenciar DNS</em> ou <em>Zona DNS</em>.</li>
+            <li>Adicione um novo registro do tipo <strong>TXT</strong>:
+                <ul>
+                    <li><strong>Nome/Host:</strong> @ (ou deixe em branco)</li>
+                    <li><strong>Tipo:</strong> TXT</li>
+                    <li><strong>Valor:</strong> cole o código do Google</li>
+                </ul>
+            </li>
+            <li>Salve as alterações e aguarde alguns minutos (pode levar até 48h para propagar em toda a internet).</li>
+            <li>Volte ao Search Console e clique em <span class="highlight">"Verificar"</span>.</li>
+        </ol>
+        <p>✅ Pronto! Seu domínio está verificado e vinculado à sua conta Google.</p>
+    </div>
+
+    <div class="step">
+        <h2>Passo 3: Indexação Manual (Acelerar o Google)</h2>
+        <p>Não espere o Google encontrar você por acaso. Solicite que ele indexe seu site para agilizar o processo!</p>
+        <ol>
+            <li>No Search Console, vá na barra superior de pesquisa.</li>
+            <li>Digite a URL da sua página inicial (ex: <code>https://seusite.com.br</code>) e aperte Enter.</li>
+            <li>Clique em <span class="highlight">"Solicitar Indexação"</span>. Isso coloca suas páginas na fila prioritária de leitura do robô do Google.</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 4: Google Meu Negócio (SEO Local - Opcional)</h2>
+        <p>Se seu negócio tem uma localização física ou atende uma região específica, ativar o Google Meu Negócio é essencial para aparecer no Google Maps e nas buscas locais.</p>
+        <ul>
+            <li>Acesse o <a href="https://www.google.com/business/" target="_blank">Google Business</a>.</li>
+            <li>Cadastre o nome do seu negócio.</li>
+            <li>Insira seu endereço (ou área de atendimento) e telefone de contato. Isso garante que você apareça para quem busca negócios na sua região.</li>
+            <li><strong>Nota:</strong> Se seu negócio é 100% online, você pode pular esta etapa.</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>Passo 5: SEO On-Page (No código do seu site)</h2>
+        <p>Adicione estas tags essenciais dentro do <code>&lt;head&gt;</code> do seu HTML para melhorar como seu site aparece nos resultados de busca:</p>
+        <code>
+            &lt;title&gt;Seu Título Principal | Nome da Empresa&lt;/title&gt;<br>
+            &lt;meta name="description" content="Descrição clara e concisa do que seu site oferece (máximo 160 caracteres)."&gt;<br>
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        </code>
+        <p><strong>Dicas:</strong></p>
+        <ul>
+            <li>O título deve ser único para cada página e conter palavras-chave importantes.</li>
+            <li>A meta description deve resumir o conteúdo da página de forma atrativa para o usuário.</li>
+            <li>Mantenha o título com menos de 60 caracteres e a descrição com 150-160 caracteres.</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>Passo 6: Certificado SSL (Segurança)</h2>
+        <p>O Google penaliza sites sem HTTPS (o cadeado verde). Verifique se seu certificado SSL está ativo:</p>
+        <ul>
+            <li>Acesse seu site e veja se há um <span class="highlight">cadeado verde</span> na barra de endereço do navegador.</li>
+            <li>Se não houver: acesse o painel de controle da sua hospedagem e procure pela opção <em>SSL/TLS</em> ou <em>Let's Encrypt</em>.</li>
+            <li>A maioria dos provedores oferece certificados SSL gratuitos. Ative-o e seu site passará a funcionar com HTTPS.</li>
+            <li><strong>Importante:</strong> Após ativar SSL, redirecione todo tráfego HTTP para HTTPS nas configurações do site.</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>Próximos Passos (Continuado)</h2>
+        <p>Depois que completar os 6 passos acima, você pode melhorar ainda mais seu ranking com:</p>
+        <ul>
+            <li><strong>Conteúdo de qualidade:</strong> Crie artigos, guias e materiais úteis que resolvem problemas do seu público.</li>
+            <li><strong>Links internos:</strong> Interconecte suas páginas para ajudar o Google a mapear seu site.</li>
+            <li><strong>Velocidade do site:</strong> Otimize imagens e reduza o tempo de carregamento.</li>
+            <li><strong>Mobile-friendly:</strong> Garanta que seu site funciona bem em smartphones.</li>
+            <li><strong>Redes sociais:</strong> Compartilhe seu conteúdo para aumentar a presença online.</li>
+        </ul>
+        <p>Monitorar regularmente o Search Console ajuda a identificar erros e oportunidades de melhoria.</p>
+    </div>
+
+</body>
+</html>

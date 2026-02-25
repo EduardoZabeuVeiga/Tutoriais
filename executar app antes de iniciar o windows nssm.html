@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Servidor Kamikaiser (Versão Ultimate)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Consolas, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        h2 {
+            color: #81C784;
+            margin-top: 40px;
+            border-left: 5px solid #4CAF50;
+            padding-left: 15px;
+        }
+        .step-box {
+            background-color: #252525;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        code {
+            font-family: 'Consolas', monospace;
+            background-color: #000;
+            color: #00ff00;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .cmd-block {
+            background-color: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+            border-left: 4px solid #4CAF50;
+            margin: 10px 0;
+        }
+        .field-group {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .field-name {
+            color: #4CAF50;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .field-desc {
+            color: #bbb;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .warning-box {
+            background-color: #3e2723;
+            border-left: 5px solid #ff5722;
+            padding: 15px;
+            color: #ffccbc;
+            margin: 20px 0;
+        }
+        .tip-box {
+            background-color: #1b3a57;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            color: #bbdefb;
+            margin: 20px 0;
+        }
+        .btn-check {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            cursor: default;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #555;
+            font-size: 0.8em;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Configuração de Servidor Automático (NSSM)</h1>
+    <p style="text-align: center; color: #888;">Guia Mestre para o servidor de 7 Days to Die no kamikaiserbook.</p>
+
+    <h2>1. Instalação Limpa (Disco C:)</h2>
+    <div class="step-box">
+        <p>Para evitar problemas de permissão ou exclusão acidental, instalaremos na raiz do sistema.</p>
+        <ol>
+            <li>Baixe a versão <code>prerelease build 2.24-101</code> em <a href="https://nssm.cc/download" style="color:#4CAF50">nssm.cc</a> (Essencial para Win10/11).</li>
+            <li>Crie uma pasta chamada <code>C:\nssm</code>.</li>
+            <li>Abra o ZIP baixado, entre na pasta <strong>win64</strong>.</li>
+            <li>Copie apenas o arquivo <strong>nssm.exe</strong> para dentro de <code>C:\nssm\</code>.</li>
+        </ol>
+        <div class="cmd-block">Caminho final deve ser: C:\nssm\nssm.exe</div>
+    </div>
+
+    <h2>2. Execução do Instalador</h2>
+    <div class="step-box">
+        <p>O NSSM precisa ser chamado via linha de comando com privilégios.</p>
+        <ol>
+            <li>Abra o Menu Iniciar, digite <strong>CMD</strong>.</li>
+            <li>Clique com o botão direito e escolha <strong>Executar como Administrador</strong>.</li>
+            <li>Cole o comando abaixo:</li>
+        </ol>
+        <div class="cmd-block">C:\nssm\nssm.exe install "7DaysServer"</div>
+    </div>
+
+    <h2>3. Configuração Detalhada (As Abas)</h2>
+    
+    <div class="step-box">
+        <h3>Aba "Application" (Os 3 Campos)</h3>
+        <div class="field-group">
+            <span class="field-name">1. Path (Caminho):</span>
+            <span class="field-desc">Selecione o arquivo <code>startdedicated.bat</code>. É o script que inicia tudo.</span>
+        </div>
+        <div class="field-group">
+            <span class="field-name">2. Startup directory (Diretório):</span>
+            <span class="field-desc">A pasta raiz do servidor (ex: <code>...\common\7 Days to Die Dedicated Server</code>). O NSSM preenche sozinho, mas confira. Se estiver errado, o servidor não acha as configs.</span>
+        </div>
+        <div class="field-group">
+            <span class="field-name">3. Arguments (Argumentos):</span>
+            <span class="field-desc"><strong>DEIXE EM BRANCO.</strong> Como você usa um arquivo <code>.bat</code>, os argumentos já estão escritos dentro dele.</span>
+        </div>
+    </div>
+
+    <div class="step-box">
+        <h3>Outras Abas Essenciais</h3>
+        <ul>
+            <li><strong>Aba Details:</strong> Em <em>Startup type</em>, selecione <code>Automatic</code>.</li>
+            <li><strong>Aba Dependencies:</strong> Digite <code>LanmanWorkstation</code> na caixa de texto.
+                <br><small><em>(Isso obriga o servidor a esperar a Internet conectar antes de iniciar).</em></small>
+            </li>
+            <li><strong>Aba Log on (CRÍTICO PARA O SAVE):</strong> Marque <strong>"This account"</strong>.
+                <br>Digite seu usuário (<code>Kamikaiser</code>) e a senha do Windows.
+                <br><small><em>(Isso garante que o jogo encontre seus saves na pasta AppData do seu usuário).</em></small>
+            </li>
+        </ul>
+        <div class="btn-check">Clique em "Install service" para finalizar</div>
+    </div>
+
+    <h2>4. Diagnóstico e Saves</h2>
+    
+    <div class="warning-box">
+        <strong>⚠️ O MUNDO SUMIU? (Plano B)</strong><br>
+        Se mesmo configurando o login o save não aparecer, o servidor pode estar olhando para a pasta errada.
+        <ol>
+            <li>Pare o servidor no Gerenciador de Tarefas.</li>
+            <li>Abra o arquivo <code>serverconfig.xml</code> na pasta do jogo.</li>
+            <li>Procure a linha <code>UserDataFolder</code>.</li>
+            <li>Mude para o caminho fixo: <code>C:\Users\Kamikaiser\AppData\Roaming\7DaysToDie</code></li>
+        </ol>
+    </div>
+
+    <div class="tip-box">
+        <strong>💡 DICA VISUAL (Web Dashboard)</strong><br>
+        Como o servidor roda "invisível" (sem janela), ative o Web Dashboard no <code>serverconfig.xml</code> mudando <em>WebDashboardEnabled</em> para <code>true</code>. Assim você vê o status pelo navegador.
+    </div>
+
+    <h2>5. Comandos de Controle</h2>
+    <div class="step-box">
+        <p>Use estes comandos no CMD (Admin) para gerenciar seu servidor:</p>
+        
+        <strong>Iniciar manualmente:</strong>
+        <div class="cmd-block">C:\nssm\nssm.exe start "7DaysServer"</div>
+
+        <strong>Parar o servidor:</strong>
+        <div class="cmd-block">C:\nssm\nssm.exe stop "7DaysServer"</div>
+
+        <strong>Editar configurações (Se mudar algo):</strong>
+        <div class="cmd-block">C:\nssm\nssm.exe edit "7DaysServer"</div>
+
+        <strong>REMOVER TUDO (Desinstalar):</strong>
+        <div class="cmd-block">C:\nssm\nssm.exe remove "7DaysServer" confirm</div>
+    </div>
+
+    <h2>6. Como saber se está rodando?</h2>
+    <div class="step-box">
+        <p>Como não há janela preta, verifique assim:</p>
+        <ol>
+            <li>Abra o Gerenciador de Tarefas (<code>Ctrl + Shift + Esc</code>).</li>
+            <li>Vá na aba <strong>Detalhes</strong>.</li>
+            <li>Procure por <code>7DaysToDieServer.exe</code>.</li>
+            <li>Se estiver consumindo memória (subindo acima de 2GB), ele está carregando o mapa.</li>
+        </ol>
+    </div>
+
+    <footer>
+        Guia Consolidado v4.0 (Ultimate) | Desenvolvido para Eduardo Zabeu
+    </footer>
+</div>
+
+</body>
+</html>

@@ -336,31 +336,63 @@
             <p>Este comando verifica todas as dependências e configurações necessárias.</p>
         </div>
 
-        <h2 id="projeto">📱 5. Criação do Primeiro Projeto</h2>
+<h2 id="projeto">📱 5. Criação ou Restauração de Projeto</h2>
         <div class="step">
-            <h3>Passo 1: Navegar para o Diretório de Trabalho</h3>
+            <div class="warning">
+                <strong>💡 Dica de Ouro:</strong> Dependendo do seu objetivo agora, você pode iniciar um aplicativo do absoluto zero ou restaurar um projeto que já existe. Escolha o cenário abaixo.
+            </div>
+
+            <h3 style="color: #2e7d32; margin-top: 30px;">Cenário A: Criar um Projeto do Zero</h3>
+            
+            <h4>Passo 1: Navegar para o Diretório de Trabalho</h4>
             <div class="command-box">
                 <button class="copy-btn" onclick="copyToClipboard('cd &quot;C:\\Users\\Eduar\\Desktop\\agenda em flutter&quot;')">Copiar</button>
                 cd "C:\Users\Eduar\Desktop\agenda em flutter"
             </div>
 
-            <h3>Passo 2: Criar o Projeto</h3>
+            <h4>Passo 2: Criar o Projeto</h4>
             <div class="command-box">
                 <button class="copy-btn" onclick="copyToClipboard('flutter create agenda_desenvolvedor')">Copiar</button>
                 flutter create agenda_desenvolvedor
             </div>
 
-            <h3>Passo 3: Entrar no Projeto</h3>
+            <h4>Passo 3: Entrar no Projeto</h4>
             <div class="command-box">
                 <button class="copy-btn" onclick="copyToClipboard('cd agenda_desenvolvedor')">Copiar</button>
                 cd agenda_desenvolvedor
             </div>
 
-            <h3>Passo 4: Executar o Projeto</h3>
+            <hr style="border: 0; height: 1px; background: #ccc; margin: 30px 0;">
+
+            <h3 style="color: #d84315;">Cenário B: Restaurar um Projeto Existente</h3>
+
+            <h4>Passo 1: Entrar na Pasta do Projeto</h4>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('cd &quot;C:\\Caminho\\Para\\O\\Seu\\Projeto\\devlog&quot;')">Copiar</button>
+                cd "C:\Caminho\Para\O\Seu\Projeto\devlog"
+            </div>
+
+            <h4>Passo 2: Baixar Dependências</h4>
+            <p>Este comando lê o arquivo <code>pubspec.yaml</code> e instala todos os pacotes necessários.</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter pub get')">Copiar</button>
+                flutter pub get
+            </div>
+
+            <hr style="border: 0; height: 1px; background: #ccc; margin: 30px 0;">
+
+            <h3>▶️ Passo Comum: Executar o Projeto</h3>
+            
             <p>Para Web (Chrome):</p>
             <div class="command-box">
                 <button class="copy-btn" onclick="copyToClipboard('flutter run -d chrome')">Copiar</button>
                 flutter run -d chrome
+            </div>
+
+            <p>Para Desktop (Windows):</p>
+            <div class="command-box">
+                <button class="copy-btn" onclick="copyToClipboard('flutter run -d windows')">Copiar</button>
+                flutter run -d windows
             </div>
 
             <p>Para ver dispositivos disponíveis:</p>
@@ -439,6 +471,70 @@
                 <li>Instalar cmdline-tools via Android Studio</li>
                 <li>Para desenvolvimento web apenas, estes erros podem ser ignorados</li>
             </ol>
+        </div>
+
+        <div class="troubleshooting">
+            <h3>🛠️ Erro ao construir Windows: gerador CMake errado</h3>
+            <div class="error">
+                CMake falha com mensagem <em>Generator Visual Studio 16 2019 could not find any instance of Visual Studio</em> mesmo tendo apenas
+                Visual Studio 2022/2026 instalado.
+            </div>
+            <strong>O que fizemos para resolver</strong>
+            <ol>
+                <li>Identificamos o erro inicial: CMake usava o gerador "Visual Studio 16 2019" inexistente.
+                </li>
+                <li>Analisamos o código do Flutter em <code>visual_studio.dart</code> e vimos que o gerador era
+                    escolhido pelo número da versão principal; faltava tratamento para instalações muito novas.
+                </li>
+                <li>Aplicamos o ajuste no SDK (ou instalamos VS 2019/2022) e rodamos <code>flutter clean</code> para
+                    regenerar os arquivos de build; o erro de geração desapareceu.
+                </li>
+                <li>Durante a segunda tentativa apareceu conflito de pacote (<code>intl</code>), então atualizamos
+                    o <code>pubspec.yaml</code> para usar <code>intl: ^0.20.2</code> e executamos <code>flutter pub get</code>.
+                </li>
+                <li>Por fim, <code>flutter run -d windows</code> compilou o executável e o app foi lançado com sucesso.
+                </li>
+            </ol>
+            <strong>Diagnóstico e soluções adicionais:</strong>
+            <ol start="6">
+                <li>Verifique <code>flutter doctor -v</code> para confirmar a versão do Visual Studio detectada.
+                </li>
+                <li>Corretivos possíveis (válidos para qualquer projeto Flutter que sofra o mesmo erro):
+                    <ul>
+                        <li>Instalar o workload <strong>Desktop development with C++</strong> ou uma versão suportada do VS
+                            (2019 ou 2022) ao lado de pré‑vias mais recentes.
+                        </li>
+                        <li>Editar o SDK do Flutter para forçar o gerador certo. A modificação fica no arquivo
+                            <code>C:\src\flutter\packages\flutter_tools\lib\src\windows\visual_studio.dart</code>
+                            e afeta **todos** os projetos que usam esse SDK. O trecho alterado deve ficar assim:
+<pre><code>String? get cmakeGenerator {
+  // Fluxo de fallback para instalações muito novas/preview que não retornam
+  // um número de versão principal válido. Sem isso, CMake escolheria o
+  // gerador "Visual Studio 16 2019" por padrão.
+  if (_majorVersion == null) {
+    return 'Visual Studio 18 2026';
+  }
+  return switch (_majorVersion) {
+    18 => 'Visual Studio 18 2026',
+    17 => 'Visual Studio 17 2022',
+    _  => 'Visual Studio 16 2019',
+  };
+}</code></pre>
+                            Após salvar, abra um novo terminal, execute <code>flutter clean</code> dentro de qualquer projeto
+                            afetado e rode <code>flutter run -d windows</code> novamente. O patch persistirá enquanto
+                            você usar esse SDK (se atualizar o Flutter, pode reaplicar ou aguardar correção upstream).
+                        </li>
+                    </ul>
+                </li>
+                <li>Se surgir conflito de versão de pacotes, independente de plataforma, ajuste as dependências no
+                    <code>pubspec.yaml</code> do projeto (por exemplo, atualizar <code>intl</code>) e rode
+                    <code>flutter pub get</code> novamente.
+                </li>
+            </ol>
+            <div class="success">
+                ⚠️ Este resumo agora fornece exemplos concretos e linguagem genérica que podem ser copiados
+                para futuros projetos com o mesmo erro.
+            </div>
         </div>
 
         <h2 id="checklist">✅ 7. Checklist Final</h2>
