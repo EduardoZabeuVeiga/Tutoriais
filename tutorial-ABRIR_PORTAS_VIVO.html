@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roteiro: Servidor 7 Days to Die</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .fase {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #3498db;
+        }
+        .copy-box {
+            display: flex;
+            align-items: center;
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #cbd5e0;
+        }
+        .copy-text {
+            flex-grow: 1;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #e53e3e;
+            font-size: 1.1em;
+            word-break: break-all;
+        }
+        .copy-btn {
+            background: #2b6cb0;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background: #2c5282;
+        }
+        a.link-teste {
+            display: inline-block;
+            background: #e53e3e;
+            color: #fff;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        a.link-teste:hover {
+            background: #c53030;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .alerta {
+            background-color: #fffaf0;
+            border-left: 4px solid #dd6b20;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Roteiro Definitivo: Servidor 7 Days to Die</h1>
+
+    <div class="fase">
+        <h2>📋 Informações Base da Rede</h2>
+        <ul>
+            <li><strong>Máquina Host:</strong> Computador onde o servidor roda.</li>
+            <li><strong>IP Fixo Interno:</strong> IP da máquina host na rede local.</li>
+            <li><strong>Portas Necessárias:</strong>
+                <div class="copy-box">
+                    <span class="copy-text" id="portas">26900, 26901, 26902, 26903</span>
+                    <button class="copy-btn" onclick="copiarTexto('portas', this)">Copiar</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="fase">
+        <h2>🕵️ Fase 1: O Ponto de Partida (Teste Prévio)</h2>
+        <p>Antes de configurar o roteador, verifique o estado físico da porta para garantir que nenhum outro serviço a esteja utilizando.</p>
+        <ol>
+            <li>Acesse o site de verificação de portas:</li>
+            <a href="https://portchecker.co/" target="_blank" class="link-teste">Abrir Port Checker</a>
+            <li>Teste a seguinte porta:</li>
+            <div class="copy-box">
+                <span class="copy-text" id="porta-principal">26900</span>
+                <button class="copy-btn" onclick="copiarTexto('porta-principal', this)">Copiar</button>
+            </div>
+            <li><strong>Resultado esperado:</strong> Deve indicar <strong>Closed (Fechada)</strong>.</li>
+        </ol>
+    </div>
+
+    <div class="fase">
+        <h2>⚙️ Fase 2: Configuração do Roteador</h2>
+        <p>Acesse o painel do seu roteador e vá em <strong>Redirecionamento de Portas</strong>. Crie 4 regras individuais:</p>
+        <ul>
+            <li><strong>Protocolo:</strong> TCP / UDP (Ambos)</li>
+            <li><strong>Porta Externa / Interna:</strong> Criar regras para 26900, 26901, 26902 e 26903.</li>
+            <li><strong>IP Externo:</strong> Deixar VAZIO.</li>
+            <li><strong>IP Interno:</strong> O IP Fixo da sua máquina host.</li>
+        </ul>
+        <div class="alerta">
+            <strong>Importante:</strong> Após salvar as regras, desligue o roteador da tomada por 10 segundos para limpar a memória cache.
+        </div>
+        <p>Volte ao <strong>PortCheckTool.com</strong> e teste a porta 26900 novamente. O resultado agora deve ser <strong>Open (Aberta)</strong>.</p>
+    </div>
+
+    <div class="fase">
+        <h2>🛡️ Fase 3: Liberação no Windows Firewall</h2>
+        <p>Abra o <strong>PowerShell</strong> como Administrador na máquina host e execute o comando abaixo para liberar o tráfego UDP em bloco:</p>
+        <div class="copy-box">
+            <span class="copy-text" id="cmd-firewall">New-NetFirewallRule -DisplayName "7Days_UDP" -Direction Inbound -LocalPort 26900-26903 -Protocol UDP -Action Allow</span>
+            <button class="copy-btn" onclick="copiarTexto('cmd-firewall', this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="fase">
+        <h2>📝 Fase 4: Arquivo de Configuração (serverconfig.xml)</h2>
+        <p>Abra o arquivo de configuração do servidor e edite as seguintes propriedades:</p>
+        <ul>
+            <li><strong>Porta:</strong>
+                <div class="copy-box">
+                    <span class="copy-text" id="xml-porta">&lt;property name="ServerPort" value="26900"/&gt;</span>
+                    <button class="copy-btn" onclick="copiarTexto('xml-porta', this)">Copiar</button>
+                </div>
+            </li>
+            <li><strong>Senha:</strong>
+                <div class="copy-box">
+                    <span class="copy-text" id="xml-senha">&lt;property name="ServerPassword" value="SUA_SENHA_AQUI"/&gt;</span>
+                    <button class="copy-btn" onclick="copiarTexto('xml-senha', this)">Copiar</button>
+                </div>
+            </li>
+            <li><strong>IP do Servidor:</strong> A propriedade deve ficar totalmente vazia para evitar bloqueios:
+                <div class="copy-box">
+                    <span class="copy-text" id="xml-ip">&lt;property name="ServerIP" value=""/&gt;</span>
+                    <button class="copy-btn" onclick="copiarTexto('xml-ip', this)">Copiar</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="fase">
+        <h2>🚀 Fase 5: Inicialização e Testes Finais</h2>
+        <p>Ligue o servidor do jogo. Siga a ordem abaixo para diagnosticar a conexão:</p>
+        
+        <ol>
+            <li><strong>Teste 1: O Windows abriu a porta? (No Prompt de Comando - CMD):</strong>
+                <div class="copy-box">
+                    <span class="copy-text" id="cmd-netstat">netstat -ano | findstr :26900</span>
+                    <button class="copy-btn" onclick="copiarTexto('cmd-netstat', this)">Copiar</button>
+                </div>
+                <em>Resultado esperado: Uma linha mostrando LISTENING.</em>
+            </li>
+            
+            <li><strong>Teste 2: Diagnóstico de CGNAT (Operadora):</strong>
+                Verifique os <em>Detalhes da Internet</em> no roteador. O Endereço IPv4 deve ser idêntico ao seu IP Público. Se começar com 100.x.x.x, há bloqueio de CGNAT.
+            </li>
+
+            <li><strong>Teste 3: O Teste de Visibilidade do Serviço:</strong>
+                <a href="https://canyouseeme.org/" target="_blank" class="link-teste" style="display:block; width: 220px; text-align: center; margin-bottom: 10px;">Abrir CanYouSeeMe.org</a>
+                Teste a porta 26900. <em>Resultado esperado: <strong>Success</strong>.</em>
+            </li>
+
+            <li><strong>Teste 4: A Prova de Fogo (Conexão via Celular):</strong>
+                <ul>
+                    <li>Desconecte o cabo de rede do PC de jogo.</li>
+                    <li>Conecte o PC roteando a internet móvel 4G/5G do seu celular.</li>
+                    <li>No jogo, vá em <em>Join Game > Connect to IP</em>.</li>
+                    <li>Digite o seu IP Público e a porta 26900.</li>
+                </ul>
+                <em>Resultado esperado: O jogo pede a senha e conecta.</em>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        function copiarTexto(idElemento, botao) {
+            var texto = document.getElementById(idElemento).innerText;
+            navigator.clipboard.writeText(texto).then(function() {
+                var textoOriginal = botao.innerText;
+                botao.innerText = 'Copiado!';
+                botao.style.background = '#27ae60';
+                
+                setTimeout(function() {
+                    botao.innerText = textoOriginal;
+                    botao.style.background = '#2b6cb0';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erro ao copiar texto: ', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
