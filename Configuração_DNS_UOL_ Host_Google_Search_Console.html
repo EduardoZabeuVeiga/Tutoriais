@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Domínio no Google Search Console via UOL Host</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .step {
+            margin-bottom: 30px;
+        }
+        .step h2 {
+            color: #3498db;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            width: 30%;
+        }
+        .code-box {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            word-wrap: break-word;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-left: 5px solid #ffeeba;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: #2980b9;
+        }
+        .image-wrapper {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .image-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .explanation-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Configuração de DNS: UOL Host para Google Search Console</h1>
+
+    <div class="step">
+        <h2>Passo 1: Selecionar o Tipo de Propriedade</h2>
+        <p>Ao acessar o <a href="https://search.google.com/search-console/" target="_blank" rel="noopener noreferrer">Google Search Console</a> pela primeira vez, você verá uma tela para escolher como deseja verificar seu site.</p>
+        
+        <div class="image-wrapper">
+            <img src="imagens\Configuração_DNS_UOL_ Host_Google_Search_Console\img1.png" alt="Tela inicial do Google Search Console">
+        </div>
+
+        <div class="explanation-box">
+            <h3>O que significa cada aba?</h3>
+            <p><strong>Domínio (Esquerda):</strong> Esta é a opção mais completa e recomendada. Ela verifica todas as variações do seu site de uma vez (com e sem WWW, HTTP e HTTPS). É a que exige a configuração de DNS (TXT) que estamos fazendo.</p>
+            <p><strong>Prefixo do URL (Direita):</strong> Verifica apenas uma versão exata do site (ex: apenas https://www.meudominio.com). É mais limitada, embora ofereça métodos de verificação mais simples.</p>
+            
+            <h3>O que preencher?</h3>
+            <p>Você deve usar a aba <strong>Domínio</strong>. No campo de texto, digite apenas o nome do seu site (exatamente <code>meudominio.com</code>) e clique em <strong>CONTINUAR</strong>.</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 2: Copiar o Código TXT do Google</h2>
+        <p>Após inserir o domínio e continuar, o Google abrirá a janela de instruções. Clique no botão <strong>COPIAR</strong> para obter o código exato.</p>
+        
+        <div class="image-wrapper">
+            <img src="imagens\Configuração_DNS_UOL_ Host_Google_Search_Console\coiar_TXT_abaixo.png" alt="Botão copiar código TXT">
+        </div>
+
+        <div class="code-box">google-site-verification=SEU_CODIGO_COPIADO_AQUI</div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 3: Acessar a Zona de DNS do seu Provedor</h2>
+        <p>Faça login no painel onde seu domínio está registrado e acesse a tela de edição das entradas de DNS. Escolha o seu provedor abaixo:</p>
+        
+        <div class="btn-group">
+            <a href="https://uolhost.uol.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-uol">UOL Host</a>,
+            <a href="https://registro.br/login/" target="_blank" rel="noopener noreferrer" class="btn btn-registrobr">Registro.br</a>,
+            <a href="https://dash.cloudflare.com/login" target="_blank" rel="noopener noreferrer" class="btn btn-cloudflare">Cloudflare</a>,
+            <a href="https://portal.hostgator.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-hostgator">HostGator</a>,
+            <a href="https://hpanel.hostinger.com/" target="_blank" rel="noopener noreferrer" class="btn btn-hostinger">Hostinger</a>,
+            <a href="https://sso.godaddy.com/" target="_blank" rel="noopener noreferrer" class="btn btn-godaddy">GoDaddy</a>
+        </div>
+        
+        <p style="margin-top: 15px; font-size: 0.9em; color: #666;"><em>Nota: As instruções e imagens a seguir mostram o <strong>UOL Host</strong>, mas os dados a serem preenchidos (TXT e o código) são os mesmos em qualquer plataforma.</em></p>
+    </div>
+
+     <div class="step">
+        <h2>Passo 4: Localizar o DNS e Criar a Entrada TXT</h2>
+        <p>Agora usando <strong>UOL Host</strong> como exemplo, siga este caminho para encontrar a área de DNS e adicionar o código:</p>
+        <ol>
+            <li>No menu de navegação, procure pela secção <strong>Domínios</strong> ou <strong>Meus Domínios</strong>.</li>
+            <li>Selecione o seu domínio (<code>meudominio.com</code>) e clique em <strong>Gerenciar DNS</strong> ou <strong>Alterar Zona de DNS</strong>.</li>
+            <li>Dentro do Gerenciamento de DNS, localize e clique no botão <strong>Nova Entrada</strong> (ou <strong>Adicionar Registro</strong>), que costuma estar no topo ou no fim da lista de registos.</li>
+            <li>Um formulário em branco aparecerá. Preencha os campos estritamente conforme a tabela abaixo:</li>
+        </ol>
+        <table>
+            <tr>
+                <th>Campo</th>
+                <th>O que preencher</th>
+            </tr>
+            <tr>
+                <td><strong>Selecionar tipo de entrada</strong></td>
+                <td>TXT</td>
+            </tr>
+            <tr>
+                <td><strong>Entrada</strong></td>
+                <td><em>Deixe este campo em branco</em></td>
+            </tr>
+            <tr>
+                <td><strong>Valor (obrigatório)</strong></td>
+                <td>Cole o código completo do Google (ex: <code>google-site-verification=...</code>)</td>
+            </tr>
+            <tr>
+                <td><strong>Status da entrada</strong></td>
+                <td>Ativada</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="step">
+        <h2>Passo 5: Salvar e Aguardar Propagação</h2>
+        <p>Clique no botão <strong>Salvar entrada</strong>. A nova linha aparecerá na sua lista de DNS.</p>
+        <div class="warning">
+            <strong>Aguarde:</strong> As alterações de DNS no UOL Host demoram cerca de <strong>1 hora</strong> para serem aplicadas na internet.
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 6: Concluir a Verificação</h2>
+        <p>Após aguardar o tempo informado, volte à tela do <a href="https://search.google.com/search-console/" target="_blank" rel="noopener noreferrer">Google Search Console</a> e clique no botão <strong>VERIFICAR</strong>.</p>
+    </div>
+</div>
+
+</body>
+</html>
