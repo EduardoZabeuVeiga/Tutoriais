@@ -555,7 +555,7 @@ document.querySelector('img').src = 'assets/images/foto.png';</pre>
     <h2>7. Configurações Especiais do Electron</h2>
     <div class="subpasso">
       <div class="subtitulo">7.1 Atualizando package.json</div>
-      <p>Se seu projeto web usa dependências npm, adicione-as ao <span class="path-label">package.json <button class="copy-path-btn" onclick="copyToClipboard('package.json')">📋</button></span> do Electron:</p>
+      <p>Se seu projeto web usa dependências npm, adicione-as ao <span class="path-label">package.json <button class="copy-path-btn" onclick="copyToClipboard('package.json')">📋</button></span> do Electron. Inclua também o bloco <code>"build"</code> para configurar o instalador Windows:</p>
       
       <div class="cmd-block">
         <pre id="package_json_update">{
@@ -565,6 +565,25 @@ document.querySelector('img').src = 'assets/images/foto.png';</pre>
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.empresa.meu-app",
+    "productName": "Meu App Migrado",
+    "files": [
+      "**/*",
+      "!node_modules/electron-builder/**",
+      "!*.md"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -577,10 +596,60 @@ document.querySelector('img').src = 'assets/images/foto.png';</pre>
 }</pre>
         <button class="copy-btn" onclick="copyCode('package_json_update')">Copiar</button>
       </div>
+      <p>Com <code>"oneClick": false</code> e <code>"allowToChangeInstallationDirectory": true</code>, o instalador gerado exibe um assistente passo a passo que <strong>permite ao usuário escolher onde o app será instalado</strong>. Para gerar o instalador execute:</p>
+      <div class="cmd-block">
+        <pre id="build_cmd">npm install
+npm run dist</pre>
+        <button class="copy-btn" onclick="copyCode('build_cmd')">Copiar</button>
+      </div>
+      <p>O arquivo <code>.exe</code> de instalação será gerado na pasta <code>dist/</code>.</p>
     </div>
 
     <div class="subpasso">
-      <div class="subtitulo">7.2 Configurando Segurança (webPreferences)</div>
+      <div class="subtitulo">7.2 Adicionando Ícone ao App</div>
+      <p>O ícone aparece na barra de título da janela, na taskbar do Windows e no instalador. Siga os passos:</p>
+
+      <div class="warning">
+        <strong>📂 ESTRUTURA NECESSÁRIA:</strong> Crie a pasta <code>build/</code> na raiz do projeto e coloque o arquivo <code>icon.ico</code> dentro dela. O arquivo deve ter pelo menos os tamanhos 16×16, 32×32 e 256×256 (use o próprio app para gerar o <code>.ico</code>).
+        <pre style="margin-top:8px">meu-app/
+├── build/
+│   └── icon.ico   ← ícone do instalador e do app
+├── main.js
+├── index.html
+└── package.json</pre>
+      </div>
+
+      <p>No <span class="path-label">main.js <button class="copy-path-btn" onclick="copyToClipboard('main.js')">📋</button></span>, passe o caminho do ícone ao criar a janela:</p>
+      <div class="cmd-block">
+        <pre id="icon_mainjs">const path = require('path');
+
+const win = new BrowserWindow({
+  width: 1280,
+  height: 800,
+  icon: path.join(__dirname, 'build', 'icon.ico'),  // ← ícone da janela e taskbar
+  webPreferences: {
+    nodeIntegration: false,
+    contextIsolation: true
+  }
+});</pre>
+        <button class="copy-btn" onclick="copyCode('icon_mainjs')">Copiar</button>
+      </div>
+
+      <p>O <code>package.json</code> já referencia o mesmo arquivo para o instalador via <code>"icon": "build/icon.ico"</code> no bloco <code>"win"</code>. Com isso, o mesmo <code>.ico</code> é usado em todos os lugares:</p>
+      <div class="ok">
+        <strong>✅ Onde o ícone aparece:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+          <li>✅ Barra de título da janela</li>
+          <li>✅ Taskbar do Windows (enquanto o app está aberto)</li>
+          <li>✅ Atalho na área de trabalho</li>
+          <li>✅ Atalho no menu Iniciar</li>
+          <li>✅ Janela do instalador (<code>.exe</code>)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subpasso">
+      <div class="subtitulo">7.3 Configurando Segurança (webPreferences)</div>
       <p>Se seu projeto usa recursos avançados, ajuste o <span class="path-label">main.js <button class="copy-path-btn" onclick="copyToClipboard('main.js')">📋</button></span>:</p>
       
       <div class="cmd-block">

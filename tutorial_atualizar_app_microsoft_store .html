@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Dark: Atualização de Pacote MSIX</title>
+    <style>
+        /* Configurações Globais do Tema Escuro */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            /* Fundo cinza muito escuro (quase preto) para reduzir fadiga visual */
+            background-color: #121212;
+            /* Texto cinza claro para alto contraste, mas não agressivo */
+            color: #e0e0e0;
+        }
+
+        /* Cabeçalhos */
+        h1 {
+            color: #00a4ef; /* Azul ciano brilhante para contraste no escuro */
+            border-bottom: 2px solid #333; /* Linha sutil */
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #f0f0f0; /* Quase branco para destaque */
+            margin-top: 35px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Contêiner dos Passos (Cards) */
+        .step {
+            background-color: #1e1e1e; /* Cinza ligeiramente mais claro que o fundo */
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Sombra mais escura */
+            margin-bottom: 25px;
+            border: 1px solid #333; /* Borda sutil para definir o card */
+        }
+        .step p {
+            margin: 0 0 15px 0;
+            color: #cccccc; /* Texto secundário ligeiramente mais escuro */
+        }
+
+        /* Contêiner de Código */
+        .code-container {
+            display: flex;
+            align-items: center;
+            /* Fundo preto total para simular terminal */
+            background-color: #000000;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #444; /* Borda mais visível no preto */
+        }
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            flex-grow: 1;
+            /* Cor verde neon para lembrar terminais clássicos */
+            color: #4af626;
+            font-size: 15px;
+            overflow-x: auto; /* Scroll horizontal se necessário */
+        }
+
+        /* Botão Copiar (Estilo Dark/Moderno) */
+        .copy-btn {
+            background-color: #333333; /* Cinza escuro */
+            color: #ffffff;
+            border: 1px solid #555;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .copy-btn:hover {
+            background-color: #444444;
+            border-color: #777;
+        }
+        /* Estado ativo (clique) */
+        .copy-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Links Clicáveis */
+        a {
+            /* Azul claro acessível para fundos escuros */
+            color: #60cdff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: #99e0ff; /* Azul ainda mais claro no hover */
+            text-decoration: underline;
+        }
+
+        /* Listas */
+        ol {
+            margin-top: 15px;
+            padding-left: 25px;
+            color: #cccccc;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        /* Destaque para termos técnicos no texto */
+        .highlight {
+            background-color: #333;
+            color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tutorial: Atualizar Aplicativo na Microsoft Store</h1>
+    <p style="color: #aaaaaa;">Procedimento para atualizar a versão do pacote no <span class="highlight">pubspec.yaml</span> e enviar a compilação corrigida para a Microsoft Store.</p>
+
+    <div class="step">
+        <h2>Passo 1: Atualizar a versão no pubspec.yaml</h2>
+        <p>Abra o arquivo <span class="highlight">pubspec.yaml</span> do seu projeto Flutter.</p>
+        <p>Localize a seção <span class="highlight">msix_config</span> e altere o valor de <span class="highlight">msix_version</span> para uma numeração superior à anterior (exemplo: alterar de <code>1.0.0.0</code> para <code>1.1.0.0</code>).</p>
+    </div>
+
+    <div class="step">
+        <h2>Passo 2: Limpar e compilar o projeto</h2>
+        <p>Para garantir que não ocorram problemas de cache, execute os comandos de limpeza e compilação em sequência no seu terminal:</p>
+        
+        <div class="code-container">
+            <code id="cmd1">flutter clean</code>
+            <button class="copy-btn" onclick="copyCode('cmd1', this)">Copiar</button>
+        </div>
+        
+        <div class="code-container">
+            <code id="cmd2">flutter build windows --release</code>
+            <button class="copy-btn" onclick="copyCode('cmd2', this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 3: Criar o novo pacote MSIX</h2>
+        <p>Gere o arquivo empacotado (.msix) atualizado executando o comando abaixo:</p>
+        
+        <div class="code-container">
+            <code id="cmd3">flutter pub run msix:create</code>
+            <button class="copy-btn" onclick="copyCode('cmd3', this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 4: Enviar para o Microsoft Partner Center</h2>
+        <p>Acesse o painel do seu aplicativo clicando no link abaixo:</p>
+        <p><a href="https://partner.microsoft.com/dashboard/windows/overview" target="_blank">Acessar Microsoft Partner Center (Link Clicável)</a></p>
+        
+        <ol>
+            <li>Na tela de gerenciamento de <strong>Packages</strong> (Pacotes), localize o pacote antigo que apresentou erro.</li>
+            <li>Clique no botão <strong>Delete</strong> localizado logo abaixo do nome do arquivo com erro.</li>
+            <li>Arraste e solte o novo pacote <span class="highlight">.msix</span> (gerado no Passo 3) para a área de envio.</li>
+        </ol>
+    </div>
+
+    <script>
+        function copyCode(elementId, button) {
+            var textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                var originalText = button.innerText;
+                button.innerText = 'COPIADO!';
+                /* Cor de sucesso (Verde Microsoft) */
+                button.style.backgroundColor = '#107c10'; 
+                button.style.borderColor = '#107c10';
+                
+                setTimeout(function() {
+                    button.innerText = originalText;
+                    /* Retorna ao estilo original dark */
+                    button.style.backgroundColor = '#333333';
+                    button.style.borderColor = '#555';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Falha ao copiar o texto: ', err);
+                button.innerText = 'ERRO';
+                button.style.backgroundColor = '#d13438'; // Cor de erro (Vermelho)
+            });
+        }
+    </script>
+
+</body>
+</html>

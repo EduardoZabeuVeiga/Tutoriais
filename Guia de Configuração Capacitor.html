@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Capacitor - Dark Mode</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #007acc;
+            --code-bg: #2d2d2d;
+            --warning-color: #ff9800;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 { color: var(--accent-color); border-bottom: 2px solid var(--code-bg); padding-bottom: 10px; }
+        h2 { margin-top: 20px; font-size: 1.2rem; color: #bbb; }
+        h3 { color: var(--warning-color); font-size: 1.1rem; }
+
+        .prerequisites {
+            background: #2a2a2a;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .prerequisites a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .prerequisites a:hover { text-decoration: underline; }
+
+        .step {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .instruction {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            padding: 12px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #444;
+        }
+
+        .code-block-static {
+            background: var(--code-bg);
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+
+        .copy-btn:hover { background: #005f99; }
+        .copy-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Guia de Configuração Capacitor</h1>
+
+    <div class="prerequisites">
+        <h3>Pré-requisitos Obrigatórios</h3>
+        <p>Certifique-se de que os seguintes softwares estão instalados no sistema:</p>
+        <ul>
+            <li><strong>Node.js:</strong> Necessário para execução de pacotes npm e npx. <br><a href="https://nodejs.org/" target="_blank">Download Node.js</a></li>
+            <li><strong>Android Studio:</strong> Necessário para compilação e gerenciamento do SDK. <br><a href="https://developer.android.com/studio" target="_blank">Download Android Studio</a></li>
+        </ul>
+    </div>
+
+    <div class="step verification">
+        <h2>Verificação do Ambiente Android SDK</h2>
+        
+        <p class="instruction">1. Valide se a variável <strong>ANDROID_HOME</strong> está acessível na sessão atual do PowerShell:</p>
+        <div class="code-block">
+            <span class="cmd">Get-ChildItem -Path Env:ANDROID_HOME</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+
+        <p class="instruction">2. Caso o retorno seja <strong>ObjectNotFound</strong>, execute a atribuição do caminho do SDK:</p>
+        <div class="code-block">
+            <span class="cmd">$env:ANDROID_HOME = "C:\Users\Eduar\AppData\Local\Android\Sdk"</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+
+        <p class="instruction">3. Confirme a persistência da variável na sessão antes de prosseguir:</p>
+        <div class="code-block">
+            <span class="cmd">Get-ChildItem -Path Env:ANDROID_HOME</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>1. Instalar o Capacitor no seu projeto</h2>
+        <p class="instruction">Abra o terminal do seu computador (Prompt de Comando, PowerShell ou terminal do VS Code), navegue até a pasta onde estão os arquivos do seu site (HTML/CSS/JS) e execute:</p>
+        <div class="code-block">
+            <span class="cmd">npm install @capacitor/core @capacitor/cli</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>2. Inicializar as configurações do Capacitor</h2>
+        <p class="instruction">No mesmo terminal e na mesma pasta, execute o comando abaixo para criar o arquivo de configuração da estrutura do aplicativo:</p>
+        <div class="code-block">
+            <span class="cmd">npx cap init</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>3. Preencher os parâmetros de inicialização</h2>
+        <p class="instruction">O terminal fará algumas perguntas. Responda conforme o padrão abaixo:</p>
+        <div class="code-block-static">
+            <span style="color: #bbb;">? Name:</span> <span style="color: var(--accent-color);">Controle Sineedy</span><br>
+            <span style="color: #bbb;">? Package ID:</span> <span style="color: var(--accent-color);">com.kamikaiser.controle_sineedy</span><br>
+            <span style="color: #bbb;">? Web asset directory:</span> <span style="color: var(--accent-color);">www</span><br>
+            <span style="color: #bbb;">? Create free Ionic account?</span> <span style="color: var(--accent-color);">n</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>4. Estruturação do Diretório Web</h2>
+        <p class="instruction">Crie uma nova pasta chamada <strong>www</strong> na raiz do seu projeto. Mova o arquivo <strong>index.html (OBRIGATÓRIO USO DO NOME INDEX.HTML)</strong> e todos os outros arquivos do seu site (CSS, JS, imagens) para dentro desta pasta <strong>www</strong>.</p>
+    </div>
+
+<div class="step">
+        <h2>5. Instalar os pacotes da plataforma Android</h2>
+        <p class="instruction">Ainda no terminal, execute este comando para adicionar o motor do Android ao seu projeto e criar a pasta nativa:</p>
+        <div class="code-block">
+            <span class="cmd">npm install @capacitor/android && npx cap add android</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+        <p class="instruction" style="margin-top: 15px; border-left: 3px solid var(--warning-color); padding-left: 10px;">
+            <strong>Observação técnica (PowerShell):</strong> Caso ocorra um erro de sintaxe indicando que o token <code>&&</code> não é válido, execute as instruções separadamente:
+        </p>
+        <div class="code-block" style="margin-bottom: 10px;">
+            <span class="cmd">npm install @capacitor/android</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+        <div class="code-block">
+            <span class="cmd">npx cap add android</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+    </div>
+
+<div class="step">
+    <h2>6. Personalizar o ícone e a Splash Screen (Tela de Abertura)</h2>
+    <p class="instruction">Para substituir o ícone padrão do Capacitor pela sua própria arte, siga estas etapas:</p>
+    
+    <p class="instruction"><strong>A) Prepare as imagens:</strong></p>
+    <ul class="instruction">
+        <li style="margin-bottom: 10px;">
+            Crie uma pasta na raiz do seu projeto (ao lado da pasta <code>www</code>) com o nome: 
+            <code class="cmd">assets</code> 
+            <button class="copy-btn" style="padding: 2px 8px; font-size: 0.7rem;" onclick="copyText(this)">Copiar nome</button>
+        </li>
+        <li style="margin-bottom: 10px;">
+            Salve seu ícone (mínimo 1024x1024px) com o nome: 
+            <code class="cmd">icon.png</code> 
+            <button class="copy-btn" style="padding: 2px 8px; font-size: 0.7rem;" onclick="copyText(this)">Copiar nome</button>
+        </li>
+        <li style="margin-bottom: 10px;">
+            Salve sua tela de abertura (mínimo 2732x2732px) com o nome: 
+            <code class="cmd">splash.png</code> 
+            <button class="copy-btn" style="padding: 2px 8px; font-size: 0.7rem;" onclick="copyText(this)">Copiar nome</button>
+        </li>
+    </ul>
+
+    <p class="instruction" style="margin-top: 15px;"><strong>B) Instale a ferramenta de geração:</strong></p>
+    <div class="code-block">
+        <span class="cmd">npm install @capacitor/assets --save-dev</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+
+    <p class="instruction" style="margin-top: 15px;"><strong>C) Gere as imagens:</strong></p>
+    <div class="code-block">
+        <span class="cmd">npx @capacitor/assets generate --android</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+
+    <p class="instruction" style="margin-top: 15px;"><strong>D) Sincronize com o projeto:</strong></p>
+    <div class="code-block">
+        <span class="cmd">npx cap sync android</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+</div>
+
+<div class="step">
+    <h2>7. Configurar a Duração da Splash Screen</h2>
+    <p class="instruction">Por padrão a tela de abertura some muito rápido. Para controlar o tempo de exibição, siga os passos abaixo:</p>
+
+    <p class="instruction"><strong>A) Instale o plugin de Splash Screen:</strong></p>
+    <div class="code-block">
+        <span class="cmd">npm install @capacitor/splash-screen</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+
+    <p class="instruction" style="margin-top: 15px;"><strong>B) Edite o arquivo <code>capacitor.config.json</code></strong> na raiz do projeto e substitua todo o conteúdo pelo bloco abaixo. O valor <code>launchShowDuration</code> está em milissegundos — altere conforme desejar (ex: 3000 = 3 segundos):</p>
+    <div class="code-block-static">
+<pre style="margin: 0; color: #d4d4d4; font-size: 0.85rem; line-height: 1.5;">{
+  "appId": "com.kamikaiser.controle_sineedy",
+  "appName": "Controle Sineedy",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "androidScaleType": "centerCrop",
+      "androidSplashResourceName": "splash",
+      "splashImmersive": true,
+      "backgroundColor": "#000000",
+      "androidNavigationBarColor": "#000000"
+    }
+  }
+}</pre>
+    </div>
+
+    <p class="instruction" style="margin-top: 15px;"><strong>C) Sincronize a configuração com o Android:</strong></p>
+    <div class="code-block">
+        <span class="cmd">npx cap sync android</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+
+    <p class="instruction" style="margin-top: 20px;"><strong>D) Corrigir faixa branca da barra de navegação do Android:</strong></p>
+    <p class="instruction" style="border-left: 3px solid var(--warning-color); padding-left: 10px;">
+        O plugin do Capacitor <strong>não controla</strong> a cor da barra de navegação (botões Home/Voltar/Recentes). 
+        É necessário editar o arquivo nativo:<br>
+        <code>android\app\src\main\res\values\styles.xml</code>
+    </p>
+    <p class="instruction">Localize o bloco <code>AppTheme.NoActionBarLaunch</code> e deixe assim:</p>
+    <div class="code-block-static">
+<pre style="margin: 0; color: #d4d4d4; font-size: 0.85rem; line-height: 1.5;">&lt;style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen"&gt;
+    &lt;item name="android:background"&gt;@drawable/splash&lt;/item&gt;
+    &lt;item name="android:navigationBarColor"&gt;#000000&lt;/item&gt;
+    &lt;item name="android:windowDrawsSystemBarBackgrounds"&gt;true&lt;/item&gt;
+&lt;/style&gt;</pre>
+    </div>
+    <p class="instruction" style="border-left: 3px solid var(--accent-color); padding-left: 10px;">
+        Substitua <code>#000000</code> pela cor de fundo da sua imagem de splash.
+        Após editar este arquivo, gere o APK direto sem precisar rodar <code>npx cap sync</code>.
+    </p>
+</div>
+
+<div class="step">
+    <h2>8. Sincronizar Código e Abrir Android Studio</h2>
+    <p class="instruction">
+        Execute os comandos abaixo em sequência. O primeiro sincroniza as alterações do seu site (HTML/CSS/JS) 
+        com o projeto Android, e o segundo abre a IDE para gerar o APK:
+    </p>
+    
+    <div class="code-block">
+        <span class="cmd">npx cap sync android</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+
+    <div class="code-block" style="margin-top: 10px;">
+        <span class="cmd">npx cap open android</span>
+        <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+    </div>
+</div>
+    
+    <div class="step">
+        <h2>9. Gerar o APK pelo terminal (Sem Android Studio)</h2>
+        <p class="instruction">Caso prefira não usar a interface visual do Android Studio, você pode compilar o instalador (.apk) diretamente pelo terminal do VS Code:</p>
+
+        <div class="prerequisites" style="background: #1a2634; border-left: 4px solid var(--accent-color); margin-bottom: 15px;">
+            <h3>⚠️ Pré-requisito obrigatório: Configurar JAVA_HOME</h3>
+            <p>Faça isso <strong>antes</strong> de rodar qualquer comando abaixo. O Windows precisa saber onde está o Java para o Gradle funcionar:</p>
+            <ol>
+                <li>Abra o menu Iniciar, pesquise por <strong>Variáveis de Ambiente</strong> e clique em "Editar as variáveis de ambiente do sistema".</li>
+                <li>Na tela "Propriedades do Sistema", clique em <strong>Variáveis de Ambiente...</strong></li>
+                <li>Em "Variáveis do Sistema", clique em <strong>Novo</strong>.</li>
+                <li>Nome: <code>JAVA_HOME</code></li>
+                <li>Valor: <code>C:\Program Files\Android\Android Studio\jbr</code></li>
+                <li><strong>Reinicie o VS Code</strong> após salvar tudo.</li>
+            </ol>
+        </div>
+
+        <p class="instruction"><strong>A) Acesse a pasta nativa do Android:</strong></p>
+        <div class="code-block">
+            <span class="cmd">cd android</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+
+        <p class="instruction" style="margin-top: 15px;"><strong>B) Execute o comando de compilação (Build):</strong></p>
+        <div class="code-block">
+            <span class="cmd">.\gradlew assembleDebug</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+
+        <p class="instruction" style="margin-top: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
+            <strong>Local do arquivo:</strong> Após o término, seu APK estará em: <br>
+            <code>android\app\build\outputs\apk\debug\app-debug.apk</code>
+        </p>
+
+        <p class="instruction" style="margin-top: 15px;"><strong>C) Volte para a pasta principal do projeto:</strong></p>
+        <div class="code-block">
+            <span class="cmd">cd ..</span>
+            <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>10. Onde encontrar o arquivo APK para instalação</h2>
+        <p class="instruction">Após o terminal exibir a mensagem de sucesso no Build, o arquivo instalador estará guardado em uma pasta profunda dentro do seu projeto:</p>
+        
+        <div class="code-block-static">
+            <span style="color: #bbb;">Caminho completo:</span> <br>
+            <code>C:\SEUPROJETO\android\app\build\outputs\apk\debug\app-debug.apk</code>
+        </div>
+
+        <p class="instruction" style="margin-top: 15px;"><strong>Como chegar lá pelo Windows:</strong></p>
+        <ol class="instruction">
+            <li>Abra a pasta do seu projeto (<code>controle de gastos</code>).</li>
+            <li>Entre em: <code>android</code> > <code>app</code> > <code>build</code> > <code>outputs</code> > <code>apk</code> > <code>debug</code>.</li>
+            <li>O arquivo <strong>app-debug.apk</strong> é o seu aplicativo pronto.</li>
+        </ol>
+
+        <p class="instruction" style="margin-top: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
+            <strong>Dica:</strong> Você pode copiar este arquivo para o seu celular via cabo USB, Google Drive ou WhatsApp Web e instalá-lo diretamente no aparelho para testar.
+        </p>
+    </div>
+
+    <div class="step" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 3px solid #00d4ff; border-radius: 12px; padding: 25px; margin-top: 40px; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);">
+        <h2 style="color: #00d4ff; font-size: 1.4rem; margin-top: 0; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center;">
+            🔄 ATUALIZANDO MUDANÇAS NO CÓDIGO
+        </h2>
+        
+        <div style="background: #0f3460; border-left: 5px solid #ff006e; padding: 15px; border-radius: 5px; margin: 15px 0;">
+            <p style="margin: 0; color: #ff006e; font-weight: bold; font-size: 1.1rem;">⚡ RESUMO RÁPIDO - Execute esses 3 comandos em ordem:</p>
+        </div>
+
+        <p class="instruction" style="margin-top: 20px; font-size: 1rem; color: #00ff88; font-weight: bold;">Sempre que você alterar:</p>
+        <ul style="color: #e0e0e0; font-size: 1rem; line-height: 2;">
+            <li>✅ Ícone ou Splash Screen</li>
+            <li>✅ Arquivos HTML, CSS ou JavaScript</li>
+            <li>✅ Arquivo <code>capacitor.config.json</code></li>
+            <li>✅ Qualquer outro arquivo do projeto</li>
+        </ul>
+
+        <p class="instruction" style="margin-top: 20px; margin-bottom: 15px; color: #00d4ff; font-weight: bold; font-size: 1.05rem;">Execute NESTA ORDEM:</p>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: #0f3460; padding: 15px; border-radius: 8px; border-left: 5px solid #00d4ff;">
+                <p style="color: #00d4ff; margin: 0 0 8px 0; font-weight: bold; font-size: 1rem;">1️⃣ ATUALIZAR ÍCONE E SPLASH:</p>
+                <div class="code-block">
+                    <span class="cmd">npx capacitor-assets generate --android</span>
+                    <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+                </div>
+            </div>
+
+            <div style="background: #0f3460; padding: 15px; border-radius: 8px; border-left: 5px solid #00ff88;">
+                <p style="color: #00ff88; margin: 0 0 8px 0; font-weight: bold; font-size: 1rem;">2️⃣ SINCRONIZAR HTML, CSS, JS E CONFIGURAÇÕES:</p>
+                <div class="code-block">
+                    <span class="cmd">npx cap sync android</span>
+                    <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+                </div>
+            </div>
+
+            <div style="background: #0f3460; padding: 15px; border-radius: 8px; border-left: 5px solid #ff006e;">
+                <p style="color: #ff006e; margin: 0 0 8px 0; font-weight: bold; font-size: 1rem;">3️⃣ GERAR O APK (execute em sequência):</p>
+                <div class="code-block">
+                    <span class="cmd">cd android</span>
+                    <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+                </div>
+                <div class="code-block" style="margin-top: 8px;">
+                    <span class="cmd">.\gradlew assembleDebug</span>
+                    <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+                </div>
+                <div class="code-block" style="margin-top: 8px;">
+                    <span class="cmd">cd ..</span>
+                    <button class="copy-btn" onclick="copyText(this)">Copiar</button>
+                </div>
+                <p style="color: #bbb; margin: 10px 0 0 0; font-size: 0.9rem;">💾 Arquivo gerado: <code>android\app\build\outputs\apk\debug\app-debug.apk</code></p>
+            </div>
+        </div>
+
+        <div style="background: #1a1a2e; border: 2px dashed #00d4ff; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <p style="color: #00ff88; margin: 0; font-weight: bold; font-size: 1rem;">💡 DICA IMPORTANTE:</p>
+            <p style="color: #e0e0e0; margin: 8px 0 0 0; line-height: 1.6;">
+                Se você só alterou <strong>HTML/CSS/JS ou capacitor.config.json</strong>, você pode pular o comando <code>1️⃣</code> e ir direto para <code>2️⃣ e 3️⃣</code>.<br><br>
+                Mas se <strong>também alterou ícone ou splash</strong>, SEMPRE execute os 3 em ordem!
+            </p>
+        </div>
+
+        <div style="background: #1a2634; border: 2px dashed #ff006e; padding: 15px; border-radius: 8px; margin-top: 15px;">
+            <p style="color: #ff006e; margin: 0; font-weight: bold; font-size: 1rem;">⚠️ SE DER ERRO:</p>
+            <p style="color: #e0e0e0; margin: 8px 0 0 0; line-height: 1.6;">
+                Certifique-se de que:<br>
+                ✓ <strong>JAVA_HOME</strong> está configurado (veja passo 9)<br>
+                ✓ <strong>ANDROID_HOME</strong> está disponível no PowerShell<br>
+                ✓ Você está na pasta do projeto ao executar os comandos<br>
+                ✓ Node.js está instalado (teste: <code>node -v</code>)
+            </p>
+        </div>
+    </div>
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+</div>
+
+<script>
+    function copyText(btn) {
+        const text = btn.parentElement.querySelector('.cmd').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = 'Copiado!';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = '#007acc';
+            }, 1500);
+        });
+    }
+</script>
+
+</body>
+</html>
